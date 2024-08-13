@@ -9,7 +9,7 @@ export const menuItems = [
   {
     name: "Tasks",
     icon: FgTaskIcon(),
-    path: "/tasks",
+    path: "/admin/tasks",
   },
   {
     name: "Work Logs",
