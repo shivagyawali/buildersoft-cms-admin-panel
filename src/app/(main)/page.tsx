@@ -1,4 +1,5 @@
 import MainLayout from "@app/layouts/MainLayout";
+import Image from "next/image";
 
 const Home = () => {
   return (
