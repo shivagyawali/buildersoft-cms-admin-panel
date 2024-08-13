@@ -1,4 +1,5 @@
 import TableContent from "@app/components/TableContent";
+import Link from "next/link";
 import React from "react";
 
 const AdminTasks = () => {
@@ -17,9 +18,9 @@ const AdminTasks = () => {
           </div>
         </div>
         <div className="flex gap-6 items-end">
-          <button className="text-lg px-7 py-4 text-white bg-blue-500 rounded-full ">
+          <Link href={"/admin/tasks/create"} className="text-lg px-7 py-4 text-white bg-blue-500 rounded-full ">
             Assign Task
-          </button>
+          </Link>
           <div className="pl-2.5">
             <p className="text-[#656565] text-center mb-3">Time Spent</p>
             <p className="text-[#4BA665] rounded-full bg-[#4BA665]/10 px-4 py-2">

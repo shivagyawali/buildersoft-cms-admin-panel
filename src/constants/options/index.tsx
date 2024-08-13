@@ -35,3 +35,29 @@ export const tasks = [
     formStatus: "Completed",
   },
 ];
+
+// export const projectForm = [
+//   {
+//     name: "title",
+//     label: "Task Title",
+//     type:"text" ,
+
+//   },
+//   {
+//     name: "type",
+//     label: "Task Type",
+//     type:"text" ,
+
+//   },
+//   {
+//     name: "desc",
+//     label: "Task Description",
+//     type:"text" ,
+
+//   },
+//   {
+//     name: "desc",
+//     label: "Task Description",
+//     type:"date" ,
+//   },
+// ];

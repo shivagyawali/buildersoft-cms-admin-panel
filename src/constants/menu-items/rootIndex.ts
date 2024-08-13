@@ -1,10 +1,16 @@
-import { FgPerformanceIcon, FgProjectIcon, FgSettingIcon, FgTaskIcon, FgWorkLogsIcon } from "../SVGCollection";
+import {
+  FgPerformanceIcon,
+  FgProjectIcon,
+  FgSettingIcon,
+  FgTaskIcon,
+  FgWorkLogsIcon,
+} from "../SVGCollection";
 
 export const menuItems = [
   {
     name: "Project",
     icon: FgProjectIcon(),
-    path: "/project",
+    path: "/admin/project",
   },
   {
     name: "Tasks",
@@ -25,5 +31,20 @@ export const menuItems = [
     name: "Settings",
     icon: FgSettingIcon(),
     path: "/settings",
+  },
+];
+
+export const taskAssignedTo = [
+  {
+    label: "Option 1",
+    value: 1,
+  },
+  {
+    label: "Option 2",
+    value: 2,
+  },
+  {
+    label: "Option 3",
+    value: 3,
   },
 ];
