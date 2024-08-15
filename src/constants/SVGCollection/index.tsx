@@ -1,8 +1,8 @@
 export const FgNotificationIcon = () => {
   return (
     <svg
-      width="41"
-      height="35"
+      width="38"
+      height="32"
       viewBox="0 0 41 35"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
