@@ -1,4 +1,4 @@
-import TaskForm from '@app/components/forms/TaskForm'
+import TaskForm from '@app/components/forms/TaskForm/TaskForm'
 import React from 'react'
 
 const CreateTask = () => {

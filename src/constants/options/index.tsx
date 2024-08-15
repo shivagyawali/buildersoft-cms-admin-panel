@@ -5,6 +5,22 @@ export const tasks = [
     desc: "#40000 aksjdnak aksdjqp ;apa",
     status: "Cancelled",
     formStatus: "Completed",
+    subTask: [
+      {
+        id: 1,
+        title: "Make an Automatic Payment System that enable the design",
+        desc: "#40000 aksjdnak aksdjqp ;apa",
+        status: "Cancelled",
+        formStatus: "Completed",
+      },
+      {
+        id: 2,
+        title: "Make an Automatic Payment System that enable the design",
+        desc: "#40000 aksjdnak aksdjqp ;apa",
+        status: "Cancelled",
+        formStatus: "Completed",
+      },
+    ],
   },
   {
     id: 2,

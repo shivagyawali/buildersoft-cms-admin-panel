@@ -1,9 +1,9 @@
 "use client";
 import { Form, Formik } from "formik";
 import React from "react";
-import TextInputField from "./TextInputField";
-import DatePickerField from "./DatePickerField";
-import SelectField from "./SelectField";
+import TextInputField from "../TextInputField";
+import DatePickerField from "../DatePickerField";
+import SelectField from "../SelectField";
 import { taskAssignedTo } from "@app/constants/menu-items/rootIndex";
 
 const TaskForm = () => {
