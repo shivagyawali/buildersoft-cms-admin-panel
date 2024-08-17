@@ -26,8 +26,8 @@ const ProjectRoleAccordian = () => {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 stroke-width="2"
                 d="M9 5 5 1 1 5"
               />

@@ -9,10 +9,10 @@ import {
 const Header = () => {
   const notificationBadge = true;
   return (
-    <div className="p-2 bg-white shadow-md z-50 fixed w-full">
+    <div className="p-2 bg-white  z-50 fixed w-full">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-2xl font-semibold">Construction v2</p>
+          <p className="text-2xl font-semibold">BuilderSoft CMS</p>
         </div>
         <div className="flex items-center gap-8">
           <input

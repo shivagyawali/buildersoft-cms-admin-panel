@@ -12,7 +12,7 @@ const AdminProject = () => {
     <div>
       <div className="flex items-center justify-between mb-11">
         <p className="text-3xl text-[#0E2040]">Projects</p>
-        <Link href={"/admin/project/create"} className="px-[50px] py-[18px] text-lg text-white bg-[#036EFF] rounded-2xl">
+        <Link href={"/admin/project/create"} className="px-[20px] py-[8px] text-lg text-white bg-[#036EFF] rounded-2xl">
           Create
         </Link>
       </div>
