@@ -1,11 +1,14 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import loginImge from "@app/assets/images/login-img.png";
+import loginImge from "@app/assets/images/login-img.svg";
 import { Field, Form, Formik } from "formik";
 import Link from "next/link";
 
 const LoginPage = () => {
+  const handleSubmit =()=>{
+    window.location.href = "/admin/project";
+  }
   return (
     <div className="px-28 py-10">
       <p className="text-2xl font-bold">Construction v2</p>
@@ -21,7 +24,7 @@ const LoginPage = () => {
           </p>
           <Formik
             initialValues={{ email: "", password: "" }}
-            onSubmit={() => {}}
+            onSubmit={handleSubmit}
           >
             <Form className="mt-10 w-full">
               <Field
