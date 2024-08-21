@@ -1,16 +1,19 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import loginImge from "@app/assets/images/login-img.png";
+import loginImge from "@app/assets/images/login-img.svg";
 import { Field, Form, Formik } from "formik";
 import Link from "next/link";
 
 const RegisterPage = () => {
+  const handleSubmit = () => {
+    window.location.href = "admin/project";
+  };
   return (
     <div className="px-28 py-10">
-      <p className="text-2xl font-bold">Construction v2</p>
+      <p className="text-2xl font-bold">BuilderSoft CMS</p>
       <div className="flex items-center justify-between">
-        <div className="w-1/2">
+        <div className="w-1/3 mt-16">
           <Image src={loginImge} alt="" className="w-full object-cover" />
         </div>
         <div className="w-1/3 mr-28">
@@ -21,7 +24,7 @@ const RegisterPage = () => {
             </p>
             <Formik
               initialValues={{ email: "", password: "" }}
-              onSubmit={() => {}}
+              onSubmit={handleSubmit}
             >
               <Form className="mt-10 w-full">
                 <Field
@@ -42,7 +45,7 @@ const RegisterPage = () => {
                   placeholder="Confirm Password"
                   className="w-full border-b border-[#A69999] py-2.5 outline-none"
                 />
-             
+
                 <div className="mt-9">
                   <button
                     type="submit"
