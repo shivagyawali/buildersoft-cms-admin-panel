@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const LoginPage = () => {
   const handleSubmit =()=>{
-    window.location.href="admin/project"
+    window.location.href="/admin/project"
   }
   return (
     <div className="px-28 py-10">
