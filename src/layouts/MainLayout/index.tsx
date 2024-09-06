@@ -6,11 +6,11 @@ const MainLayout = ({ children }: any) => {
   return (
     <>
       <Header />
-      <div className="flex items-start mt-16">
-        <div className="w-1/5">
+      <div className="flex mt-16">
         <Sidebar />
+        <div className="flex-1 pl-72 pr-8 py-8 bg-[#F0F6FF] min-h-screen">
+          {children}
         </div>
-        <div className="px-16 py-14 flex-1  bg-[#F0F6FF] min-h-screen">{children}</div>
       </div>
     </>
   );

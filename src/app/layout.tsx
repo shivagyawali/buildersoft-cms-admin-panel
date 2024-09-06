@@ -5,7 +5,7 @@ import "@app/assets/styles/globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Construction v2",
+  title: "BuilderSoft CMS",
   description: "Generated with Macbook M3",
 };
 
