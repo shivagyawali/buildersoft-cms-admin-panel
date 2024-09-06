@@ -20,17 +20,44 @@ export const menuItems = [
   {
     name: "Work Logs",
     icon: FgWorkLogsIcon(),
-    path: "/work-logs",
+    path: "/admin/work-logs",
   },
   {
     name: "Performance",
     icon: FgPerformanceIcon(),
-    path: "/performance",
+    path: "/admin/performance",
   },
   {
     name: "Settings",
     icon: FgSettingIcon(),
-    path: "/settings",
+    path: "/admin/settings",
+  },
+];
+export const userMenu = [
+  {
+    name: "Project",
+    icon: FgProjectIcon(),
+    path: "/user/project",
+  },
+  {
+    name: "Tasks",
+    icon: FgTaskIcon(),
+    path: "/user/tasks",
+  },
+  {
+    name: "Work Logs",
+    icon: FgWorkLogsIcon(),
+    path: "/user/work-logs",
+  },
+  {
+    name: "Performance",
+    icon: FgPerformanceIcon(),
+    path: "/user/performance",
+  },
+  {
+    name: "Settings",
+    icon: FgSettingIcon(),
+    path: "/user/settings",
   },
 ];
 

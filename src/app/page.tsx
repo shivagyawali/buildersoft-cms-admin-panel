@@ -5,6 +5,7 @@ import { useEffect } from "react";
 
 const Home = () => {
   const route = useRouter();
+  
   const goToLogin = () => {
     route.push("/auth/login");
   };
