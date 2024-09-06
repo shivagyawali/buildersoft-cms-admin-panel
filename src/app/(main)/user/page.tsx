@@ -1,6 +1,6 @@
 import React from 'react'
 
-const UserPage = ({children}: {children: React.ReactNode}) => {
+const UserPage = ({children}: any) => {
   return (
     <div>
       {children}
