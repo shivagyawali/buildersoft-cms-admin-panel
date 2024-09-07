@@ -38,7 +38,7 @@ const PieChart = () => {
 
   return (
     <div className="w-full bg-white py-8 px-6 rounded-lg">
-      <div className="flex items-center mb-8">
+      <div className="flex items-center">
         <p className="text-2xl text-[#0E2040]">Project Stats</p>
       </div>
       <Pie data={data} options={options} />

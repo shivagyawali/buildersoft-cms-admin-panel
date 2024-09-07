@@ -1,15 +1,18 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
 import avatar from "@app/assets/images/avatar.png";
 import {
   FgNotificationBadge,
   FgNotificationIcon,
 } from "@app/constants/SVGCollection";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const notificationBadge = true;
+  const route = useRouter();
   return (
-    <div className="p-2 bg-white  z-50 fixed w-full">
+    <div className="p-2 relative">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-2xl font-semibold">BuilderSoft CMS</p>
@@ -28,7 +31,10 @@ const Header = () => {
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-5">
+            <div
+              className="flex items-center gap-5 cursor-pointer"
+              onClick={() => route.push("/admin/profile")}
+            >
               <div className="text-right">
                 <p className="text-[#0D062D] text-base">Anima Agrawal</p>
                 <p className="text-[#787486] text-sm">U.P, India</p>

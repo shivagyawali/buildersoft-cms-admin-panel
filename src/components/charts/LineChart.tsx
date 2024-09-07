@@ -13,14 +13,14 @@ const LineChart = () => {
         data: [65, 75, 85, 80, 63, 77, 60],
         fill: false,
         borderColor: "#FB896B",
-        tension: 0.7,
+        tension: 0.2,
       },
       {
         label: "Target",
         data: [22, 44, 30, 50, 55, 40, 35],
         fill: false,
         borderColor: "#6956E5",
-        tension: 0.7,
+        tension: 0.2,
       },
     ],
   };
@@ -34,8 +34,8 @@ const LineChart = () => {
       },
       label: {
         display: true,
-        backgroundColor:"red"
-      }
+        backgroundColor: "red",
+      },
     },
   };
   return (
