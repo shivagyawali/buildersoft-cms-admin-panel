@@ -4,7 +4,7 @@ import React from "react";
 
 const TableContent = () => {
   return (
-    <div className="p-14">
+    <div className="p-8">
       {tasks.map((task,idx) => (
         <div className="pl-4 pr-10 py-6 bg-white drop-shadow-lg rounded-2xl mb-6" key={idx}>
           <div key={task.id} className="flex justify-between">

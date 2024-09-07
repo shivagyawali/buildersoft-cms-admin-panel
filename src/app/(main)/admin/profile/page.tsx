@@ -1,0 +1,58 @@
+import { assignedUsers } from "@app/constants/menu-items/rootIndex";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+
+const AdminProfilePage = () => {
+  return (
+    <div className="grid grid-cols-3 gap-10">
+      <div className="col-span-1">
+        <div className="bg-white rounded-2xl p-8">
+          <div className="flex flex-col items-center">
+            <div className="w-40 h-40 rounded-full border-2 border-blue-600 p-1">
+              <Image
+                src="https://scontent.fktm18-1.fna.fbcdn.net/v/t39.30808-6/438259776_456493043498482_3989274227588964415_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=j_lV77N7c1cQ7kNvgGyM2Hb&_nc_ht=scontent.fktm18-1.fna&oh=00_AYDY7IyIcQ0rFVKjKoeVrUdRFzFHCPUm-eq9D1CX_6jwCg&oe=66E1AAFE"
+                alt="Profile Image"
+                width={500}
+                height={500}
+                className="rounded-full w-full h-full object-cover object-center"
+              />
+            </div>
+            <p className="text-gray-700 font-bold mt-2">Bipin Pathak</p>
+            <p className="font-thin text-gray-500">Devdaha, Rupandehi</p>
+            <p className="font-thin text-gray-500">Nepal</p>
+          </div>
+        </div>
+      </div>
+      <div className="col-span-1 bg-white p-8 px-5 rounded-[20px]">
+        <div className="flex items-center justify-between">
+          <p>Projects</p>
+          <Link
+            href={"/admin/project/create"}
+            className="text-sm text-[#036EFF]"
+          >
+            View More
+          </Link>
+        </div>
+        <div className="flex flex-wrap gap-8 mt-6">
+          {assignedUsers.map((user, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className="w-20 h-20 rounded-2xl">
+                <Image
+                  src={user.image}
+                  alt=""
+                  width={500}
+                  height={500}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="mt-2 text-xs text-gray-500">{user.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminProfilePage;

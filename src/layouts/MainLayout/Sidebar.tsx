@@ -4,7 +4,7 @@ import React from "react";
 
 const Sidebar = () => {
   return (
-    <div className="w-64 h-screen bg-white px-6 pt-8 fixed shadow-lg">
+    <div className="w-64 h-screen bg-white px-6 pt-12 fixed shadow-lg">
       <div className="flex flex-col gap-6">
         {menuItems.map((menu, index) => (
           <div
@@ -20,6 +20,11 @@ const Sidebar = () => {
             </Link>
           </div>
         ))}
+        <div className="absolute bottom-20 w-full">
+          <button className="text-[#5D7285] text-left hover:text-[#1D4ED8] cursor-pointer p-2 hover:bg-gray-100 rounded-lg w-full">
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   );
