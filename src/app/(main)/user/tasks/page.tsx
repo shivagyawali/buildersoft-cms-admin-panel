@@ -3,9 +3,9 @@ import { tasks } from "@app/constants/options";
 import Link from "next/link";
 import React from "react";
 
-const AdminTasks = () => {
+const UserTasks = () => {
   return (
-    <div className="w-full">
+    <div>
       <div className="flex items-end justify-between">
         <div>
           <p className="text-[#9A93B3] text-xl font-semibold">
@@ -19,7 +19,10 @@ const AdminTasks = () => {
           </div>
         </div>
         <div className="flex gap-6 items-end">
-          <Link href={"/admin/tasks/create"} className="text-lg px-7 py-4 text-white bg-blue-500 rounded-full ">
+          <Link
+            href={"/admin/tasks/create"}
+            className="text-lg px-7 py-4 text-white bg-blue-500 rounded-full "
+          >
             Assign Task
           </Link>
           <div className="pl-2.5">
@@ -36,12 +39,11 @@ const AdminTasks = () => {
           </div>
         </div>
       </div>
-
       <div className="mt-6 bg-white rounded-2xl">
-        <TableContent data={tasks}/>
+      <TableContent data={tasks}/>
       </div>
     </div>
   );
 };
 
-export default AdminTasks;
+export default UserTasks;
