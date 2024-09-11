@@ -1,4 +1,5 @@
 import TableContent from "@app/components/TableContent";
+import { tasks } from "@app/constants/options";
 import Link from "next/link";
 import React from "react";
 
@@ -39,7 +40,7 @@ const UserTasks = () => {
         </div>
       </div>
       <div className="mt-6 bg-white rounded-2xl">
-      <TableContent />
+      <TableContent data={tasks}/>
       </div>
     </div>
   );

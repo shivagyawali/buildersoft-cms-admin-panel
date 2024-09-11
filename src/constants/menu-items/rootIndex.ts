@@ -8,6 +8,11 @@ import {
 
 export const menuItems = [
   {
+    name: "Dashboard",
+    icon: FgPerformanceIcon(),
+    path: "/admin/",
+  },
+  {
     name: "Project",
     icon: FgProjectIcon(),
     path: "/admin/project",
@@ -22,11 +27,7 @@ export const menuItems = [
     icon: FgWorkLogsIcon(),
     path: "/admin/work-logs",
   },
-  {
-    name: "Performance",
-    icon: FgPerformanceIcon(),
-    path: "/admin/performance",
-  },
+  
   {
     name: "Permission",
     icon: FgPerformanceIcon(),

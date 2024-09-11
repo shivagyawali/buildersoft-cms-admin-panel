@@ -1,6 +1,7 @@
 "use client";
 import DoughnutChart from "@app/components/charts/DoughnutChart";
 import TableContent from "@app/components/TableContent";
+import { tasks } from "@app/constants/options";
 import { ArcElement, Chart } from "chart.js";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +14,7 @@ const AdminWorkLogPage = () => {
     <div className="grid grid-cols-3 gap-10">
       <div className="col-span-2">
         <div className="bg-white rounded-xl">
-          <TableContent />
+          <TableContent data={tasks}/>
         </div>
       </div>
       <div className="col-span-1 relative">
