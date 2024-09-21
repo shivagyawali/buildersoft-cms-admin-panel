@@ -1,3 +1,5 @@
+import path from "path";
+
 export const tasks = [
   {
     id: 1,
@@ -77,3 +79,22 @@ export const tasks = [
 //     type:"date" ,
 //   },
 // ];
+
+export const roleTab = [
+  {
+    name: "Root",
+    path: "/admin/permissions/root",
+  },
+  {
+    name: "Admin",
+    path: "/admin/permissions/admin",
+  },
+  {
+    name: "User",
+    path: "/admin/permissions/user",
+  },
+  {
+    name: "Client",
+    path: "/admin/permissions/client",
+  },
+];
