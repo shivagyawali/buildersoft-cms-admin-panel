@@ -1,7 +1,7 @@
 import { Field } from "formik";
 import React from "react";
 
-const TextInputField = ({
+const InputField = ({
   name,
   label,
   placeholder,
@@ -25,4 +25,4 @@ const TextInputField = ({
   );
 };
 
-export default TextInputField;
+export default InputField;

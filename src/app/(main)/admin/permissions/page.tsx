@@ -1,11 +1,13 @@
-import React from 'react'
+import { roleTab } from "@app/constants/options";
+import React from "react";
 
-const AdminPermission = () => {
+const AdminPermission = ({ children }: any) => {
   return (
     <div>
-      
+     
+      {children}
     </div>
-  )
-}
+  );
+};
 
-export default AdminPermission
+export default AdminPermission;
