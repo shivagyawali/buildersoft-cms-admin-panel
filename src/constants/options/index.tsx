@@ -80,21 +80,71 @@ export const tasks = [
 //   },
 // ];
 
-export const roleTab = [
+export const permissions = [
   {
-    name: "Root",
-    path: "/admin/permissions/root",
+    heading: "Project Management",
+    child: [
+      {
+        label: "Create New Projects",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "View Projects",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "Edit Projects",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "Delete Projects",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+    ],
   },
   {
-    name: "Admin",
-    path: "/admin/permissions/admin",
-  },
-  {
-    name: "User",
-    path: "/admin/permissions/user",
-  },
-  {
-    name: "Client",
-    path: "/admin/permissions/client",
+    heading: "Task Management",
+    child: [
+      {
+        label: "Create New Task",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "View Tasks",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "Edit Tasks",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "Delete Tasks",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+    ],
   },
 ];

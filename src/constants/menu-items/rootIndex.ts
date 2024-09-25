@@ -28,6 +28,11 @@ export const menuItems = [
     path: "/admin/work-logs",
   },
   {
+    name: "Reports",
+    icon: FgWorkLogsIcon(),
+    path: "/admin/reports",
+  },
+  {
     name: "Users",
     icon: FgWorkLogsIcon(),
     path: "/admin/user",
