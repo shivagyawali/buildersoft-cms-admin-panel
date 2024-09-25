@@ -2,8 +2,14 @@
 import PDFInvoice from "@app/components/download/PDFInvoice";
 import TableContent from "@app/components/TableContent";
 import { tasks } from "@app/constants/options";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import dynamic from "next/dynamic";
 import React from "react";
+
+const PDFDownloadLink = dynamic(
+  () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+  { ssr: false }
+);
+
 
 const Reports = () => {
   return (
