@@ -20,7 +20,7 @@ const Sidebar = () => {
             </Link>
           </div>
         ))}
-        <div className="absolute bottom-20 w-full">
+        <div className="absolute bottom-20 right-0 left-0 w-full">
           <button className="text-[#5D7285] text-left hover:text-[#1D4ED8] cursor-pointer p-2 hover:bg-gray-100 rounded-lg w-full">
             Logout
           </button>

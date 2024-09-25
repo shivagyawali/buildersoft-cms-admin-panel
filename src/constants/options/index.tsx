@@ -1,3 +1,5 @@
+import path from "path";
+
 export const tasks = [
   {
     id: 1,
@@ -77,3 +79,72 @@ export const tasks = [
 //     type:"date" ,
 //   },
 // ];
+
+export const permissions = [
+  {
+    heading: "Project Management",
+    child: [
+      {
+        label: "Create New Projects",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "View Projects",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "Edit Projects",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "Delete Projects",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+    ],
+  },
+  {
+    heading: "Task Management",
+    child: [
+      {
+        label: "Create New Task",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "View Tasks",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "Edit Tasks",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+      {
+        label: "Delete Tasks",
+        userValue: "userCreateProject",
+        clientValue: "clientCreateProject",
+        adminValue: "adminCreateProject",
+        rootValue: "rootCreateProject",
+      },
+    ],
+  },
+];

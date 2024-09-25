@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik'
 import React from 'react'
-import TextInputField from '../TextInputField'
+import TextInputField from '../InputField'
 import DatePickerField from '../DatePickerField'
 import SelectField from '../SelectField'
 
