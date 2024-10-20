@@ -5,10 +5,12 @@ const InputField = ({
   name,
   label,
   placeholder,
+  as,
 }: {
   name: string;
-  label: string;
-  placeholder: string;
+  label?: string;
+  placeholder?: string;
+  as?: string;
 }) => {
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -16,7 +18,8 @@ const InputField = ({
         {label}
       </label>
       <Field
-        type="text"
+        as={as && as}
+        type={as ? "" : "text"}
         name={name}
         placeholder={placeholder}
         className="border border-[#DDDDDD] py-3 px-3 outline-none rounded-2xl"

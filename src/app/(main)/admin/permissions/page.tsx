@@ -1,10 +1,19 @@
+import BreadCrumb from "@app/components/Breadcrumb";
 import { permissions } from "@app/constants/options";
 import React from "react";
 
 const AdminPermission = ({ children }: any) => {
   return (
     <>
-      <p className="text-[#9A93B3] text-xl font-semibold">Permissions</p>
+      <BreadCrumb title="Permissions">
+        <button
+          className="bg-blue-500 text-white px-6 py-3 rounded-2xl disabled:bg-gray-500"
+          disabled
+        >
+          Save
+        </button>
+      </BreadCrumb>
+
       <div className=" bg-white rounded-lg shadow-lg my-6">
         <table className="w-full table-auto">
           <thead className="text-left">

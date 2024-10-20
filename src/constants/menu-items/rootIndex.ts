@@ -48,9 +48,9 @@ export const menuItems = [
     path: "/admin/permissions",
   },
   {
-    name: "Settings",
+    name: "Events",
     icon: FgSettingIcon(),
-    path: "/admin/settings",
+    path: "/admin/events",
   },
 ];
 export const userMenu = [

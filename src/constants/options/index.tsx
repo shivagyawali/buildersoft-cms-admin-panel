@@ -1,4 +1,4 @@
-import path from "path";
+import profileImg from "@app/assets/images/avatar.png";
 
 export const tasks = [
   {
@@ -146,5 +146,16 @@ export const permissions = [
         rootValue: "rootCreateProject",
       },
     ],
+  },
+];
+
+export const comments = [
+  {
+    userProfile: profileImg,
+    user: "Patrick Handerson",
+    title: "Commenting on a issue",
+    children: {
+      title: "replying on a issue",
+    },
   },
 ];

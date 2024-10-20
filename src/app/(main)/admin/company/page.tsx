@@ -1,3 +1,5 @@
+import BreadCrumb from "@app/components/Breadcrumb";
+import Filter from "@app/components/Filter";
 import TableContent from "@app/components/TableContent";
 import { tasks } from "@app/constants/options";
 import Link from "next/link";
@@ -6,16 +8,21 @@ import React from "react";
 const CompanyPage = () => {
   return (
     <div>
-      <div className="flex items-center justify-between mb-11">
-        <p className="text-3xl text-[#0E2040]">Company List</p>
+      <BreadCrumb title="Companies">
         <Link
           href={"/admin/project/create"}
           className="px-[20px] py-[8px] text-lg text-white bg-[#036EFF] rounded-2xl"
         >
           Create
         </Link>
+      </BreadCrumb>
+
+      <div className="bg-white p-8 rounded-2xl mt-6">
+        <div className="pb-6">
+          <Filter />
+        </div>
+        <TableContent data={tasks} />
       </div>
-      <TableContent data={tasks} />
     </div>
   );
 };

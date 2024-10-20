@@ -7,7 +7,7 @@ const SelectField = ({
   options,
 }: {
   name: string;
-  label: string;
+  label?: string;
   options: any;
 }) => {
   return (
