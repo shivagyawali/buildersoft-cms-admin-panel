@@ -4,11 +4,9 @@ import React from "react";
 const DatePickerField = ({
   name,
   label,
-//   placeholder,
 }: {
   name: string;
-  label: string;
-//   placeholder: string;
+  label?: string;
 }) => {
   return (
     <div className="flex flex-col gap-2 w-full">

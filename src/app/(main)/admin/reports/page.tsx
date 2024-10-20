@@ -1,30 +1,37 @@
 "use client";
+import BreadCrumb from "@app/components/Breadcrumb";
 import PDFInvoice from "@app/components/download/PDFInvoice";
+import Filter from "@app/components/Filter";
 import TableContent from "@app/components/TableContent";
 import { tasks } from "@app/constants/options";
 import dynamic from "next/dynamic";
 import React from "react";
 
 const PDFDownloadLink = dynamic(
-  () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
   { ssr: false }
 );
-
 
 const Reports = () => {
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <p className="text-[#9A93B3] text-xl font-semibold">Report</p>
+      <BreadCrumb title="Reports">
+        {" "}
         <PDFDownloadLink
           document={<PDFInvoice />}
           fileName="invoice"
-          className="px-[20px] py-[8px] text-lg text-white bg-[#036EFF] rounded-2xl"
+          className="px-6 py-3 text-white bg-[#036EFF] rounded-2xl"
         >
           Download
         </PDFDownloadLink>
+      </BreadCrumb>
+    
+      <div className="bg-white p-8 rounded-2xl mt-6">
+        <div className="pb-5">
+          <Filter />
+        </div>
+        <TableContent data={tasks} />
       </div>
-      <TableContent data={tasks} />
     </div>
   );
 };

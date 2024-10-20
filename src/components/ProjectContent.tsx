@@ -12,7 +12,7 @@ const ProjectContent = () => {
   return (
     <div className="grid grid-cols-3 gap-x-3 gap-y-12">
       <div
-        className="bg-white rounded-2xl px-4 py-6 cursor-pointer"
+        className="border rounded-2xl px-4 py-6 cursor-pointer"
         onClick={() => {
           route.push("/admin/project/1");
         }}
