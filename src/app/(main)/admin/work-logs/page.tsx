@@ -24,7 +24,7 @@ const AdminWorkLogPage = () => {
             <TableContent data={tasks} />
           </div>
         </div>
-        <div className="col-span-1 relative">
+        <div className="col-span-1 w-5/6 max-h-96 relative">
           <DoughnutChart work />
 
           <div className="bg-white p-8 mt-4 rounded-xl">
