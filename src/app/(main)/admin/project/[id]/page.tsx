@@ -9,7 +9,7 @@ import React from "react";
 
 const ProjectDetail = () => {
   return (
-    <div>
+    <>
       <div className="bg-white rounded-2xl p-8">
         <p className="text-3xl text-[#0E2040]">Project Title</p>
 
@@ -35,11 +35,11 @@ const ProjectDetail = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 py-10 gap-3">
-        <div className="col-span-1">
+      <div className="grid grid-cols-3 my-3 gap-3">
+        <div className="col-span-1 max-h-80 overflow-hidden">
           <PieChart />
         </div>
-        <div className="col-span-2">
+        <div className="col-span-2 max-h-80 overflow-hidden">
           <LineChart />
         </div>
         <div className="col-span-2 bg-white p-8 rounded-2xl">
@@ -108,7 +108,7 @@ const ProjectDetail = () => {
       <div className="">
         <Comment />
       </div>
-    </div>
+    </>
   );
 };
 

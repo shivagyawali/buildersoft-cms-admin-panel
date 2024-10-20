@@ -39,7 +39,7 @@ const LineChart = () => {
     },
   };
   return (
-    <div className="w-full bg-white py-8 px-6 rounded-lg">
+    <div className="w-full h-full bg-white py-8 px-6 rounded-lg flex items-center justify-center">
       <Line data={data} options={options} className="bg-red" />
     </div>
   );
