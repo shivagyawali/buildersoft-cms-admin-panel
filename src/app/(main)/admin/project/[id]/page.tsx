@@ -1,6 +1,7 @@
 "use client";
 import LineChart from "@app/components/charts/LineChart";
 import PieChart from "@app/components/charts/PieChart";
+import Comment from "@app/components/Comment";
 import { assignedUsers } from "@app/constants/menu-items/rootIndex";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +10,30 @@ import React from "react";
 const ProjectDetail = () => {
   return (
     <div>
-      <p className="text-3xl text-[#0E2040]">Projects</p>
+      <div className="bg-white rounded-2xl p-8">
+        <p className="text-3xl text-[#0E2040]">Project Title</p>
+
+        <div className="grid grid-cols-3 mt-6 gap-y-6">
+          <div>
+            <p className="text-lg font-semibold">Start Date</p>
+            <p className="text-gray-600 text-sm">2024-07-23</p>
+          </div>
+          <div>
+            <p className="text-lg font-semibold">End Date</p>
+            <p className="text-gray-600 text-sm">2024-08-10</p>
+          </div>
+          <div>
+            <p className="text-lg font-semibold">Budget</p>
+            <p className="text-gray-600 text-sm">200000.00</p>
+          </div>
+          <div>
+            <p className="text-lg font-semibold">Status</p>
+            <p className="w-fit text-xs text-[#4BA665] rounded-full bg-[#4BA665]/10 px-4 py-2">
+              Success
+            </p>
+          </div>
+        </div>
+      </div>
 
       <div className="grid grid-cols-3 py-10 gap-3">
         <div className="col-span-1">
@@ -18,7 +42,7 @@ const ProjectDetail = () => {
         <div className="col-span-2">
           <LineChart />
         </div>
-        <div className="col-span-2 bg-white p-8 rounded-[20px]">
+        <div className="col-span-2 bg-white p-8 rounded-2xl">
           <div className="flex items-center justify-between">
             <p>Assigned Users</p>
             <div>
@@ -79,6 +103,10 @@ const ProjectDetail = () => {
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="">
+        <Comment />
       </div>
     </div>
   );

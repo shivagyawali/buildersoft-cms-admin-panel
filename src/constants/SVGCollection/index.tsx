@@ -157,7 +157,6 @@ export const FgEditIcon = () => {
     </svg>
   );
 };
-
 export const FgSandGlassIcon = () => {
   return (
     <svg
@@ -174,13 +173,60 @@ export const FgSandGlassIcon = () => {
     </svg>
   );
 };
+export const FgSendIcon = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9.51 4.23L18.07 8.51C21.91 10.43 21.91 13.57 18.07 15.49L9.51 19.77C3.75 22.65 1.4 20.29 4.28 14.54L5.15 12.81C5.37 12.37 5.37 11.64 5.15 11.2L4.28 9.46C1.4 3.71 3.76 1.35 9.51 4.23Z"
+        stroke=""
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.44 12H10.84"
+        stroke=""
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
 export const FgDocumentIcon = () => {
   return (
-    <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M18.8002 9.57087V14.6503C18.8002 18.0367 17.9712 18.8832 14.6555 18.8832H6.3663C3.0506 18.8832 2.22168 18.0367 2.22168 14.6503V6.18455C2.22168 2.79824 3.0506 1.95166 6.3663 1.95166H7.60969C8.85307 1.95166 9.12662 2.32415 9.5991 2.96755L10.8425 4.66071C11.1575 5.084 11.3398 5.33798 12.1688 5.33798H14.6555C17.9712 5.33798 18.8002 6.18455 18.8002 9.57087Z" stroke="#5C5967" strokeMiterlimit="10"/>
-<path d="M7.61035 1.95166H15.0707C16.7285 1.95166 17.5574 2.79824 17.5574 4.4914V5.65968" stroke="#5C5967" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M12.5831 12.9573H8.43848" stroke="#5C5967" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
-</svg>
-
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M18.8002 9.57087V14.6503C18.8002 18.0367 17.9712 18.8832 14.6555 18.8832H6.3663C3.0506 18.8832 2.22168 18.0367 2.22168 14.6503V6.18455C2.22168 2.79824 3.0506 1.95166 6.3663 1.95166H7.60969C8.85307 1.95166 9.12662 2.32415 9.5991 2.96755L10.8425 4.66071C11.1575 5.084 11.3398 5.33798 12.1688 5.33798H14.6555C17.9712 5.33798 18.8002 6.18455 18.8002 9.57087Z"
+        stroke="#5C5967"
+        strokeMiterlimit="10"
+      />
+      <path
+        d="M7.61035 1.95166H15.0707C16.7285 1.95166 17.5574 2.79824 17.5574 4.4914V5.65968"
+        stroke="#5C5967"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12.5831 12.9573H8.43848"
+        stroke="#5C5967"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 };
