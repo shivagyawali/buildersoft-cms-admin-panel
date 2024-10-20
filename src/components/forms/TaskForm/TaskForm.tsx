@@ -1,10 +1,10 @@
 "use client";
 import { Form, Formik } from "formik";
 import React from "react";
-import TextInputField from "../InputField";
 import DatePickerField from "../DatePickerField";
 import SelectField from "../SelectField";
 import { taskAssignedTo } from "@app/constants/menu-items/rootIndex";
+import InputField from "../InputField";
 
 const TaskForm = () => {
   return (
@@ -17,14 +17,14 @@ const TaskForm = () => {
           <div className="flex flex-col gap-8">
             <div className="flex items-start gap-7">
               <div className="w-1/3">
-                <TextInputField
+                <InputField
                   name="title"
                   label="Task Title"
                   placeholder="Task Title"
                 />
               </div>
               <div className="w-1/3">
-                <TextInputField
+                <InputField
                   name="type"
                   label="Task Type"
                   placeholder="task Type"
@@ -40,7 +40,8 @@ const TaskForm = () => {
               </div>
             </div>
             <div className="w-full">
-              <TextInputField
+              <InputField
+                as="textarea"
                 name="title"
                 label="Task Description"
                 placeholder="Task Description"
@@ -52,6 +53,9 @@ const TaskForm = () => {
                 label="Assign To"
                 options={taskAssignedTo}
               />
+            </div>
+            <div className="text-right">
+              <button className="px-6 py-3 bg-blue-500 text-white rounded-2xl">Create</button>
             </div>
           </div>
         </Form>

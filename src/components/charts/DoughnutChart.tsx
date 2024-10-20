@@ -22,15 +22,15 @@ const DoughnutChart = ({ work }: { work?: boolean }) => {
   };
 
   return (
-    <div className="bg-white px-6 rounded-lg">
+    <div className="w-full h-full bg-white px-6 rounded-lg">
       <p className="py-4">Title</p>
-      <div className="py-4 realtive">
+      <div className="my-4 relative">
+        <Doughnut data={data} options={options} />
         {work && (
-          <div className="absolute top-52 left-[100px]">
-            <p className="text-3xl font-bold text-gray-500">2024-05-06</p>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <p className="text-xl font-bold text-gray-500">2024-05-06</p>
           </div>
         )}
-        <Doughnut data={data} options={options} />
       </div>
     </div>
   );

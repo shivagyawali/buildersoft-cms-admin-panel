@@ -18,10 +18,6 @@ const Header = () => {
           <p className="text-2xl font-semibold">BuilderSoft CMS</p>
         </div>
         <div className="flex items-center gap-8">
-          <input
-            type="text"
-            className="w-[328px] border border-[#9A93B3] rounded-md p-2 outline-none"
-          />
           <div className="flex items-center gap-8">
             <div className="relative">
               <FgNotificationIcon />

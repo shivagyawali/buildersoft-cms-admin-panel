@@ -1,55 +1,64 @@
 import {
+  FgCompanyIcon,
+  FgDashboardIcon,
+  FgEventIcon,
+  FgLogsIcon,
   FgPerformanceIcon,
+  FgPermissionIcon,
   FgProjectIcon,
+  FgProjectsIcon,
+  FgReportsIcon,
   FgSettingIcon,
   FgTaskIcon,
+  FgTasksIcon,
+  FgUsersIcon,
   FgWorkLogsIcon,
 } from "../SVGCollection";
 
 export const menuItems = [
   {
     name: "Dashboard",
-    icon: FgPerformanceIcon(),
+    icon: FgDashboardIcon(),
     path: "/admin/",
   },
   {
     name: "Project",
-    icon: FgProjectIcon(),
+    icon: FgProjectsIcon(),
     path: "/admin/project",
   },
   {
     name: "Tasks",
-    icon: FgTaskIcon(),
+    icon: FgTasksIcon(),
     path: "/admin/tasks",
   },
   {
     name: "Work Logs",
-    icon: FgWorkLogsIcon(),
+    icon: FgLogsIcon(),
     path: "/admin/work-logs",
   },
   {
     name: "Reports",
-    icon: FgWorkLogsIcon(),
+    icon: FgReportsIcon(),
     path: "/admin/reports",
   },
   {
     name: "Users",
-    icon: FgWorkLogsIcon(),
+    icon: FgUsersIcon(),
     path: "/admin/user",
   },
   {
     name: "Company",
-    icon: FgWorkLogsIcon(),
+    icon: FgCompanyIcon(),
     path: "/admin/company",
   },
   {
     name: "Permission",
-    icon: FgPerformanceIcon(),
+    icon: FgPermissionIcon(),
     path: "/admin/permissions",
   },
   {
     name: "Events",
-    icon: FgSettingIcon(),
+    icon: FgEventIcon(),
     path: "/admin/events",
   },
 ];
