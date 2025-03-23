@@ -15,7 +15,7 @@ const Home = () => {
   }, []);
   return (
     <div>
-      <MainLayout>Hello World !</MainLayout>
+      <MainLayout>Hello World from next !</MainLayout>
     </div>
   );
 };
