@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <>
+      <>
       <Header />
       <div className="flex items-start mt-16">
         <div className="w-1/5">
