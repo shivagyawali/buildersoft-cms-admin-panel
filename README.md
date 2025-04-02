@@ -3,7 +3,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ## Getting Started
 
 ## Backend url 
-https://api.buildersoft.ca/api-docs/#/
+https://api.buildersoft.ca/api-docs
 First, run the development server:
 
 ```bash
