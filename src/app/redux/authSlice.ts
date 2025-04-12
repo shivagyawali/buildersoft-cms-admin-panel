@@ -1,3 +1,4 @@
+import { defaultConfig } from "@app/config/defaultConfig";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -7,11 +8,16 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "https://api.buildersoft.ca/api/auth/login",
-        credentials
+        `${defaultConfig.baseUrl}/auth/login`,
+        credentials,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
-      return response.data;
-    } catch (error:any) {
+      return response.data.data;
+    } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
     }
   }
@@ -35,7 +41,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state:any) => {
+      .addCase(loginUser.pending, (state: any) => {
         state.loading = true;
         state.error = null;
       })
@@ -45,7 +51,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         localStorage.setItem("token", action.payload.token);
       })
-      .addCase(loginUser.rejected, (state:any, action) => {
+      .addCase(loginUser.rejected, (state: any, action) => {
         state.loading = false;
         state.error = action.payload;
       });
