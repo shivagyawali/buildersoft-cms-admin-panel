@@ -30,7 +30,7 @@ const authSlice = createSlice({
     user: null,
     loading: false,
     error: null,
-    isAuthenticated: false,
+    isAuthenticated: !!localStorage.getItem("token"),
   },
   reducers: {
     logout: (state) => {
