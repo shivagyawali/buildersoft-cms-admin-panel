@@ -14,7 +14,7 @@ const MainLayout = ({ children }: any) => {
         <Header user={user} />
       </div>
       <div className="flex mt-[60px]">
-        <Sidebar user={user} />
+        <Sidebar/>
         <div className="flex-1 pl-72 pr-8 py-8 bg-[#F0F6FF] min-h-screen">
           <Providers>{children}</Providers>
         </div>
