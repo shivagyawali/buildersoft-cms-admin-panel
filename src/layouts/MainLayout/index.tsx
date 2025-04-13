@@ -1,27 +1,39 @@
-"use client"; // Ensures this is a client-side component
-
+"use client";
 import React, { useEffect } from "react";
 import Sidebar from "@app/layouts/MainLayout/Sidebar";
 import Header from "./Header";
-import { useRouter } from "next/navigation"; // Ensure to use next/navigation for Next.js 13+ routing
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { Providers } from "@app/app/components/Providers";
+import { useDispatch } from "react-redux";
+import { checkAuthStatus } from "@app/app/redux/authSlice";
+import { AppDispatch } from "@app/app/redux/store";
 
 const MainLayout = ({ children }: any) => {
   const router = useRouter();
-  const { isAuthenticated } = useSelector((state: any) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
+  const { isAuthenticated, user, loading } = useSelector(
+    (state: any) => state.auth
+  );
 
-  // On page load, if not authenticated, redirect to login page
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  async function  checkAuth() {
+    await dispatch(checkAuthStatus());
+  }
   useEffect(() => {
-    if (!isAuthenticated) {
+    checkAuth();
+  }, [checkAuth]);
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
       router.push("/auth/login");
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, loading, router]);
 
   return (
     <>
       <div className="w-full bg-white z-50 fixed">
-        <Header />
+        <Header user={user} />
       </div>
       <div className="flex mt-[60px]">
         <Sidebar />

@@ -15,13 +15,13 @@ const Sidebar = () => {
             key={index}
             className="flex flex-col gap-2 p-2 transition-colors duration-300 rounded-lg hover:bg-gray-100"
           >
-            <a
+            <Link
               href={menu.path}
               className="flex items-center gap-4 text-[#5D7285] hover:text-[#1D4ED8] cursor-pointer"
             >
               <span className="text-2xl">{menu.icon}</span>
               <span className="font-medium text-base">{menu.name}</span>
-            </a>
+            </Link>
           </div>
         ))}
         <div className="absolute bottom-20 right-0 left-0 w-full">

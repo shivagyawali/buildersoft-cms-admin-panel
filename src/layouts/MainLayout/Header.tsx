@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import avatar from "@app/assets/images/avatar.png";
 import {
@@ -8,9 +8,9 @@ import {
 } from "@app/constants/SVGCollection";
 import { useRouter } from "next/navigation";
 
-const Header = () => {
+const Header = ({user}:any) => {
   const notificationBadge = true;
-  const route = useRouter();
+  const route = useRouter();  
   return (
     <div className="p-2 relative">
       <div className="flex items-center justify-between">
@@ -32,13 +32,13 @@ const Header = () => {
               onClick={() => route.push("/admin/profile")}
             >
               <div className="text-right">
-                <p className="text-[#0D062D] text-base">Anima Agrawal</p>
-                <p className="text-[#787486] text-sm">U.P, India</p>
+                <p className="text-[#0D062D] text-base">{user?.name}</p>
+                <p className="text-[#787486] text-sm">{user?.role}</p>
               </div>
               <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
                 <Image
-                  src={avatar}
-                  alt="avatar"
+                  src={user?.avatar ?? avatar}
+                  alt={user?.name}
                   width={40}
                   height={40}
                   className="w-full h-full object-center object-cover"
