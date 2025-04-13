@@ -9,6 +9,7 @@ import Filter from "@app/components/Filter";
 import ProjectContent from "@app/components/ProjectContent";
 import Pagination from "@app/components/Pagination";
 import Link from "next/link";
+import useAuthRedirect from "@app/app/hooks/useAuthRedirect";
 
 const AdminProject = () => {
   const dispatch = useDispatch<AppDispatch>();

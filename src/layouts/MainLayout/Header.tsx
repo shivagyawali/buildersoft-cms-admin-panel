@@ -7,10 +7,11 @@ import {
   FgNotificationIcon,
 } from "@app/constants/SVGCollection";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Header = ({user}:any) => {
   const notificationBadge = true;
-  const route = useRouter();  
+
   return (
     <div className="p-2 relative">
       <div className="flex items-center justify-between">
@@ -27,9 +28,9 @@ const Header = ({user}:any) => {
                 </div>
               )}
             </div>
-            <div
+            <Link
+              href="/admin/profile"
               className="flex items-center gap-5 cursor-pointer"
-              onClick={() => route.push("/admin/profile")}
             >
               <div className="text-right">
                 <p className="text-[#0D062D] text-base">{user?.name}</p>
@@ -44,7 +45,7 @@ const Header = ({user}:any) => {
                   className="w-full h-full object-center object-cover"
                 />
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
