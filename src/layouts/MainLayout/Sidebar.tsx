@@ -7,9 +7,9 @@ import Link from "next/link";
 import React from "react";
 import { useDispatch } from "react-redux";
 
-const Sidebar = ({ user }: any) => {
+const Sidebar = () => {
   const dispatch = useDispatch<AppDispatch>();
-
+  const { user } = useAuthRedirect();
   return (
     <div className="w-64 h-screen bg-white px-6 pt-12 fixed shadow-lg">
       <div className="flex flex-col gap-6">
