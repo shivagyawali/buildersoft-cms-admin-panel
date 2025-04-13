@@ -1,0 +1,29 @@
+"use client";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { checkAuthStatus } from "@app/app/redux/authSlice";
+import { AppDispatch } from "@app/app/redux/store";
+
+const useAuthRedirect = () => {
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { isAuthenticated, user, loading } = useSelector(
+    (state: any) => state.auth
+  );
+
+  useEffect(() => {
+    dispatch(checkAuthStatus());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated && !user) {
+      router.push("/auth/login");
+    }
+  }, [isAuthenticated, loading, user, router]);
+
+  return { user, isAuthenticated, loading };
+};
+
+export default useAuthRedirect;

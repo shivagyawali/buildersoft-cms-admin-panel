@@ -1,11 +1,11 @@
-"use client"
+
 import ProjectContent from "@app/components/ProjectContent";
 import React from "react";
 
 const UserProject = () => {
   return (
     <div>
-      <ProjectContent />
+      <ProjectContent projects={[]} loading={false} error={null} />
     </div>
   );
 };
