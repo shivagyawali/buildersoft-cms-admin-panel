@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axiosInstance from "@app/utils/axiosInstance"; 
-const API_URL = `/projects`; 
+import axiosInstance from "@app/utils/axiosInstance";
+
+const API_URL = `/projects`;
 
 // ✅ Types
 export interface Project {
@@ -12,12 +13,14 @@ export interface Project {
 
 interface ProjectState {
   projects: Project[];
+  project: Project | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: ProjectState = {
   projects: [],
+  project: null,
   loading: false,
   error: null,
 };
@@ -27,7 +30,16 @@ export const getProjects = createAsyncThunk(
   "projects/fetch",
   async (page: number = 1) => {
     const response = await axiosInstance.get(`${API_URL}/list?page=${page}`);
-    return response.data.data; // assuming this is the 'data' object from your response
+    return response.data.data;
+  }
+);
+
+// 🟢 GET single project
+export const getSingleProject = createAsyncThunk<Project, string>(
+  "projectSingle/fetch",
+  async (id:any) => {
+    const response = await axiosInstance.get(`${API_URL}/${id}`);    
+    return response.data.data;
   }
 );
 
@@ -84,19 +96,30 @@ const projectSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // GET
+      // GET all
       .addCase(getProjects.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        getProjects.fulfilled,
-        (state, action) => {
-          state.loading = false;
-          state.projects = action.payload;
-        }
-      )
+      .addCase(getProjects.fulfilled, (state, action) => {
+        state.loading = false;
+        state.projects = action.payload;
+      })
       .addCase(getProjects.rejected, (state, action: any) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // GET single
+      .addCase(getSingleProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getSingleProject.fulfilled, (state, action) => {
+        state.loading = false;
+        state.project = action.payload;   
+      })
+      .addCase(getSingleProject.rejected, (state, action: any) => {
         state.loading = false;
         state.error = action.payload;
       })

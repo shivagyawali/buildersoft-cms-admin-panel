@@ -1,114 +1,144 @@
 "use client";
+
+import { getSingleProject } from "@app/app/redux/projectSlice";
+import { AppDispatch } from "@app/app/redux/store";
 import LineChart from "@app/components/charts/LineChart";
 import PieChart from "@app/components/charts/PieChart";
 import Comment from "@app/components/Comment";
 import { assignedUsers } from "@app/constants/menu-items/rootIndex";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { useParams } from "next/navigation";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 const ProjectDetail = () => {
-  return (
-    <>
-      <div className="bg-white rounded-2xl p-8">
-        <p className="text-3xl text-[#0E2040]">Project Title</p>
+  const dispatch = useDispatch<AppDispatch>();
+  const params = useParams();
+  const id: any = params?.id;
 
-        <div className="grid grid-cols-3 mt-6 gap-y-6">
+  const { project, loading, error } = useSelector(
+    (state: any) => state.projects || {}
+  );
+
+  useEffect(() => {
+    if (id) dispatch(getSingleProject(id));
+  }, [dispatch, id]);
+
+  return (
+    <div className="space-y-6">
+      {/* Project Overview */}
+      <div className="bg-white rounded-2xl p-8 shadow-md">
+        <h2 className="text-3xl font-bold text-[#0E2040] mb-4">
+          {project?.name}
+        </h2>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
           <div>
-            <p className="text-lg font-semibold">Start Date</p>
-            <p className="text-gray-600 text-sm">2024-07-23</p>
+            <p className="text-sm font-medium text-gray-500">Start Date</p>
+            <p className="text-base text-[#0E2040]">{project?.createdAt}</p>
           </div>
           <div>
-            <p className="text-lg font-semibold">End Date</p>
-            <p className="text-gray-600 text-sm">2024-08-10</p>
+            <p className="text-sm font-medium text-gray-500">End Date</p>
+            <p className="text-base text-[#0E2040]">2024-08-10</p>
           </div>
           <div>
-            <p className="text-lg font-semibold">Budget</p>
-            <p className="text-gray-600 text-sm">200000.00</p>
+            <p className="text-sm font-medium text-gray-500">Budget</p>
+            <p className="text-base text-[#0E2040]">Rs. 2,00,000.00</p>
           </div>
           <div>
-            <p className="text-lg font-semibold">Status</p>
-            <p className="w-fit text-xs text-[#4BA665] rounded-full bg-[#4BA665]/10 px-4 py-2">
-              Success
-            </p>
+            <p className="text-sm font-medium text-gray-500">Status</p>
+            <span className="text-xs font-semibold text-[#4BA665] rounded-full bg-[#4BA665]/10 px-4 py-2 inline-block">
+              {project?.status}
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 my-3 gap-3">
-        <div className="col-span-1 max-h-80 overflow-hidden">
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="col-span-1 bg-white rounded-2xl p-4 shadow-sm">
           <PieChart />
         </div>
-        <div className="col-span-2 max-h-80 overflow-hidden">
+        <div className="col-span-2 bg-white rounded-2xl p-4 shadow-sm">
           <LineChart />
-        </div>
-        <div className="col-span-2 bg-white p-8 rounded-2xl">
-          <div className="flex items-center justify-between">
-            <p>Assigned Users</p>
-            <div>
-              <input
-                type="text"
-                className="w-[328px] border border-[#9A93B3] rounded-md p-2 outline-none text-xs"
-                placeholder="search for anything...."
-              />
-            </div>
-            <Link
-              href={"/admin/project/create"}
-              className="text-sm text-[#036EFF]"
-            >
-              View More
-            </Link>
-          </div>
-          <div className="flex flex-wrap gap-12 mt-10">
-            {assignedUsers.map((user, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="w-20 h-20 rounded-full">
-                  <Image
-                    src={user.image}
-                    alt=""
-                    width={500}
-                    height={500}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="mt-2 text-xs text-gray-500">{user.name}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="col-span-1 bg-white p-8 px-5 rounded-[20px]">
-          <div className="flex items-center justify-between">
-            <p>Projects</p>
-            <Link
-              href={"/admin/project/create"}
-              className="text-sm text-[#036EFF]"
-            >
-              View More
-            </Link>
-          </div>
-          <div className="flex flex-wrap gap-10 mt-10">
-            {assignedUsers.map((user, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="w-20 h-20 rounded-2xl">
-                  <Image
-                    src={user.image}
-                    alt=""
-                    width={500}
-                    height={500}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="mt-2 text-xs text-gray-500">{user.name}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
-      <div className="">
+      {/* Tasks Section */}
+      <div className="bg-white p-8 rounded-2xl shadow-md space-y-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-[#0E2040]">Tasks</h3>
+          <Link
+            href="/admin/project/create"
+            className="text-sm text-[#036EFF] font-medium"
+          >
+            View More
+          </Link>
+        </div>
+
+        <div className="flex flex-wrap gap-10 justify-start">
+          {project?.tasks?.map((task: any, index: number) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className="w-24 h-24 rounded-2xl overflow-hidden shadow-sm">
+                <Image
+                  src={`https://ui-avatars.com/api/?name=${task?.title}&format=svg&background=F9C235`}
+                  alt=""
+                  width={50}
+                  height={50}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <p className="mt-2 text-sm text-gray-600 text-center">
+                {task?.title}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Assigned Users */}
+      <div className="bg-white p-8 rounded-2xl shadow-md space-y-6">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <h3 className="text-lg font-semibold text-[#0E2040]">
+            Assigned Users
+          </h3>
+          <input
+            type="text"
+            className="w-[300px] border border-gray-300 rounded-md p-2 text-sm focus:outline-none"
+            placeholder="Search for anything..."
+          />
+          <Link
+            href="/admin/project/create"
+            className="text-sm text-[#036EFF] font-medium"
+          >
+            View More
+          </Link>
+        </div>
+
+        <div className="flex flex-wrap gap-10 justify-start">
+          {assignedUsers.map((user, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className="w-20 h-20 rounded-full overflow-hidden shadow-md">
+                <Image
+                  src="https://ui-avatars.com/api/?background=0D8ABC&color=fff"
+                  alt=""
+                  width={80}
+                  height={80}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <p className="mt-2 text-sm text-gray-600">{user.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Comment Section */}
+      <div className="bg-white p-8 rounded-2xl shadow-md">
         <Comment />
       </div>
-    </>
+    </div>
   );
 };
 
