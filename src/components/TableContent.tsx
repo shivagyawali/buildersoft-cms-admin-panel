@@ -22,7 +22,7 @@ const TableContent = ({
       </div>
 
       {data?.map((task: any, idx: number) => {
-        const createdAgo = formatDistanceToNow(new Date(task.createdAt), {
+        const createdAgo = formatDistanceToNow(new Date(task?.createdAt), {
           addSuffix: true,
         });
 
@@ -46,7 +46,7 @@ const TableContent = ({
 
             {/* Project */}
             <div className="w-full md:w-1/5 mb-2 md:mb-0">
-              <p className="text-sm font-medium">{task.project?.name || "—"}</p>
+              <p className="text-sm font-medium">{task?.project?.name || "—"}</p>
               <span
                 className={`text-xs px-2 py-1 rounded-full font-medium ${
                   task.project?.status === "INPROGRESS"
@@ -56,20 +56,20 @@ const TableContent = ({
                     : "bg-gray-100 text-gray-600"
                 }`}
               >
-                {task.project?.status || "Unknown"}
+                {task?.project?.status || "Unknown"}
               </span>
             </div>
 
             {/* Company */}
             <div className="w-full md:w-1/5 mb-2 md:mb-0">
               <p className="text-sm font-semibold text-gray-800">
-                {task.company?.name || "—"}
+                {task?.company?.name || "—"}
               </p>
               <p className="text-xs text-gray-500">
-                {task.company?.email || "—"}
+                {task?.company?.email || "—"}
               </p>
               <span className="text-[10px] uppercase font-medium tracking-wide text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                {task.company?.role || "N/A"}
+                {task?.company?.role || "N/A"}
               </span>
             </div>
 
@@ -81,7 +81,7 @@ const TableContent = ({
             {/* Action */}
             <div className="w-full md:w-1/6 flex justify-center md:justify-end">
               <Link
-                href={`/admin/tasks/${task.id}`}
+                href={`/admin/tasks/${task?.id}`}
                 className="inline-flex items-center gap-2 text-sm text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-full"
               >
                 View <FaArrowRight size={14} />
