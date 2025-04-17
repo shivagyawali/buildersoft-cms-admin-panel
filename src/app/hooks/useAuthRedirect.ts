@@ -17,11 +17,13 @@ const useAuthRedirect = () => {
     dispatch(checkAuthStatus());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!loading && !isAuthenticated && !user) {
-      router.push("/auth/login");
-    }
-  }, [isAuthenticated, loading, user, router]);
+ useEffect(() => {
+   if (!loading) {
+     if (!isAuthenticated && !user) {
+       router.push("/auth/login");
+     } 
+   }
+ }, [isAuthenticated, loading, user, router]);
 
   return { user, isAuthenticated, loading };
 };
