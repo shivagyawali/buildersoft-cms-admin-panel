@@ -22,9 +22,7 @@ const TableContent = ({
       </div>
 
       {data?.map((task: any, idx: number) => {
-        const createdAgo = formatDistanceToNow(new Date(task?.createdAt), {
-          addSuffix: true,
-        });
+
 
         return (
           <div
@@ -34,24 +32,26 @@ const TableContent = ({
             {/* Task Details */}
             <div className="w-full md:w-1/4 mb-2 md:mb-0">
               <Link
-                href={`/admin/tasks/${task.id}`}
+                href={`/admin/tasks/${task?.id}`}
                 className="text-base font-semibold text-blue-600 hover:underline"
               >
-                {task.title}
+                {task?.title || task?.name}
               </Link>
               <p className="text-sm text-gray-500 line-clamp-2">
-                {task.description}
+                {task?.description}
               </p>
             </div>
 
             {/* Project */}
             <div className="w-full md:w-1/5 mb-2 md:mb-0">
-              <p className="text-sm font-medium">{task?.project?.name || "—"}</p>
+              <p className="text-sm font-medium">
+                {task?.project?.name || "—"}
+              </p>
               <span
                 className={`text-xs px-2 py-1 rounded-full font-medium ${
-                  task.project?.status === "INPROGRESS"
+                  task?.project?.status === "INPROGRESS"
                     ? "bg-yellow-100 text-yellow-700"
-                    : task.project?.status === "COMPLETED"
+                    : task?.project?.status === "COMPLETED"
                     ? "bg-green-100 text-green-700"
                     : "bg-gray-100 text-gray-600"
                 }`}
@@ -75,7 +75,7 @@ const TableContent = ({
 
             {/* Created Date */}
             <div className="w-full md:w-1/6 mb-2 md:mb-0 text-sm text-gray-600">
-              {createdAgo}
+              {task?.createdAt}
             </div>
 
             {/* Action */}
