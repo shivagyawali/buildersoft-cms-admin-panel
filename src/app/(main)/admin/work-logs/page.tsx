@@ -286,7 +286,7 @@ const AdminWorkLogPage: React.FC = () => {
         <table className="min-w-full bg-white rounded-xl overflow-hidden shadow-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">
+              <th className="px-5 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">
                 User
               </th>
               <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">
@@ -312,7 +312,7 @@ const AdminWorkLogPage: React.FC = () => {
           <tbody className="divide-y divide-gray-100">
             {loading ? (
               <tr>
-                <td colSpan={7} className="text-center p-6">
+                <td colSpan={6} className="text-center p-6">
                   <div className="flex justify-center items-center space-x-2">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
                     <span className="text-gray-500">Loading work logs...</span>
@@ -321,7 +321,7 @@ const AdminWorkLogPage: React.FC = () => {
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center p-10">
+                <td colSpan={6} className="text-center p-10">
                   <div className="flex flex-col items-center justify-center">
                     <div className="bg-gray-100 p-3 rounded-full mb-2">
                       <Clock size={24} className="text-gray-400" />
@@ -338,7 +338,7 @@ const AdminWorkLogPage: React.FC = () => {
             ) : (
               data.map((log, idx) => (
                 <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="h-10 w-10 flex-shrink-0">
                         <Image
@@ -365,7 +365,7 @@ const AdminWorkLogPage: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {log.endTime}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <Clock size={16} className="text-blue-500 mr-1" />
                       <span className="text-sm font-medium text-gray-900">
@@ -382,7 +382,7 @@ const AdminWorkLogPage: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="w-48 h-24 rounded-md overflow-hidden shadow-sm border border-gray-200">
+                    <div className="w-36 h-24 rounded-md overflow-hidden shadow-sm border border-gray-200">
                       <iframe
                         width="100%"
                         height="100%"
