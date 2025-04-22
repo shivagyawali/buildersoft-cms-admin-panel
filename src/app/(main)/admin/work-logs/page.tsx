@@ -538,10 +538,10 @@ const AdminWorkLogPage: React.FC = () => {
   );
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-12">
+    <div className="bg-gray-50 min-h-screen pb-8">
       <BreadCrumb title="Work Logs" />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6">
+      <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 mt-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
