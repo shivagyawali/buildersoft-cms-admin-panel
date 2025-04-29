@@ -52,6 +52,7 @@ const Page = () => {
                   <th className="px-6 py-3">Status</th>
                   <th className="px-6 py-3">Company</th>
                   <th className="px-6 py-3">Rate ($/hr)</th>
+                  <th className="px-6 py-3">Action</th>
                 </tr>
               </thead>
               <tbody className="bg-white text-gray-700">
@@ -83,6 +84,9 @@ const Page = () => {
                     </td>
                     <td className="px-6 py-4">{user.company?.name}</td>
                     <td className="px-6 py-4">${user.hourlyRate}</td>
+                    <td className="px-6 py-4">
+                      <button>View</button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
