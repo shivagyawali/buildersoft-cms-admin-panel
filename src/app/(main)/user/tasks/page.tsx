@@ -1,9 +1,23 @@
+"use client";
+import { AppDispatch } from "@app/app/redux/store";
+import { getTasks } from "@app/app/redux/taskSlice";
 import TableContent from "@app/components/TableContent";
 import { tasks } from "@app/constants/options";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const UserTasks = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { tasks, loading, error } = useSelector((state: any) => state.tasks);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    dispatch(getTasks(currentPage));
+  }, [dispatch, currentPage]);
+
+  const totalPages = tasks?.totalPages || 1;
   return (
     <div>
       <div className="flex items-end justify-between">
@@ -40,7 +54,7 @@ const UserTasks = () => {
         </div>
       </div>
       <div className="mt-6 bg-white rounded-2xl">
-      <TableContent data={tasks}/>
+        <TableContent data={tasks} />
       </div>
     </div>
   );

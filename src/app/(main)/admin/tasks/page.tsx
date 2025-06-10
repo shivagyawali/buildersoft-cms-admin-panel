@@ -1,11 +1,25 @@
+'use client'
+import { AppDispatch } from "@app/app/redux/store";
 import BreadCrumb from "@app/components/Breadcrumb";
 import Filter from "@app/components/Filter";
 import TableContent from "@app/components/TableContent";
-import { tasks } from "@app/constants/options";
 import Link from "next/link";
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getTasks } from "@app/app/redux/taskSlice";
 const AdminTasks = () => {
+   const dispatch = useDispatch<AppDispatch>();
+   const { tasks, loading, error } = useSelector(
+     (state: any) => state.tasks
+   );
+   const [currentPage, setCurrentPage] = useState(1);
+
+   useEffect(() => {
+     dispatch(getTasks(currentPage));
+   }, [dispatch, currentPage]);
+
+   const totalPages = tasks?.totalPages || 1;
   return (
     <div className="w-full">
       <BreadCrumb title="Tasks">
@@ -21,7 +35,7 @@ const AdminTasks = () => {
         <div className="pb-6">
           <Filter />
         </div>
-        <TableContent data={tasks} />
+        <TableContent data={tasks?.results} />
       </div>
     </div>
   );
