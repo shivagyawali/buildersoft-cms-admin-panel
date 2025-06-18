@@ -33,48 +33,48 @@ const LoginPage = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="px-28 py-10">
-      <p className="text-2xl font-bold">BuilderSoft CMS</p>
-      <div className="flex items-center justify-between">
-        {/* Login Image */}
-        <div className="w-1/3 mt-16">
-          <Image
-            src={loginImage}
-            alt="Login"
-            width={500}
-            height={500}
-            className="w-full object-cover"
-          />
-        </div>
+    <div className="w-full h-screen flex items-center justify-center">
+      <div>
+        <p className="text-2xl font-bold">BuilderSoft CMS</p>
+        <div className="w-full flex items-center justify-center gap-8">
+          {/* Login Image */}
+          <div className="w-1/2">
+            <Image
+              src={loginImage}
+              alt="Login"
+              width={500}
+              height={500}
+              className="w-full object-cover"
+            />
+          </div>
 
-        {/* Login Form */}
-        <div className="w-1/3 mr-28">
-          <p className="text-4xl font-black">Welcome!</p>
-          <p className="text-xl font-thin mt-3">
-            Please enter your details below.
-          </p>
+          {/* Login Form */}
+          <div className="w-full flex-1">
+            <p className="text-4xl font-black">Welcome!</p>
+            <p className="text-xl font-thin mt-3">
+              Please enter your credentials below.
+            </p>
 
-          <Formik
-            initialValues={{ email: "", password: "" }}
-            validationSchema={LoginSchema}
-            onSubmit={async (values, { setSubmitting, setErrors }) => {
-              try {
-                const resultAction = await dispatch(loginUser(values));
-                if (loginUser.fulfilled.match(resultAction)) {
-                  router.push("/admin/project");
-                } else {
-                  setErrors({ email: "Invalid credentials" });
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              validationSchema={LoginSchema}
+              onSubmit={async (values, { setSubmitting, setErrors }) => {
+                try {
+                  const resultAction = await dispatch(loginUser(values));
+                  if (loginUser.fulfilled.match(resultAction)) {
+                    router.push("/admin/project");
+                  } else {
+                    setErrors({ email: "Invalid credentials" });
+                  }
+                } catch (err) {
+                  console.error("Login error:", err);
+                } finally {
+                  setSubmitting(false);
                 }
-              } catch (err) {
-                console.error("Login error:", err);
-              } finally {
-                setSubmitting(false);
-              }
-            }}
-          >
-            {({ isSubmitting, errors, touched }) => (
-              <Form className="mt-10 w-full">
-                <div>
+              }}
+            >
+              {({ isSubmitting, errors, touched }) => (
+                <Form className="mt-10 w-full">
                   <Field
                     name="email"
                     type="email"
@@ -84,9 +84,7 @@ const LoginPage = () => {
                   {errors.email && touched.email && (
                     <p className="text-red-500 text-sm mb-3">{errors.email}</p>
                   )}
-                </div>
 
-                <div>
                   <Field
                     name="password"
                     type="password"
@@ -98,47 +96,49 @@ const LoginPage = () => {
                       {errors.password}
                     </p>
                   )}
-                </div>
 
-                {/* Forgot Password */}
-                <div className="flex items-center justify-between mt-6">
-                  <span></span> {/* Empty span to align right */}
-                  <Link
-                    href="/auth/forgot-password"
-                    className="font-thin underline underline-offset-2"
-                  >
-                    Forgot Password?
-                  </Link>
-                </div>
+                  {/* Forgot Password */}
+                  <div className="flex items-center justify-between mt-6">
+                    <span></span> {/* Empty span to align right */}
+                    <Link
+                      href="/auth/forgot-password"
+                      className="font-thin underline underline-offset-2"
+                    >
+                      Forgot Password?
+                    </Link>
+                  </div>
 
-                {/* Backend Error */}
-                {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+                  {/* Backend Error */}
+                  {error && (
+                    <p className="text-red-500 text-sm mt-3">{error}</p>
+                  )}
 
-                {/* Submit Button */}
-                <div className="mt-9">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || loading}
-                    className="text-white rounded-md font-bold bg-black w-full py-5 disabled:opacity-50"
-                  >
-                    {loading || isSubmitting ? "Logging in..." : "Log in"}
-                  </button>
+                  {/* Submit Button */}
+                  <div className="mt-9">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting || loading}
+                      className="text-white rounded-md font-bold bg-black w-full py-5 disabled:opacity-50"
+                    >
+                      {loading || isSubmitting ? "Logging in..." : "Log in"}
+                    </button>
 
-                  <p className="mt-[38px] text-center font-thin">
-                    Don&apos;t have an account?{" "}
-                    <span className="font-medium">
-                      <Link
-                        href="/auth/register"
-                        className="underline underline-offset-2"
-                      >
-                        Sign up for free
-                      </Link>
-                    </span>
-                  </p>
-                </div>
-              </Form>
-            )}
-          </Formik>
+                    <p className="mt-[38px] text-center font-thin">
+                      Don&apos;t have an account?{" "}
+                      <span className="font-medium">
+                        <Link
+                          href="/auth/register"
+                          className="underline underline-offset-2"
+                        >
+                          Sign up for free
+                        </Link>
+                      </span>
+                    </p>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
         </div>
       </div>
     </div>

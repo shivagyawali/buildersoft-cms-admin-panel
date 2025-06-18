@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import loginImge from "@app/assets/images/login-img.svg";
+import loginImage from "@app/assets/images/login-img.svg";
 import { Field, Form, Formik } from "formik";
 import Link from "next/link";
 
@@ -10,14 +10,20 @@ const RegisterPage = () => {
     window.location.href = "/admin/project";
   };
   return (
-    <div className="px-28 py-10">
-      <p className="text-2xl font-bold">BuilderSoft CMS</p>
-      <div className="flex items-center justify-between">
-        <div className="w-1/3 mt-16">
-          <Image src={loginImge} alt="" className="w-full object-cover" />
-        </div>
-        <div className="w-1/3 mr-28">
-          <div>
+    <div className="w-full h-screen flex items-center justify-center">
+      <div>
+        <p className="text-2xl font-bold">BuilderSoft CMS</p>
+        <div className="w-full flex items-center justify-center gap-8">
+          <div className="w-1/2">
+            <Image
+              src={loginImage}
+              alt="Login"
+              width={500}
+              height={500}
+              className="w-full object-cover"
+            />
+          </div>
+          <div className="w-full flex-1">
             <p className="text-4xl font-black">Welcome!</p>
             <p className="text-xl font-thin mt-3">
               Welcome! Please enter your details.
