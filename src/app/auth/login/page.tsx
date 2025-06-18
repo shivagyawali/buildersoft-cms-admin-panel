@@ -62,7 +62,7 @@ const LoginPage = () => {
                 try {
                   const resultAction = await dispatch(loginUser(values));
                   if (loginUser.fulfilled.match(resultAction)) {
-                    router.push("/admin/project");
+                    router.push("/admin/");
                   } else {
                     setErrors({ email: "Invalid credentials" });
                   }
@@ -122,18 +122,6 @@ const LoginPage = () => {
                     >
                       {loading || isSubmitting ? "Logging in..." : "Log in"}
                     </button>
-
-                    <p className="mt-[38px] text-center font-thin">
-                      Don&apos;t have an account?{" "}
-                      <span className="font-medium">
-                        <Link
-                          href="/auth/register"
-                          className="underline underline-offset-2"
-                        >
-                          Sign up for free
-                        </Link>
-                      </span>
-                    </p>
                   </div>
                 </Form>
               )}
