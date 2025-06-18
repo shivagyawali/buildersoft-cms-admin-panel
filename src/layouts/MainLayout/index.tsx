@@ -1,17 +1,31 @@
+"use client";
 import React from "react";
 import Sidebar from "@app/layouts/MainLayout/Sidebar";
 import Header from "./Header";
+import { Providers } from "@app/app/components/Providers";
+import useAuthRedirect from "@app/app/hooks/useAuthRedirect";
+import Loading from "@app/components/Loading";
+
+
 
 const MainLayout = ({ children }: any) => {
+  const { user } = useAuthRedirect();
+
+  if (!user) {
+    return (
+      <Loading/>
+    );
+  }
+
   return (
     <>
       <div className="w-full bg-white z-50 fixed">
-        <Header />
+        <Header user={user} />
       </div>
       <div className="flex mt-[60px]">
         <Sidebar />
         <div className="flex-1 pl-72 pr-8 py-8 bg-[#F0F6FF] min-h-screen">
-          {children}
+          <Providers>{children}</Providers>
         </div>
       </div>
     </>

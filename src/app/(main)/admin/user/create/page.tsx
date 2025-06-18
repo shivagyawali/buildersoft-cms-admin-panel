@@ -2,6 +2,7 @@
 import React from "react";
 import { Form, Formik } from "formik";
 import TextInputField from "@app/components/forms/InputField";
+import SelectField from "@app/components/forms/SelectField";
 
 const CreateUser = () => {
   return (
@@ -23,13 +24,33 @@ const CreateUser = () => {
                   placeholder="Enter User's Last Name"
                 />
               </div>
+
               <div className="grid grid-cols-2 gap-10">
                 <TextInputField
                   name="email"
                   label="Email"
                   placeholder="Enter User's Email Address"
                 />
+                <SelectField
+                  name="role"
+                  label="Role"
+                  options={[
+                    {
+                      label: "User",
+                      value: "User",
+                    },
+                    {
+                      label: "Worker",
+                      value: "Worker",
+                    },
+                    {
+                      label: "Admin",
+                      value: "Admin",
+                    },
+                  ]}
+                />
               </div>
+
               <div className="grid grid-cols-2 gap-10">
                 <TextInputField
                   name="password"

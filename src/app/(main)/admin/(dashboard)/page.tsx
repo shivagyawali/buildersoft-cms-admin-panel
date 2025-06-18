@@ -9,7 +9,7 @@ import BreadCrumb from "@app/components/Breadcrumb";
 const page = () => {
   return (
     <>
-      <BreadCrumb title="Dashboard"></BreadCrumb>
+      <BreadCrumb title="Dashboard" />
       <div className="grid grid-cols-3 py-10 gap-3">
         <div className="col-span-2">
           <LineChart />

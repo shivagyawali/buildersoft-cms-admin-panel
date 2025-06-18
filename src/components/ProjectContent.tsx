@@ -1,49 +1,84 @@
+"use client";
+
+import {Project } from "@app/app/redux/projectSlice";
+
 import {
   FgDocumentIcon,
   FgEditIcon,
   FgSandGlassIcon,
 } from "@app/constants/SVGCollection";
-import { useRouter } from "next/navigation";
 import React from "react";
+import { useRouter } from "next/navigation";
+interface ProjectContentProps {
+  projects: Project[];
+  loading: boolean;
+  error: string | null;
+}
 
-const ProjectContent = () => {
-  const route = useRouter();
+const ProjectContent: React.FC<ProjectContentProps> = ({
+  projects,
+  loading,
+  error,
+}) => {
+  const router = useRouter();
+
+  const projectList = projects?? [];
+
+  if (loading) return <p className="text-center py-10">Loading projects...</p>;
+  if (error)
+    return <p className="text-red-500 text-center py-10">Error: {error}</p>;
 
   return (
-    <div className="grid grid-cols-3 gap-x-3 gap-y-12">
-      <div
-        className="border rounded-2xl px-4 py-6 cursor-pointer"
-        onClick={() => {
-          route.push("/admin/project/1");
-        }}
-      >
-        <div className="flex items-center justify-between pb-3 border-b border-black">
-          <div className="flex items-center gap-3">
-            <p className="text-black text-2xl">Adoddle</p>
-            <FgEditIcon />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {projectList.map((project: Project, idx: any) => (
+          <div
+            key={idx}
+            className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-xl transition duration-300 ease-in-out cursor-pointer"
+            onClick={() => router.push(`/admin/project/${project.id}`)}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-gray-300">
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold text-gray-900 truncate">
+                  {project?.name}
+                </h2>
+                <FgEditIcon />
+              </div>
+              <span
+                className={`text-xs px-3 py-1 rounded-full ${
+                  project?.status === "INPROGRESS" ||
+                  project?.status === "COMPLETED"
+                    ? "bg-green-100 text-[#4BA665]"
+                    : "bg-red-100 text-[#8c2d1c]"
+                }`}
+              >
+                {project?.status}
+              </span>
+            </div>
+
+            {/* Description */}
+            <p className="text-sm text-gray-600 mt-4 mb-6 line-clamp-5">
+              {project.description || "No description available."}
+            </p>
+
+            {/* Footer Info */}
+            <div className="flex items-center justify-between text-sm font-medium text-gray-700">
+              <div className="flex items-center gap-2">
+                <FgSandGlassIcon />
+                <span>
+                  {project.createdAt
+                    ? new Date(project.createdAt).toLocaleDateString()
+                    : "N/A"}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FgDocumentIcon />
+                <span>{project.tasks?.length ?? 0} tasks</span>
+              </div>
+            </div>
           </div>
-          <p className="px-4 py-2.5 text-xs text-[#BD1E1E] bg-[#C28383]/20 rounded">
-            OffTrack
-          </p>
-        </div>
-        <div className="mt-[30px] mb-12 text-xs text-[#424242]">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
-          </p>
-        </div>
-        <div className="flex items-center justify-between font-medium">
-          <div className="flex items-center gap-2">
-            <FgSandGlassIcon />
-            <p className="text-sm text-[#D62222]">05 APRIL 2023</p>
-          </div>
-          <div className="flex items-center gap-1">
-            <FgDocumentIcon />
-            <p className="text-sm text-[#5C5967]">14 issues</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

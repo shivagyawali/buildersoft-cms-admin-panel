@@ -1,12 +1,9 @@
-import MainLayout from '@app/layouts/MainLayout'
-import React from 'react'
+"use client";
+import MainLayout from "@app/layouts/MainLayout";
+import React from "react";
 
-const layout = ({children}: {children: React.ReactNode}) => {
-  return (
-    <div>
-      <MainLayout>{children}</MainLayout>
-    </div>
-  )
-}
+const layout = ({ children }: { children: React.ReactNode }) => {
+  return <MainLayout>{children}</MainLayout>;
+};
 
-export default layout
+export default layout;

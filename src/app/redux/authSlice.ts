@@ -1,31 +1,101 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { defaultConfig } from "@app/config/defaultConfig";
+import axiosInstance from "@app/utils/axiosInstance";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Types
+interface Company {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  email: string;
+  logo: string | null;
+  role: string;
+}
+
+interface Permissions {
+  projects: string[];
+  companies: string[];
+  tasks: string[];
+  users: string[];
+  worklogs: string[];
+}
+
+interface User {
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+  company: Company;
+  companyId: string;
+  permissions: Permissions;
+}
+
+interface AuthState {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  isAuthenticated: boolean;
+}
+
+// Initial state
+const initialState: AuthState = {
+  user: null,
+  loading: false,
+  error: null,
+  isAuthenticated: false,
+};
+
+// Async thunk to check if user is authenticated
+export const checkAuthStatus = createAsyncThunk(
+  "auth/checkAuthStatus",
+  async (): Promise<{ user: any | null; isAuthenticated: boolean }> => {
+    try {
+      const response = await axiosInstance.get(
+        `${defaultConfig.baseUrl}/users/profile`
+      );
+      const isAuthenticated = response.data.statusCode === 200
+      return {
+        user: response.data.data ?? null,
+        isAuthenticated,
+      };
+    } catch {
+      return {
+        user: null,
+        isAuthenticated: false,
+      };
+    }
+  }
+);
 // Async action for login
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
-  async (credentials, { rejectWithValue }) => {
+  async (
+    credentials: { email: string; password: string },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await axios.post(
-        "https://api.buildersoft.ca/api/auth/login",
-        credentials
+        `${defaultConfig.baseUrl}/auth/login`,
+        credentials,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
-      return response.data;
-    } catch (error:any) {
+      return response.data.data; // Expecting { user, token }
+    } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
     }
   }
 );
 
-// Auth Slice
+// Auth slice
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    user: null,
-    loading: false,
-    error: null,
-    isAuthenticated: false,
-  },
+  initialState,
   reducers: {
     logout: (state) => {
       state.user = null;
@@ -35,20 +105,44 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state:any) => {
+      // Login
+      .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.user;
-        state.isAuthenticated = true;
-        localStorage.setItem("token", action.payload.token);
-      })
-      .addCase(loginUser.rejected, (state:any, action) => {
+      .addCase(
+        loginUser.fulfilled,
+        (state, action: PayloadAction<{ user: User; token: string }>) => {
+          state.loading = false;
+          state.user = action.payload.user;
+          state.isAuthenticated = true;
+          localStorage.setItem("token", action.payload.token);
+        }
+      )
+      .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(checkAuthStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        checkAuthStatus.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ user: any | null; isAuthenticated: boolean }>
+        ) => {
+          state.loading = false;
+          state.user = action.payload.user;
+          state.isAuthenticated = action.payload.isAuthenticated;
+        }
+      )
+      .addCase(checkAuthStatus.rejected, (state) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;
       });
+     
   },
 });
 

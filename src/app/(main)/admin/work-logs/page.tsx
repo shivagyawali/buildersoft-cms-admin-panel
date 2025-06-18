@@ -1,68 +1,769 @@
 "use client";
+
+import { AppDispatch } from "@app/app/redux/store";
+import { getWorkLogs } from "@app/app/redux/workLogSlice";
 import BreadCrumb from "@app/components/Breadcrumb";
-import DoughnutChart from "@app/components/charts/DoughnutChart";
-import Filter from "@app/components/Filter";
-import TableContent from "@app/components/TableContent";
-import { tasks } from "@app/constants/options";
-import { ArcElement, Chart } from "chart.js";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  ArcElement,
+  Chart,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import moment from "moment";
+import {
+  Search,
+  Filter as FilterIcon,
+  Calendar,
+  MapPin,
+  Clock,
+  DollarSign,
+  User,
+  Bell,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
 
-Chart.register(ArcElement);
+// Register Chart.js components
+Chart.register(
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-const AdminWorkLogPage = () => {
-  return (
-    <>
-      <BreadCrumb title="Work Logs"></BreadCrumb>
-      <div className="grid grid-cols-3 gap-10 mt-6">
-        <div className="col-span-2">
-          <div className="bg-white rounded-2xl p-8">
-            <div className="mb-6">
-              <Filter />
+// Define types
+interface WorkLog {
+  id: string;
+  userName: string;
+  userEmail: string;
+  avatar: string;
+  startTime: string;
+  endTime: string;
+  totalHours: number;
+  earnings: number;
+  location: string;
+}
+
+interface WorkLogsState {
+  worklogs: WorkLog[];
+  loading: boolean;
+  totalPages: number;
+}
+
+interface DateRange {
+  start: string;
+  end: string;
+}
+
+interface NotificationItem {
+  avatar: string;
+  title: string;
+  time: string;
+}
+
+interface TableContentProps {
+  data: WorkLog[];
+  loading: boolean;
+}
+
+interface NotificationCardProps {
+  avatar: string;
+  title: string;
+  time: string;
+}
+
+const AdminWorkLogPage: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { worklogs, loading, totalPages } = useSelector(
+    (state: { worklogs: WorkLogsState }) => state.worklogs
+  );
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filterOpen, setFilterOpen] = useState<boolean>(false);
+  const [dateRange, setDateRange] = useState<DateRange>({ start: "", end: "" });
+
+  useEffect(() => {
+    dispatch(getWorkLogs(currentPage));
+  }, [dispatch, currentPage]);
+
+  const mappedData: WorkLog[] = Array.isArray(worklogs)
+    ? worklogs.map((log:any) => ({
+        id: log.id,
+        userName: log?.user?.name,
+        userEmail: log?.user?.email,
+        avatar: log?.user?.avatar || "/user-placeholder.jpg",
+        startTime: moment(log?.startTime).format("hh:mm:ss A"),
+        endTime: moment(log?.endTime).format("hh:mm:ss A"),
+        totalHours: log?.totalHours,
+        earnings: log?.earnings,
+        location: `${log?.startLatitude}, ${log?.startLongitude}`,
+      }))
+    : [];
+
+  // Chart data for hours worked
+  const chartData = {
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    datasets: [
+      {
+        label: "Hours Worked",
+        data: [12, 19, 13, 15, 12, 8, 5],
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        borderColor: "rgba(53, 162, 235, 1)",
+        borderWidth: 1,
+        borderRadius: 8,
+      },
+    ],
+  };
+
+  const chartOptions:any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Weekly Hours Summary",
+        color: "#334155",
+        font: {
+          size: 16,
+          weight: "bold",
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          display: true,
+          color: "rgba(0, 0, 0, 0.05)",
+        },
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+    },
+  };
+
+  // Mock notifications
+  const notifications: NotificationItem[] = [
+    {
+      avatar: "/user-placeholder.jpg",
+      title: "John Doe started work",
+      time: "5 mins ago",
+    },
+    {
+      avatar: "/user-placeholder.jpg",
+      title: "Emma Smith completed 8 hours",
+      time: "1 hour ago",
+    },
+    {
+      avatar: "/user-placeholder.jpg",
+      title: "Sam Wilson exceeded target",
+      time: "3 hours ago",
+    },
+    {
+      avatar: "/user-placeholder.jpg",
+      title: "New work log system update",
+      time: "Yesterday",
+    },
+  ];
+
+  const FilterPanel: React.FC = () => {
+    return (
+      <div
+        className={`transition-all duration-300 overflow-hidden ${
+          filterOpen ? "max-h-96" : "max-h-0"
+        }`}
+      >
+        <div className="bg-gray-50 p-6 rounded-lg mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Date Range
+              </label>
+              <div className="flex items-center gap-2">
+                <Calendar size={16} className="text-gray-400" />
+                <input
+                  type="date"
+                  className="form-input w-full rounded-md border-gray-300 shadow-sm"
+                  value={dateRange.start}
+                  onChange={(e) =>
+                    setDateRange({ ...dateRange, start: e.target.value })
+                  }
+                />
+                <span>to</span>
+                <input
+                  type="date"
+                  className="form-input w-full rounded-md border-gray-300 shadow-sm"
+                  value={dateRange.end}
+                  onChange={(e) =>
+                    setDateRange({ ...dateRange, end: e.target.value })
+                  }
+                />
+              </div>
             </div>
-            <TableContent data={tasks} />
-          </div>
-        </div>
-        <div className="col-span-1 w-5/6 max-h-96 relative">
-          <DoughnutChart work />
 
-          <div className="bg-white p-8 mt-4 rounded-xl">
-            <div className="flex items-center justify-between">
-              <p className="font-semibold">Notifications</p>
-              <Link
-                href={"/admin/notifications"}
-                className="text-sm text-[#036EFF]"
-              >
-                View All
-              </Link>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                User
+              </label>
+              <div className="relative">
+                <User
+                  size={16}
+                  className="absolute left-3 top-3 text-gray-400"
+                />
+                <select className="form-select pl-10 w-full rounded-md border-gray-300 shadow-sm">
+                  <option value="">All Users</option>
+                  <option value="active">Active Users</option>
+                  <option value="inactive">Inactive Users</option>
+                </select>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-2 mt-8">
-              <div className="flex items-center gap-3 ">
-                <div className="w-12 h-12 overflow-hidden rounded-md">
-                  <Image
-                    src={
-                      "data:image/jpeg;base64,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"
-                    }
-                    alt=""
-                    width={500}
-                    height={500}
-                    className="w-full h-full object-cover"
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Hours
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="relative">
+                  <Clock
+                    size={16}
+                    className="absolute left-3 top-3 text-gray-400"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    className="form-input pl-10 w-full rounded-md border-gray-300 shadow-sm"
                   />
                 </div>
-                <div>
-                  <p className="font-normal">Ellie joined team developers</p>
-                  <p className="text-gray-500 font-thin mt-1 ">
-                    04 April, 2021 | 04:00 PM
-                  </p>
+                <div className="relative">
+                  <Clock
+                    size={16}
+                    className="absolute left-3 top-3 text-gray-400"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    className="form-input pl-10 w-full rounded-md border-gray-300 shadow-sm"
+                  />
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-4">
+            <button className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+              Reset
+            </button>
+            <button className="px-4 py-2 bg-blue-600 rounded-md text-sm font-medium text-white hover:bg-blue-700">
+              Apply Filters
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const TableContentPage: React.FC<TableContentProps> = ({ data, loading }) => {
+    return (
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white rounded-xl overflow-hidden shadow-sm">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-5 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">
+                User
+              </th>
+              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">
+                Email
+              </th>
+              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">
+                Start
+              </th>
+              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">
+                End
+              </th>
+              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">
+                Hours
+              </th>
+              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">
+                Earnings
+              </th>
+              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">
+                Location
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {loading ? (
+              <tr>
+                <td colSpan={6} className="text-center p-6">
+                  <div className="flex justify-center items-center space-x-2">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                    <span className="text-gray-500">Loading work logs...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : data.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center p-10">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="bg-gray-100 p-3 rounded-full mb-2">
+                      <Clock size={24} className="text-gray-400" />
+                    </div>
+                    <p className="text-gray-500 font-medium">
+                      No work logs found
+                    </p>
+                    <p className="text-gray-400 text-sm mt-1">
+                      Try adjusting your filters or search terms
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              data.map((log, idx) => (
+                <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="h-10 w-10 flex-shrink-0">
+                        <Image
+                          src={log.avatar}
+                          alt={log.userName}
+                          width={40}
+                          height={40}
+                          className="rounded-full object-cover shadow-sm border border-gray-200"
+                        />
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">
+                          {log.userName}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {log.userEmail}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {log.startTime}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {log.endTime}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <Clock size={16} className="text-blue-500 mr-1" />
+                      <span className="text-sm font-medium text-gray-900">
+                        {log.totalHours}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <DollarSign size={16} className="text-green-500 mr-1" />
+                      <span className="text-sm font-medium text-green-600">
+                        {log.earnings}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="w-36 h-24 rounded-md overflow-hidden shadow-sm border border-gray-200">
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        loading="lazy"
+                        allowFullScreen
+                        src={`https://maps.google.com/maps?q=${log.location}&z=15&output=embed`}
+                      ></iframe>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  const Pagination: React.FC = () => {
+    const handlePrevious = (): void => {
+      if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const handleNext = (): void => {
+      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    return (
+      <div className="flex items-center justify-between mt-6 px-2">
+        <div className="text-sm text-gray-500">
+          Showing page {currentPage} of {totalPages}
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={handlePrevious}
+            disabled={currentPage === 1}
+            className={`inline-flex items-center px-3 py-2 border rounded-md text-sm ${
+              currentPage === 1
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            <ChevronLeft size={16} className="mr-1" />
+            Previous
+          </button>
+
+          {totalPages <= 5 ? (
+            <>
+              {Array.from({ length: totalPages }).map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentPage(idx + 1)}
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                    currentPage === idx + 1
+                      ? "bg-blue-600 text-white"
+                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {idx + 1}
+                </button>
+              ))}
+            </>
+          ) : (
+            <>
+              {currentPage > 2 && (
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  className="px-3 py-2 rounded-md border border-gray-300 text-sm font-medium bg-white text-gray-700 hover:bg-gray-50"
+                >
+                  1
+                </button>
+              )}
+
+              {currentPage > 3 && (
+                <span className="px-2 py-2 text-gray-500">...</span>
+              )}
+
+              {currentPage > 1 && (
+                <button
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  className="px-3 py-2 rounded-md border border-gray-300 text-sm font-medium bg-white text-gray-700 hover:bg-gray-50"
+                >
+                  {currentPage - 1}
+                </button>
+              )}
+
+              <button className="px-3 py-2 rounded-md text-sm font-medium bg-blue-600 text-white">
+                {currentPage}
+              </button>
+
+              {currentPage < totalPages && (
+                <button
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  className="px-3 py-2 rounded-md border border-gray-300 text-sm font-medium bg-white text-gray-700 hover:bg-gray-50"
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+
+              {currentPage < totalPages - 2 && (
+                <span className="px-2 py-2 text-gray-500">...</span>
+              )}
+
+              {currentPage < totalPages - 1 && (
+                <button
+                  onClick={() => setCurrentPage(totalPages)}
+                  className="px-3 py-2 rounded-md border border-gray-300 text-sm font-medium bg-white text-gray-700 hover:bg-gray-50"
+                >
+                  {totalPages}
+                </button>
+              )}
+            </>
+          )}
+
+          <button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className={`inline-flex items-center px-3 py-2 border rounded-md text-sm ${
+              currentPage === totalPages
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            Next
+            <ChevronRight size={16} className="ml-1" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const NotificationCard: React.FC<NotificationCardProps> = ({
+    avatar,
+    title,
+    time,
+  }) => (
+    <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+      <div className="w-10 h-10 overflow-hidden rounded-lg">
+        <Image
+          src={avatar}
+          alt="User"
+          width={40}
+          height={40}
+          className="object-cover w-full h-full"
+        />
+      </div>
+      <div className="flex-1">
+        <p className="text-sm font-medium text-gray-800">{title}</p>
+        <p className="text-xs text-gray-500">{time}</p>
+      </div>
+      <ChevronRight size={16} className="text-gray-400" />
+    </div>
+  );
+
+  return (
+    <div className="bg-gray-50 min-h-screen pb-8">
+      <BreadCrumb title="Work Logs" />
+
+      <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 mt-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Total Hours Today
+                </p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">148.5</p>
+              </div>
+              <div className="bg-blue-50 p-3 rounded-lg">
+                <Clock size={24} className="text-blue-500" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center">
+              <span className="text-xs font-medium text-green-500 bg-green-50 px-2 py-1 rounded-full">
+                +12%
+              </span>
+              <span className="text-xs text-gray-500 ml-2">vs yesterday</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Active Users
+                </p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">32</p>
+              </div>
+              <div className="bg-green-50 p-3 rounded-lg">
+                <User size={24} className="text-green-500" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center">
+              <span className="text-xs font-medium text-green-500 bg-green-50 px-2 py-1 rounded-full">
+                +5
+              </span>
+              <span className="text-xs text-gray-500 ml-2">
+                since last week
+              </span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Today Earnings
+                </p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">$3,482</p>
+              </div>
+              <div className="bg-purple-50 p-3 rounded-lg">
+                <DollarSign size={24} className="text-purple-500" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center">
+              <span className="text-xs font-medium text-green-500 bg-green-50 px-2 py-1 rounded-full">
+                +8%
+              </span>
+              <span className="text-xs text-gray-500 ml-2">vs yesterday</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Avg. Work Time
+                </p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">4.6h</p>
+              </div>
+              <div className="bg-amber-50 p-3 rounded-lg">
+                <Calendar size={24} className="text-amber-500" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center">
+              <span className="text-xs font-medium text-red-500 bg-red-50 px-2 py-1 rounded-full">
+                -2%
+              </span>
+              <span className="text-xs text-gray-500 ml-2">vs last week</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Table Section */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h2 className="text-lg font-bold text-gray-800">Work Logs</h2>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <div className="relative flex-1 sm:flex-auto">
+                    <Search
+                      size={18}
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Search by name or email..."
+                      className="form-input pl-10 pr-4 py-2 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => setFilterOpen(!filterOpen)}
+                    className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+                  >
+                    <FilterIcon size={20} className="text-gray-500" />
+                  </button>
+                </div>
+              </div>
+
+              <FilterPanel />
+              <TableContentPage data={mappedData} loading={loading} />
+              <Pagination />
+            </div>
+
+            {/* Chart Section */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mt-6">
+              <div className="mb-4 flex justify-between items-center">
+                <h2 className="text-lg font-bold text-gray-800">
+                  Hours Overview
+                </h2>
+                <select className="form-select rounded-md border-gray-300 shadow-sm text-sm">
+                  <option>This Week</option>
+                  <option>Last Week</option>
+                  <option>This Month</option>
+                </select>
+              </div>
+              <div className="h-64">
+                <Bar data={chartData} options={chartOptions} />
+              </div>
+            </div>
+          </div>
+
+          {/* Right sidebar */}
+          <div className="lg:col-span-1">
+            {/* Notifications */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <Bell size={18} className="text-gray-500 mr-2" />
+                  <h2 className="text-lg font-bold text-gray-800">
+                    Notifications
+                  </h2>
+                </div>
+                <Link
+                  href={"/admin/notifications"}
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  View All
+                </Link>
+              </div>
+
+              <div className="space-y-1">
+                {notifications.map((item, index) => (
+                  <NotificationCard
+                    key={index}
+                    avatar={item.avatar}
+                    title={item.title}
+                    time={item.time}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h2 className="text-lg font-bold text-gray-800 mb-4">
+                Quick Actions
+              </h2>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Link
+                  href="/admin/users"
+                  className="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                >
+                  <User size={24} className="text-blue-600 mb-2" />
+                  <span className="text-sm font-medium text-gray-700">
+                    Manage Users
+                  </span>
+                </Link>
+
+                <Link
+                  href="/admin/reports"
+                  className="flex flex-col items-center justify-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                >
+                  <DollarSign size={24} className="text-green-600 mb-2" />
+                  <span className="text-sm font-medium text-gray-700">
+                    View Reports
+                  </span>
+                </Link>
+
+                <Link
+                  href="/admin/settings"
+                  className="flex flex-col items-center justify-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+                >
+                  <Clock size={24} className="text-purple-600 mb-2" />
+                  <span className="text-sm font-medium text-gray-700">
+                    Time Settings
+                  </span>
+                </Link>
+
+                <Link
+                  href="/admin/export"
+                  className="flex flex-col items-center justify-center p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors"
+                >
+                  <Calendar size={24} className="text-amber-600 mb-2" />
+                  <span className="text-sm font-medium text-gray-700">
+                    Export Data
+                  </span>
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

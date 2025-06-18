@@ -7,7 +7,7 @@ interface IBreadCrumb {
 
 const BreadCrumb = ({ title, children }: IBreadCrumb) => {
   return (
-    <div className="w-full bg-gradient-to-r to-orange-100 from-orange-400 rounded-2xl py-8 px-10 relative border overflow-hidden">
+    <div className="w-full bg-gradient-to-r to-orange-100 from-orange-400 rounded-2xl py-8 px-10 relative border">
       <div className="w-40 h-40 bg-gradient-to-r from-white to-gray-100 rounded-full absolute top-16 -left-20" />
       <div className="w-40 h-40 bg-gradient-to-r from-white to-gray-100 rounded-full absolute -top-5 -right-20" />
       <div className="relative flex items-center justify-between">

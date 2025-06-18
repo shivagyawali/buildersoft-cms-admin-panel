@@ -1,3 +1,4 @@
+'use client'
 import BreadCrumb from "@app/components/Breadcrumb";
 import Filter from "@app/components/Filter";
 import TableContent from "@app/components/TableContent";

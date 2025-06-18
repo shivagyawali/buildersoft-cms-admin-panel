@@ -22,7 +22,7 @@ const InputField = ({
         type={as ? "" : "text"}
         name={name}
         placeholder={placeholder}
-        className="border border-[#DDDDDD] py-3 px-3 outline-none rounded-2xl"
+        className="border border-[#DDDDDD] py-3 px-3 outline-none rounded-lg"
       />
     </div>
   );
