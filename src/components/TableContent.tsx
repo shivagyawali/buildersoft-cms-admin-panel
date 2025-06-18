@@ -14,26 +14,24 @@ const TableContent = ({
     <div className="space-y-4">
       {/* Header */}
       <div className="hidden md:flex px-6 py-4 bg-gray-100 border rounded-2xl text-sm font-semibold text-gray-600">
-        <div className="w-1/4">Task</div>
-        <div className="w-1/5">Project</div>
-        <div className="w-1/5">Company</div>
-        <div className="w-1/6">Created</div>
-        <div className="w-1/6 text-center">Action</div>
+        <div className="w-1/2 px-4">Task</div>
+        <div className="w-1/5 px-4">Project</div>
+        <div className="w-1/5 px-4">Company</div>
+        <div className="w-1/6 px-4">Created</div>
+        <div className="w-1/6 px-4 text-center">Action</div>
       </div>
 
       {data?.map((task: any, idx: number) => {
-
-
         return (
           <div
             key={idx}
             className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 py-4 bg-white border rounded-2xl shadow hover:shadow-md transition-all"
           >
             {/* Task Details */}
-            <div className="w-full md:w-1/4 mb-2 md:mb-0">
+            <div className="w-full md:w-1/2 mb-2 px-4 md:mb-0">
               <Link
                 href={`/admin/tasks/${task?.id}`}
-                className="text-base font-semibold text-blue-600 hover:underline"
+                className="text-sm font-semibold text-blue-600 hover:underline"
               >
                 {task?.title || task?.name}
               </Link>
@@ -43,7 +41,7 @@ const TableContent = ({
             </div>
 
             {/* Project */}
-            <div className="w-full md:w-1/5 mb-2 md:mb-0">
+            <div className="w-full md:w-1/5 mb-2 px-4 md:mb-0">
               <p className="text-sm font-medium">
                 {task?.project?.name || "—"}
               </p>
