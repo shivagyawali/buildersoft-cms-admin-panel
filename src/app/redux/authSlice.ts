@@ -42,7 +42,7 @@ interface AuthState {
 // Initial state
 const initialState: AuthState = {
   user: null,
-  loading: false,
+  loading: true,
   error: null,
   isAuthenticated: false,
 };
@@ -55,7 +55,7 @@ export const checkAuthStatus = createAsyncThunk(
       const response = await axiosInstance.get(
         `${defaultConfig.baseUrl}/users/profile`
       );
-      const isAuthenticated = response.data.statusCode === 200
+      const isAuthenticated = response.data.statusCode === 200;
       return {
         user: response.data.data ?? null,
         isAuthenticated,
@@ -132,17 +132,16 @@ const authSlice = createSlice({
           state,
           action: PayloadAction<{ user: any | null; isAuthenticated: boolean }>
         ) => {
-          state.loading = false;
           state.user = action.payload.user;
           state.isAuthenticated = action.payload.isAuthenticated;
+          state.loading = false;
         }
       )
       .addCase(checkAuthStatus.rejected, (state) => {
-        state.loading = false;
-        state.isAuthenticated = false;
         state.user = null;
+        state.isAuthenticated = false;
+        state.loading = false;
       });
-     
   },
 });
 
