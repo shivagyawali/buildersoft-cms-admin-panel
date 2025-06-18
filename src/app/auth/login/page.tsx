@@ -62,7 +62,7 @@ const LoginPage = () => {
                 try {
                   const resultAction = await dispatch(loginUser(values));
                   if (loginUser.fulfilled.match(resultAction)) {
-                    router.push("/admin/project");
+                    router.push("/admin/");
                   } else {
                     setErrors({ email: "Invalid credentials" });
                   }
