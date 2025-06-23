@@ -9,7 +9,7 @@ const Filter = () => {
   return (
     <>
       <Formik
-        initialValues={{ name: "" }}
+        initialValues={{ name: "", date: "", status: "select" }}
         onSubmit={(values) => console.log(values)}
       >
         <Form className="flex items-center justify-between">

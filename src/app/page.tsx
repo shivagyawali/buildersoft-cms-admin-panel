@@ -1,9 +1,14 @@
 "use client";
 import MainLayout from "@app/layouts/MainLayout";
-import useAuthRedirect from "./hooks/useAuthRedirect";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
-  const { user } = useAuthRedirect();
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/auth/login");
+  }, [router]);
+ 
   return <MainLayout />;
 };
 

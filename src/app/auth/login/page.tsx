@@ -26,7 +26,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      router.push("/admin/project");
+      router.push("/admin/");
     }
   }, [isAuthenticated, loading, router]);
 
