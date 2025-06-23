@@ -42,7 +42,7 @@ interface AuthState {
 // Initial state
 const initialState: AuthState = {
   user: null,
-  loading: true,
+  loading: false,
   error: null,
   isAuthenticated: false,
 };
@@ -113,10 +113,11 @@ const authSlice = createSlice({
       .addCase(
         loginUser.fulfilled,
         (state, action: PayloadAction<{ user: User; token: string }>) => {
-          state.loading = false;
-          state.user = action.payload.user;
+          state.loading = true;
           state.isAuthenticated = true;
+          state.user = action.payload.user;
           localStorage.setItem("token", action.payload.token);
+
         }
       )
       .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
