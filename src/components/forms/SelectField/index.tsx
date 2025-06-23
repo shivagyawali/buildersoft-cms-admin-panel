@@ -19,7 +19,7 @@ const SelectField = ({
         name={name}
         as="select"
         defaultValue="select"
-        className="border border-[#DDDDDD] py-3 px-3 outline-none rounded-2xl"
+        className="border border-[#DDDDDD] py-3 px-3 outline-none rounded-lg"
       >
         <option value="select" disabled>
           Please Select

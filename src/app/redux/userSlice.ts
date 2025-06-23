@@ -39,8 +39,6 @@ export const getUsers = createAsyncThunk<UsersResponse, number>(
   "users/fetch",
   async (page = 1) => {
     const response = await axiosInstance.get(`${API_URL}/list?page=${page}`);
-    console.log(response.data);
-    
     return response.data.data;
   }
 );

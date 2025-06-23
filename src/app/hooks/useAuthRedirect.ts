@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { checkAuthStatus } from "@app/app/redux/authSlice";
@@ -18,9 +18,10 @@ const useAuthRedirect = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    const hasToken = localStorage.getItem("token");
     if (loading) return;
     if (!loading) {
-      if (!isAuthenticated && !user) {
+      if (!loading && !hasToken && !isAuthenticated && !user) {
         router.push("/auth/login");
       }
     }
