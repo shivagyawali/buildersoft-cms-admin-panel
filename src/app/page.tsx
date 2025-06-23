@@ -8,7 +8,7 @@ const Home = () => {
   useEffect(() => {
     router.push("/auth/login");
   }, [router]);
-
+ 
   return <MainLayout />;
 };
 
