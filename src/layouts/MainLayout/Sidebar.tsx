@@ -12,14 +12,16 @@ const Sidebar = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useAuthRedirect();
   const pathname = usePathname();
-
   return (
     <div className="w-64 h-screen bg-gradient-to-br from-indigo-50 via-white to-gray-50 text-gray-800 fixed shadow-2xl flex flex-col py-6 transition-all duration-500">
       <div className="px-5 pt-10 pb-6 flex-grow">
         <div className="flex flex-col gap-1">
           {user &&
             menuItems.map((menu, index) => {
-              const isActive = pathname === menu.path;
+              const clean = (path:any) => path.replace(/^\/admin/, "");
+              const isActive = clean(pathname).includes(clean(menu.path));
+
+              
               return (
                 <div
                   key={index}
