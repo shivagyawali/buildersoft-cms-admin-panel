@@ -7,12 +7,17 @@ interface IBreadCrumb {
 
 const BreadCrumb = ({ title, children }: IBreadCrumb) => {
   return (
-    <div className="w-full bg-gradient-to-r to-orange-100 from-orange-400 rounded-2xl py-8 px-10 relative border overflow-hidden">
-      <div className="w-40 h-40 bg-gradient-to-r from-white to-gray-100 rounded-full absolute top-16 -left-20" />
-      <div className="w-40 h-40 bg-gradient-to-r from-white to-gray-100 rounded-full absolute -top-5 -right-20" />
+    <div className="w-full bg-gradient-to-r from-orange-400 to-orange-100 rounded-2xl py-6 px-8 relative border border-orange-200 overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
+      {/* Decorative Background Circles */}
+      <div className="w-32 h-32 bg-gradient-to-r from-white/50 to-gray-100/30 rounded-full absolute top-12 -left-16 opacity-70 animate-pulse" />
+      <div className="w-32 h-32 bg-gradient-to-r from-white/50 to-gray-100/30 rounded-full absolute -top-4 -right-16 opacity-70 animate-pulse" />
+
+      {/* Content */}
       <div className="relative flex items-center justify-between">
-        <p className="text-3xl text-white">{title}</p>
-      {children}
+        <h1 className="text-2xl font-bold text-white tracking-tight">
+          {title}
+        </h1>
+        <div className="flex items-center gap-4">{children}</div>
       </div>
     </div>
   );

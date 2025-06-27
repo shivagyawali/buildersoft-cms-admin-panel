@@ -26,7 +26,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      router.push("/admin/");
+      router.push("/admin/dashboard");
     }
   }, [isAuthenticated, loading, router]);
 
@@ -62,7 +62,7 @@ const LoginPage = () => {
                 try {
                   const resultAction = await dispatch(loginUser(values));
                   if (loginUser.fulfilled.match(resultAction)) {
-                    router.push("/admin/");
+                    router.push("/admin/dashboard");
                   } else {
                     setErrors({ email: "Invalid credentials" });
                   }

@@ -19,7 +19,7 @@ export const menuItems = [
   {
     name: "Dashboard",
     icon: FgDashboardIcon(),
-    path: "/admin/",
+    path: "/admin/dashboard",
   },
   {
     name: "Project",
