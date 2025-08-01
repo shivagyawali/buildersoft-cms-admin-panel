@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion"; // For animations
 import { FaEye, FaEdit } from "react-icons/fa"; // Icons for actions
+import Image from "next/image";
 
 const Page = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -74,7 +75,9 @@ const Page = () => {
                     className="border-b hover:bg-gray-50 transition-all duration-200"
                   >
                     <td className="px-6 py-4">
-                      <img
+                      <Image
+                        width={1000}
+                        height={1000}
                         src={user.avatar}
                         alt={user.name}
                         className="w-12 h-12 rounded-full border-2 border-blue-100 shadow-sm"
@@ -113,7 +116,7 @@ const Page = () => {
                       </Link>
                       <Link
                         href={`/admin/user/edit/${user.id}`}
-                        className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors duration-200"
+                        className="p-2 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 transition-colors duration-200"
                       >
                         <FaEdit />
                       </Link>

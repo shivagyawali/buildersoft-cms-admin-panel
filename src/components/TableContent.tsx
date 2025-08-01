@@ -47,7 +47,7 @@ const TableContent = ({
             <span
               className={`inline-block mt-1 text-xs px-2.5 py-0.5 rounded-full font-medium transition-all duration-200 ${
                 task?.project?.status === "INPROGRESS"
-                  ? "bg-yellow-100 text-yellow-700"
+                  ? "bg-primamry-100 text-primary-700"
                   : task?.project?.status === "COMPLETED"
                   ? "bg-green-100 text-green-700"
                   : "bg-gray-100 text-gray-600"

@@ -50,7 +50,7 @@ const AdminProfilePage = () => {
                     className={`text-xs px-2 py-1 rounded-full ${
                       task.isCompleted
                         ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
+                        : "bg-primary-100 text-primary-700"
                     }`}
                   >
                     {task.isCompleted ? "Completed" : "In Progress"}

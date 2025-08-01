@@ -42,7 +42,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
         onClick={toggleDropdown}
         className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 focus:outline-none"
       >
-        <div className="relative w-10 h-10 border border-blue-500 rounded-full overflow-hidden">
+        <div className="relative w-10 h-10 border border-primary-500 rounded-full overflow-hidden">
           <Image
             src={user?.avatar || ""}
             alt="Profile Image"
@@ -67,13 +67,13 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
             </Link>
             <Link
               href="/admin/settings"
-              className="w-full inline-flex items-center gap-4 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="w-full inline-flex items-center gap-4 px-4 py-2 text-gray-700 hover:bg-gray-100"
               onClick={() => setIsOpen(false)}
             >
               <Settings /> Settings
             </Link>
             <button
-              className="w-full inline-flex items-center gap-4 text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="w-full inline-flex items-center gap-4 text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
               onClick={() => {
                 setIsOpen(false);
                 // Add logout logic here
