@@ -26,7 +26,7 @@ const ProjectDetail = () => {
   }, [dispatch, id]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-14">
       {/* Project Overview */}
       <div className="bg-white rounded-2xl p-8 shadow-md">
         <h2 className="text-3xl font-bold text-[#0E2040] mb-4">

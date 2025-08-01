@@ -7,7 +7,7 @@ interface IBreadCrumb {
 
 const BreadCrumb = ({ title, children }: IBreadCrumb) => {
   return (
-    <div className="w-full bg-gradient-to-r from-orange-400 to-orange-100 rounded-2xl py-6 px-8 relative border border-orange-200 overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
+    <div className="w-full bg-gradient-to-r from-primary-400 to-primary-100 rounded-2xl py-6 px-8 relative border border-primary-200 overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
       {/* Decorative Background Circles */}
       <div className="w-32 h-32 bg-gradient-to-r from-white/50 to-gray-100/30 rounded-full absolute top-12 -left-16 opacity-70 animate-pulse" />
       <div className="w-32 h-32 bg-gradient-to-r from-white/50 to-gray-100/30 rounded-full absolute -top-4 -right-16 opacity-70 animate-pulse" />
