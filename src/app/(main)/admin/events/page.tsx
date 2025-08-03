@@ -154,39 +154,41 @@ const Events = () => {
             )}
           </div>
         </div>
-        <div className="mt-6 bg-white/95  rounded-xl  p-4 gap-3 mb-8">
-          <h3 className="text-xl font-bold text-amber-900 uppercase mb-4">
+        <div className="mt-6 bg-white/95 rounded-2xl shadow-md p-6 mb-8">
+          <h3 className="text-2xl font-bold text-amber-900 uppercase mb-6 tracking-wide">
             Upcoming Projects
           </h3>
-          <div className="space-y-5 gap-3">
+          <div className="space-y-4">
             {upcomingEvents.length ? (
               upcomingEvents.map((event: any) => (
                 <div
                   key={event.id}
-                  className="flex items-center p-3 rounded-lg bg-amber-50/50 hover:bg-amber-100 transition-all duration-200"
+                  className="flex items-start gap-4 p-4 rounded-xl bg-amber-50/60 hover:bg-amber-100/80 transition-all duration-200 cursor-pointer group"
+                  onClick={() => setSelectedEvent(event)}
                 >
                   <div
-                    className="w-3 h-3 rounded-full mr-3"
+                    className="w-3 h-3 mt-1 rounded-full shrink-0"
                     style={{ backgroundColor: event.color }}
                   ></div>
-                  <div className="flex-1 p-1/2">
-                    <h4 className="text-sm font-semibold text-amber-900">
+
+                  <div className="flex-1">
+                    <h4 className="text-base font-semibold text-amber-900 group-hover:underline truncate">
                       {event.projectName}
                     </h4>
-                    <p className="text-xs text-amber-700">
+                    <p className="text-sm text-amber-800 mt-1">
                       <span className="font-medium">Start:</span>{" "}
-                      {event.startDate} |{" "}
+                      {event.startDate} &nbsp;|&nbsp;
                       <span className="font-medium">Status:</span>{" "}
                       {event.status}
                     </p>
-                    <p className="text-xs text-amber-600">
+                    <p className="text-sm text-amber-700 mt-1 line-clamp-2">
                       {event.description}
                     </p>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-sm text-amber-700">
+              <p className="text-sm text-amber-700 italic">
                 No upcoming projects for this period.
               </p>
             )}
