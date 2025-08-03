@@ -27,7 +27,7 @@ const Page = () => {
       <BreadCrumb title="Users">
         <div className="w-40 scale-95 text-center py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-lg hover:scale-100 transition-all duration-300 cursor-pointer">
           <Link
-            href="/admin/user/create"
+            href="/admin/users/create"
             className="text-lg font-semibold text-white "
           >
             Create User
@@ -115,7 +115,7 @@ const Page = () => {
                         <FaEye />
                       </Link>
                       <Link
-                        href={`/admin/user/edit/${user.id}`}
+                        href={`/admin/users/edit/${user.id}`}
                         className="p-2 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 transition-colors duration-200"
                       >
                         <FaEdit />
