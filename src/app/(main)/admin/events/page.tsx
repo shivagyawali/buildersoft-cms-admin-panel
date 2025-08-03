@@ -40,7 +40,7 @@ const eventsData:any = [
 
 const Events = () => {
   const [selectedEvent, setSelectedEvent]:any = useState(null);
-  const [currentMonth, setCurrentMonth]:any = useState(7);
+  const [currentMonth, setCurrentMonth]:any = useState(new Date().getMonth() + 1);
   const [currentYear, setCurrentYear] = useState(2025);
 
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
