@@ -82,9 +82,17 @@ const Events = () => {
     setCurrentMonth((prev:any) => (prev === 11 ? (setCurrentYear((y) => y + 1), 0) : prev + 1));
   };
 
-  const upcomingEvents = eventsData
-    .filter((event:any) => new Date(event.startDate) >= new Date(currentYear, currentMonth, 1))
-    .sort((a:any, b:any) => new Date(a?.startDate) - new Date(b?.startDate));
+ const upcomingEvents = eventsData
+   .filter(
+     (e: any) =>
+       new Date(e.startDate).getTime() >=
+       new Date(currentYear, currentMonth, 1).getTime()
+   )
+   .sort(
+     (a: any, b: any) =>
+       new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+   );
+
 
   const calendar = generateCalendar();
 
