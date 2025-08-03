@@ -74,15 +74,10 @@ const Page = () => {
                     transition={{ duration: 0.3 }}
                     className="border-b hover:bg-gray-50 transition-all duration-200"
                   >
-<<<<<<< Updated upstream
                     <td className="px-6 py-4">
                       <Image
                         width={1000}
                         height={1000}
-=======
-                    <td className="px-5 py-3">
-                      <img
->>>>>>> Stashed changes
                         src={user.avatar}
                         alt={user.name}
                         className="w-6 h-6 rounded-full border-2 border-blue-100 shadow-sm"
