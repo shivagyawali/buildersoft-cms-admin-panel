@@ -17,15 +17,22 @@ const LoginSchema = Yup.object().shape({
 const LoginPage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const { loading, error, isAuthenticated } = useSelector(
+  const { loading, error, isAuthenticated,role } = useSelector(
     (state: any) => state.auth
   );
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      router.push("/admin/dashboard");
+     if(role == 'worker'){
+        router.push("/worker/dashboard");
+     }
+     console.log(role);
+     
+     if(role=='company' || role =='root'){
+       router.push("/admin/dashboard");
+     }
     }
-  }, [isAuthenticated, loading, router]);
+  }, [isAuthenticated, loading,role, router]);
 
   if (loading) return <Loading />;
 

@@ -9,7 +9,7 @@ const Sidebar = () => {
   const { user } = useAuthRedirect();
   const pathname = usePathname();
   return (
-    <div className="w-64 h-screen bg-gradient-to-br  text-gray-800 fixed shadow-2xl flex flex-col py-6 transition-all duration-500">
+    <div className="w-64 h-full bg-gradient-to-br  text-gray-800 fixed shadow-2xl flex flex-col py-6 transition-all duration-500">
       <div className="px-5 pt-10 pb-6 flex-grow">
         <div className="flex flex-col gap-4">
           {user &&

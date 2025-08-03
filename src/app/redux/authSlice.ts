@@ -37,6 +37,7 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
+  role: string | null;
 }
 
 // Initial state
@@ -45,12 +46,13 @@ const initialState: AuthState = {
   loading: false,
   error: null,
   isAuthenticated: false,
+  role: null,
 };
 
 // Async thunk to check if user is authenticated
 export const checkAuthStatus = createAsyncThunk(
   "auth/checkAuthStatus",
-  async (): Promise<{ user: any | null; isAuthenticated: boolean }> => {
+  async (): Promise<{ user: any | null; isAuthenticated: boolean,role:any |null }> => {
     try {
       const response = await axiosInstance.get(
         `${defaultConfig.baseUrl}/users/profile`
@@ -59,11 +61,13 @@ export const checkAuthStatus = createAsyncThunk(
       return {
         user: response.data.data ?? null,
         isAuthenticated,
+        role:response?.data?.data?.role ??null
       };
     } catch {
       localStorage.removeItem("token");
       return {
         user: null,
+        role: null,
         isAuthenticated: false,
       };
     }

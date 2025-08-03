@@ -24,7 +24,7 @@ export const menuItems = [
   {
     name: "Project",
     icon: FgProjectsIcon(),
-    path: "/admin/project",
+    path: "/admin/projects",
   },
   {
     name: "Tasks",
@@ -34,7 +34,7 @@ export const menuItems = [
   {
     name: "Work Logs",
     icon: FgLogsIcon(),
-    path: "/admin/work-logs",
+    path: "/admin/worklogs",
   },
   {
     name: "Reports",
@@ -44,7 +44,7 @@ export const menuItems = [
   {
     name: "Users",
     icon: FgUsersIcon(),
-    path: "/admin/user",
+    path: "/admin/users",
   },
   {
     name: "Company",
@@ -66,27 +66,27 @@ export const userMenu = [
   {
     name: "Project",
     icon: FgProjectIcon(),
-    path: "/user/project",
+    path: "/worker/project",
   },
   {
     name: "Tasks",
     icon: FgTaskIcon(),
-    path: "/user/tasks",
+    path: "/worker/tasks",
   },
   {
     name: "Work Logs",
     icon: FgWorkLogsIcon(),
-    path: "/user/work-logs",
+    path: "/worker/work-logs",
   },
   {
     name: "Performance",
     icon: FgPerformanceIcon(),
-    path: "/user/performance",
+    path: "/worker/performance",
   },
   {
     name: "Settings",
     icon: FgSettingIcon(),
-    path: "/user/settings",
+    path: "/worker/settings",
   },
 ];
 

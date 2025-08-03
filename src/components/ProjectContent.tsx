@@ -35,7 +35,7 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
           <div
             key={idx}
             className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-xl transition duration-300 ease-in-out cursor-pointer"
-            onClick={() => router.push(`/admin/project/${project.id}`)}
+            onClick={() => router.push(`/admin/projects/${project.id}`)}
           >
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-gray-300">
