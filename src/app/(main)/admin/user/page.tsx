@@ -55,14 +55,14 @@ const Page = () => {
             <table className="min-w-full table-auto text-sm text-left rounded-xl shadow-md">
               <thead className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white uppercase text-xs font-semibold">
                 <tr>
-                  <th className="px-6 py-4 rounded-tl-xl">Avatar</th>
-                  <th className="px-6 py-4">Name</th>
-                  <th className="px-6 py-4">Email</th>
-                  <th className="px-6 py-4">Role</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Company</th>
-                  <th className="px-6 py-4">Rate ($/hr)</th>
-                  <th className="px-6 py-4 rounded-tr-xl">Action</th>
+                  <th className="px-5 py-3 rounded-tl-xl">Avatar</th>
+                  <th className="px-5 py-3">Name</th>
+                  <th className="px-5 py-3">Email</th>
+                  <th className="px-5 py-3">Role</th>
+                  <th className="px-5 py-3">Status</th>
+                  <th className="px-5 py-3">Company</th>
+                  <th className="px-5 py-3">Rate ($/hr)</th>
+                  <th className="px-5 py-3 rounded-tr-xl">Action</th>
                 </tr>
               </thead>
               <tbody className="bg-white text-gray-700">
@@ -74,23 +74,28 @@ const Page = () => {
                     transition={{ duration: 0.3 }}
                     className="border-b hover:bg-gray-50 transition-all duration-200"
                   >
+<<<<<<< Updated upstream
                     <td className="px-6 py-4">
                       <Image
                         width={1000}
                         height={1000}
+=======
+                    <td className="px-5 py-3">
+                      <img
+>>>>>>> Stashed changes
                         src={user.avatar}
                         alt={user.name}
-                        className="w-12 h-12 rounded-full border-2 border-blue-100 shadow-sm"
+                        className="w-6 h-6 rounded-full border-2 border-blue-100 shadow-sm"
                       />
                     </td>
-                    <td className="px-6 py-4 font-semibold text-gray-800">
+                    <td className="px-5 py-3 font-semibold text-gray-800">
                       {user.name}
                     </td>
-                    <td className="px-6 py-4 text-gray-600">{user.email}</td>
-                    <td className="px-6 py-4 capitalize text-gray-600">
+                    <td className="px-5 py-3 text-gray-600">{user.email}</td>
+                    <td className="px-5 py-3 capitalize text-gray-600">
                       {user.role}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3">
                       <span
                         className={`px-3 py-1 text-xs rounded-full font-medium ${
                           user.isActive
@@ -101,13 +106,13 @@ const Page = () => {
                         {user.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-gray-600">
+                    <td className="px-5 py-3 text-gray-600">
                       {user.company?.name}
                     </td>
-                    <td className="px-6 py-4 text-gray-800">
+                    <td className="px-5 py-3 text-gray-800">
                       ${user.hourlyRate}
                     </td>
-                    <td className="px-6 py-4 flex space-x-2">
+                    <td className="px-5 py-3 flex space-x-2">
                       <Link
                         href={`/admin/user/${user.id}`}
                         className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors duration-200"

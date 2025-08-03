@@ -61,6 +61,7 @@ export const checkAuthStatus = createAsyncThunk(
         isAuthenticated,
       };
     } catch {
+      localStorage.removeItem("token");
       return {
         user: null,
         isAuthenticated: false,

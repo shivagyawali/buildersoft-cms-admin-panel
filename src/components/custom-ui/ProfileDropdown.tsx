@@ -36,6 +36,13 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
     };
   }, []);
 
+  const logoutMe = () => {
+    // Remove token from localStorage
+    localStorage.removeItem("token");
+    // Redirect to login
+    window.location.href = "/auth/login";
+  };
+
   return (
     <div className="z-50" ref={dropdownRef}>
       <button
@@ -76,7 +83,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
               className="w-full inline-flex items-center gap-4 text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
               onClick={() => {
                 setIsOpen(false);
-                // Add logout logic here
+                logoutMe();
                 console.log("Logout");
               }}
             >
