@@ -26,7 +26,7 @@ const LoginPage = () => {
      if(role == 'worker'){
         router.push("/worker/dashboard");
      }
-     console.log(role);
+
      
      if(role=='company' || role =='root'){
        router.push("/admin/dashboard");

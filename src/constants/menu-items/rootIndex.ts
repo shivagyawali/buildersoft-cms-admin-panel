@@ -49,7 +49,7 @@ export const menuItems = [
   {
     name: "Company",
     icon: FgCompanyIcon(),
-    path: "/admin/company",
+    path: "/admin/companies",
   },
   {
     name: "Permission",
