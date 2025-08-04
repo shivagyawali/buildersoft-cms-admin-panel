@@ -67,7 +67,6 @@ const LoginPage = () => {
         transition={{ duration: 0.6 }}
         className="w-full max-w-5xl bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden"
       >
-        {/* Left Section */}
         <div className="w-full md:w-1/2 bg-gradient-to-b from-orange-500 to-orange-600 p-10 flex flex-col justify-center items-center text-white">
           <h1 className="text-4xl font-extrabold mb-4 drop-shadow-lg p-2">
             BuildMaster CMS
@@ -77,8 +76,6 @@ const LoginPage = () => {
           </p>
           <div className="mt-6 h-1 w-24 bg-white/40 rounded-full" />
         </div>
-
-        {/* Right Section */}
         <div className="w-full md:w-1/2 p-10 md:p-12">
           <h2 className="text-3xl font-semibold text-gray-800 p-2">
             Welcome Back 👋

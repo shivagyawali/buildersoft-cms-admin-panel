@@ -21,7 +21,7 @@ const useAuthRedirect = () => {
     const hasToken = localStorage.getItem("token");
     if (loading) return;
     if (!loading) {
-      if (!loading && !hasToken && !isAuthenticated && !user) {
+      if (!hasToken && !isAuthenticated && !user) {
         localStorage.removeItem("token")
         router.push("/auth/login");
       }

@@ -35,7 +35,7 @@ const UserTasks = () => {
         <div className="flex gap-6 items-end">
           <Link
             href={"/admin/tasks/create"}
-            className="text-lg px-7 py-4 text-white bg-blue-500 rounded-full "
+            className="text-lg px-7 py-4 text-white bg-blue-500 rounded-full"
           >
             Assign Task
           </Link>
