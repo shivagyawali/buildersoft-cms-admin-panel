@@ -11,7 +11,7 @@ interface Company {
   name: string;
   email: string;
   logo: string | null;
-  role: string;
+  role: string | null;
 }
 
 interface Permissions {
@@ -69,12 +69,13 @@ export const checkAuthStatus = createAsyncThunk(
         user: null,
         role: null,
         isAuthenticated: false,
+       
       };
     }
   }
 );
 // Async action for login
-export const loginUser = createAsyncThunk(
+export const loginUser :any = createAsyncThunk(
   "auth/loginUser",
   async (
     credentials: { email: string; password: string },
@@ -114,19 +115,24 @@ const authSlice = createSlice({
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.role = null;
       })
       .addCase(
         loginUser.fulfilled,
-        (state, action: PayloadAction<{ user: User; token: string }>) => {
+        (state, action: PayloadAction<{ user: User; token: string,role:any }>) => {
           state.loading = true;
           state.isAuthenticated = true;
           state.user = action.payload.user;
+          state.role = state.user.role;
+         
+          
           localStorage.setItem("token", action.payload.token);
 
         }
       )
       .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
+        state.role = null;
         state.error = action.payload;
       })
       .addCase(checkAuthStatus.pending, (state) => {
@@ -136,15 +142,17 @@ const authSlice = createSlice({
         checkAuthStatus.fulfilled,
         (
           state,
-          action: PayloadAction<{ user: any | null; isAuthenticated: boolean }>
+          action: PayloadAction<{ user: any | null; isAuthenticated: boolean,role:any | null }>
         ) => {
           state.user = action.payload.user;
+          state.role = action.payload.user.role;
           state.isAuthenticated = action.payload.isAuthenticated;
           state.loading = false;
         }
       )
       .addCase(checkAuthStatus.rejected, (state) => {
         state.user = null;
+        state.role = null;
         state.isAuthenticated = false;
         state.loading = false;
       });
