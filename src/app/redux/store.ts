@@ -4,6 +4,7 @@ import projectReducer from "./projectSlice";
 import userReducer from "./userSlice";
 import taskReducer from "./taskSlice";
 import worklogReducer from "./workLogSlice";
+import eventsReducer from "./eventSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     tasks: taskReducer,
     worklogs: worklogReducer,
     users: userReducer,
+    events: eventsReducer,
   },
 });
 
