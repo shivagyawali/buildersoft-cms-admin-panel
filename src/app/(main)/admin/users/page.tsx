@@ -43,7 +43,7 @@ const Page = () => {
         className="bg-white rounded-3xl p-8 mt-6 shadow-xl"
       >
         <div className="mb-8">
-          <Filter />
+          {/* <Filter />todo */}
         </div>
 
         {loading ? (
