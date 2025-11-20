@@ -6,11 +6,13 @@ const InputField = ({
   label,
   placeholder,
   as,
+  rows,
 }: {
   name: string;
   label?: string;
   placeholder?: string;
   as?: string;
+  rows?: number;
 }) => {
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -23,6 +25,7 @@ const InputField = ({
         name={name}
         placeholder={placeholder}
         className="border border-[#DDDDDD] py-3 px-3 outline-none rounded-lg"
+        rows={rows}
       />
     </div>
   );
