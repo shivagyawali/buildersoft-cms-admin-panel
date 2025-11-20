@@ -20,7 +20,7 @@ const CompanyPage = () => {
 
       <div className="bg-white p-8 rounded-2xl mt-6">
         <div className="pb-6">
-          <Filter />
+          {/* <Filter /> todo */}
         </div>
         <TableContent data={tasks} />
       </div>
