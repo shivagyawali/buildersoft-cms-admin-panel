@@ -39,7 +39,7 @@ const AdminProject = () => {
       <div className="flex items-center justify-between mb-5">
         <BreadCrumb title="Projects">
           <Link
-            href="/admin/project/create"
+            href="/admin/projects/create"
             className="px-6 py-3 text-lg text-white bg-[#036EFF] rounded-2xl"
           >
             Create

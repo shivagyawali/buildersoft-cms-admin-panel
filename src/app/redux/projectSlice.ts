@@ -23,6 +23,10 @@ interface ProjectState {
   loading: boolean;
   error: string | null;
 }
+export interface CreateProjectResponse {
+  message: string;
+  data: Project;
+}
 
 const initialState: ProjectState = {
   projects: [],
@@ -56,29 +60,24 @@ export const getProjects = createAsyncThunk(
 // 🟢 GET single project
 export const getSingleProject = createAsyncThunk<Project, string>(
   "projectSingle/fetch",
-  async (id:any) => {
-    const response = await axiosInstance.get(`${API_URL}/${id}`);    
+  async (id: any) => {
+    const response = await axiosInstance.get(`${API_URL}/${id}`);
     return response.data.data;
   }
 );
 
 // 🟢 CREATE a project
-export const createProject = createAsyncThunk<Project, Partial<Project>>(
-  "projects/create",
-  async (projectData, thunkAPI) => {
-    try {
-      const response = await axiosInstance.post(
-        `${API_URL}/create`,
-        projectData
-      );
-      return response.data;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.message || err.message
-      );
-    }
+export const createProject = createAsyncThunk<
+  CreateProjectResponse,
+  Partial<Project>
+>("projects/create", async (projectData, thunkAPI) => {
+  try {
+    const response = await axiosInstance.post(`${API_URL}/create`, projectData);
+    return response.data as CreateProjectResponse;
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.response?.data?.message || err.message);
   }
-);
+});
 
 // 🟡 UPDATE a project
 export const updateProject = createAsyncThunk<
@@ -136,7 +135,7 @@ const projectSlice = createSlice({
       })
       .addCase(getSingleProject.fulfilled, (state, action) => {
         state.loading = false;
-        state.project = action.payload;   
+        state.project = action.payload;
       })
       .addCase(getSingleProject.rejected, (state, action: any) => {
         state.loading = false;
@@ -144,10 +143,26 @@ const projectSlice = createSlice({
       })
 
       // CREATE
+      .addCase(createProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createProject.rejected, (state, action: any) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase(
         createProject.fulfilled,
-        (state, action: PayloadAction<Project>) => {
-          state.projects.push(action.payload);
+        (state, action: PayloadAction<CreateProjectResponse>) => {
+          state.loading = false;
+          state.error = null;
+          if (action.payload?.data) {
+            // Ensure projects is an array
+            if (!Array.isArray(state.projects)) {
+              state.projects = [];
+            }
+            state.projects.push(action.payload.data);
+          }
         }
       )
 
