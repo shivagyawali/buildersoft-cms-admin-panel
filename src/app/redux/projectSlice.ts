@@ -11,6 +11,12 @@ export interface Project {
   [key: string]: any;
 }
 
+export interface FilterParams {
+  name?: string;
+  date?: string;
+  status?: string;
+}
+
 interface ProjectState {
   projects: Project[];
   project: Project | null;
@@ -29,11 +35,24 @@ const initialState: ProjectState = {
   error: null,
 };
 
-// 🟢 GET all projects
+// 🟢 GET all projects (with optional filters)
 export const getProjects = createAsyncThunk(
   "projects/fetch",
-  async (page: number = 1) => {
-    const response = await axiosInstance.get(`${API_URL}/list?page=${page}`);
+  async ({ page = 1, filters }: { page?: number; filters?: FilterParams } = {}) => {
+    let url = `${API_URL}/list?page=${page}`;
+    
+    if (filters) {
+      const queryParams = new URLSearchParams();
+      queryParams.append("page", page.toString());
+      
+      if (filters.name) queryParams.append("name", filters.name);
+      if (filters.date) queryParams.append("date", filters.date);
+      if (filters.status) queryParams.append("status", filters.status);
+      
+      url = `${API_URL}/list?${queryParams.toString()}`;
+    }
+    
+    const response = await axiosInstance.get(url);
     return response.data.data;
   }
 );

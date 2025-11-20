@@ -5,21 +5,34 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@app/app/redux/store";
 import { getProjects } from "@app/app/redux/projectSlice";
 import BreadCrumb from "@app/components/Breadcrumb";
-import Filter from "@app/components/Filter";
+import Filter, { FilterValues } from "@app/components/Filter";
 import ProjectContent from "@app/components/ProjectContent";
 import Pagination from "@app/components/Pagination";
 import Link from "next/link";
 
 const AdminProject = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { projects,loading,error } = useSelector((state: any) => state.projects);
+  const { projects, loading, error } = useSelector((state: any) => state.projects);
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeFilters, setActiveFilters] = useState<Partial<FilterValues> | null>(null);
 
   useEffect(() => {
-    dispatch(getProjects(currentPage));
-  }, [dispatch, currentPage]);
+    dispatch(getProjects({ page: currentPage, filters: activeFilters || undefined }));
+  }, [dispatch, currentPage, activeFilters]);
 
   const totalPages = projects?.totalPages || 1;
+
+  // Handle filter submission
+  const handleFilter = (filters: Partial<FilterValues>) => {
+    setActiveFilters(filters);
+    setCurrentPage(1); 
+  };
+
+  // Handle reset
+  const handleReset = () => {
+    setActiveFilters(null);
+    setCurrentPage(1);
+  };
 
   return (
     <>
@@ -36,7 +49,11 @@ const AdminProject = () => {
 
       <div className="bg-white p-8 rounded-2xl mt-6">
         <div className="pb-5">
-          <Filter />
+          <Filter 
+            onFilter={handleFilter}
+            onReset={handleReset}
+            isLoading={loading}
+          />
         </div>
         <ProjectContent projects={projects?.results} loading={loading} error={error}/>
         <Pagination
