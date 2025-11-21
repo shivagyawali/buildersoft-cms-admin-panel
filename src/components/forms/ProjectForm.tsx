@@ -7,17 +7,33 @@ import { createProject } from "@app/app/redux/projectSlice";
 import InputField from "./InputField";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import CreateProject from "@app/app/(main)/admin/projects/create/page";
 
 interface ProjectFormValues {
   name: string;
   description: string;
 }
 
-const ProjectForm = () => {
+interface ProjectFormProps {
+  mode?: "create" | "edit";
+  initialValues?: ProjectFormValues;
+  projectId?: string;
+  onDiscard?: () => void;
+}
+
+const ProjectForm: React.FC<ProjectFormProps> = ({
+  mode = "create",
+  initialValues,
+  projectId,
+  onDiscard,
+}) => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: any) => state.projects);
+
+  const defaultInitialValues: ProjectFormValues = {
+    name: "",
+    description: "",
+  };
 
   const handleCreateProject = async (values: ProjectFormValues) => {
     const resultAction = await dispatch(createProject(values));
@@ -31,62 +47,84 @@ const ProjectForm = () => {
     }
   };
 
+  const handleUpdateProject = async (values: ProjectFormValues) => {
+    // TODO: API integration
+    toast.success("Project updated successfully!");
+    router.push("/admin/projects");
+  };
+
+  const handleSubmit = async (values: ProjectFormValues) => {
+    if (mode === "edit") {
+      await handleUpdateProject(values);
+    } else {
+      await handleCreateProject(values);
+    }
+  };
+
+  const handleDiscardChanges = () => {
+    if (onDiscard) {
+      onDiscard();
+    } else {
+      router.push("/admin/projects");
+    }
+  };
+
   return (
     <div className="bg-white py-10 px-7 rounded-2xl">
       <Formik
-        initialValues={{
-          name: "",
-          description: "",
-        }}
-        onSubmit={(values) => handleCreateProject(values)}
+        initialValues={initialValues || defaultInitialValues}
+        onSubmit={handleSubmit}
+        enableReinitialize
       >
-        <Form>
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col lg:flex-row items-start gap-7">
-              <div className="w-full">
-                <InputField
-                  name="name"
-                  label="Project name"
-                  placeholder="Project name"
-                />
-              </div>
-              {/* <div className="w-full lg:w-1/3">
+        {({ resetForm }) => (
+          <Form>
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col lg:flex-row items-start gap-7">
+                <div className="w-full">
                   <InputField
-                    name="type"
-                    label="Project Type"
-                    placeholder="Project Type"
+                    name="name"
+                    label="Project name"
+                    placeholder="Project name"
                   />
                 </div>
-                <div className="w-full lg:w-1/3 flex gap-5">
-                  <div className="w-1/2">
-                    <DatePickerField name="startDate" label="Start Date" />
-                  </div>
-                  <div className="w-1/2">
-                    <DatePickerField name="endDate" label="End Date" />
-                  </div>
-                </div> */}
+              </div>
+              <div className="w-full">
+                <InputField
+                  as="textarea"
+                  name="description"
+                  label="Project Description"
+                  placeholder="Project Description"
+                  rows={5}
+                />
+              </div>
+              {error && <p className="text-red-500">{error}</p>}
+              <div className="flex justify-end gap-4">
+                {mode === "edit" && (
+                  <button
+                    type="button"
+                    onClick={handleDiscardChanges}
+                    className="px-6 py-3 bg-gray-500 text-white rounded-2xl hover:bg-gray-600 transition-colors"
+                  >
+                    Discard
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-blue-500 text-white rounded-2xl disabled:opacity-50 hover:bg-blue-600 transition-colors"
+                  disabled={loading}
+                >
+                  {loading
+                    ? mode === "edit"
+                      ? "Updating..."
+                      : "Creating..."
+                    : mode === "edit"
+                    ? "Update"
+                    : "Create"}
+                </button>
+              </div>
             </div>
-            <div className="w-full">
-              <InputField
-                as="textarea"
-                name="description"
-                label="Project Description"
-                placeholder="Project Description"
-                rows={5}
-              />
-            </div>
-            {error && <p className="text-red-500">{error}</p>}
-            <div className="text-right">
-              <button
-                type="submit"
-                className="px-6 py-3 bg-blue-500 text-white rounded-2xl disabled:opacity-50"
-                disabled={loading}
-              >
-                {loading ? "Creating..." : "Create"}
-              </button>
-            </div>
-          </div>
-        </Form>
+          </Form>
+        )}
       </Formik>
     </div>
   );

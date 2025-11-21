@@ -6,9 +6,12 @@ import {
   FgDocumentIcon,
   FgEditIcon,
   FgSandGlassIcon,
+  FgDeleteIcon,
 } from "@app/constants/SVGCollection";
 import React from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+
 interface ProjectContentProps {
   projects: Project[];
   loading: boolean;
@@ -28,6 +31,26 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
   if (error)
     return <p className="text-red-500 text-center py-10">Error: {error}</p>;
 
+  const handleEditClick = (e: React.MouseEvent, project: Project) => {
+    e.stopPropagation();
+    router.push(
+      `/admin/projects/${project.id}/edit?name=${encodeURIComponent(
+        project.name
+      )}&description=${encodeURIComponent(project.description || "")}`
+    );
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent, project: Project) => {
+    e.stopPropagation();
+    // TODO: API integration
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${project.name}"?`
+    );
+    if (confirmDelete) {
+      toast.success(`Project "${project.name}" deleted successfully!`);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -43,7 +66,6 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
                 <h2 className="text-lg font-semibold text-gray-900 truncate">
                   {project?.name}
                 </h2>
-                <FgEditIcon />
               </div>
               <span
                 className={`text-xs px-3 py-1 rounded-full ${
@@ -61,6 +83,24 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
             <p className="text-sm text-gray-600 mt-4 mb-6 line-clamp-5">
               {project.description || "No description available."}
             </p>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3 mb-4">
+              <button
+                onClick={(e) => handleEditClick(e, project)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+              >
+                <FgEditIcon />
+                Edit
+              </button>
+              <button
+                onClick={(e) => handleDeleteClick(e, project)}
+                className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
+              >
+                <FgDeleteIcon />
+                Delete
+              </button>
+            </div>
 
             {/* Footer Info */}
             <div className="flex items-center justify-between text-sm font-medium text-gray-700">
