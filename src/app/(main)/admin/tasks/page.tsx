@@ -27,7 +27,7 @@ const AdminTasks = () => {
           href={"/admin/tasks/create"}
           className="text-lg px-6 py-3 text-white bg-blue-500 rounded-2xl "
         >
-          Assign Task
+          Create Task
         </Link>
       </BreadCrumb>
 
