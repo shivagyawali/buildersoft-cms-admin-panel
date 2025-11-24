@@ -9,15 +9,30 @@ const TableContent = ({
   dashboard?: boolean;
   data: any;
 }) => {
+  // Mock company users
+  const getCompanyUsers = (companyId: string) => {
+    // TODO: Fetch users from API based on companyId
+    return [
+      { id: "1", name: "John Doe", email: "john@company.com", role: "Developer" },
+      { id: "2", name: "Jane Smith", email: "jane@company.com", role: "Designer" },
+      { id: "3", name: "Mike Johnson", email: "mike@company.com", role: "Manager" },
+    ];
+  };
+
+  const handleUserSelect = (taskId: string, userId: string, userName: string) => {
+    // TODO: API call to assign user to task
+    console.log(`Assigning ${userName} to task ${taskId}`);
+  };
   return (
     <div className="space-y-3">
       {/* Header */}
       <div className="hidden md:grid grid-cols-12 items-center px-6 py-3 bg-gray-100 border border-gray-200 rounded-xl text-xs font-semibold text-gray-600 uppercase tracking-wide shadow-sm">
-        <div className="col-span-5 px-4">Task</div>
+        <div className="col-span-3 px-4">Task</div>
         <div className="col-span-2 px-4">Project</div>
         <div className="col-span-2 px-4">Company</div>
         <div className="col-span-2 px-4">Created</div>
-        <div className="col-span-1 px-4 text-center">Action</div>
+        <div className="col-span-2 px-4">Assign To</div>
+        <div className="col-span-1 px-4">Action</div>
       </div>
 
       {/* Table Rows */}
@@ -27,7 +42,7 @@ const TableContent = ({
           className="grid grid-cols-1 md:grid-cols-12 items-start md:items-center px-6 py-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 ease-in-out"
         >
           {/* Task Details */}
-          <div className="col-span-1 md:col-span-5 px-4 mb-3 md:mb-0">
+          <div className="col-span-1 md:col-span-3 px-4 mb-3 md:mb-0">
             <Link
               href={`/admin/tasks/${task?.id}`}
               className="text-sm font-semibold text-blue-600 hover:underline transition-colors duration-200"
@@ -77,6 +92,30 @@ const TableContent = ({
                   addSuffix: true,
                 })
               : "—"}
+          </div>
+
+          {/* Assign */}
+          <div className="col-span-1 md:col-span-2 mb-3 md:mb-0 px-4 relative">
+            <select
+              onChange={(e) => handleUserSelect(task.id, e.target.value, e.target.options[e.target.selectedIndex].text)}
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:border-gray-400"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Select User
+              </option>
+              {task?.company?.id ? (
+                getCompanyUsers(task.company.id).map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name} - {user.role}
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>
+                  No company assigned
+                </option>
+              )}
+            </select>
           </div>
 
           {/* Action */}
