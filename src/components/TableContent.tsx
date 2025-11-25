@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { formatDistanceToNow } from "date-fns";
+import Select from "react-select";
 
 const TableContent = ({
   dashboard,
@@ -16,12 +17,59 @@ const TableContent = ({
       { id: "1", name: "John Doe", email: "john@company.com", role: "Developer" },
       { id: "2", name: "Jane Smith", email: "jane@company.com", role: "Designer" },
       { id: "3", name: "Mike Johnson", email: "mike@company.com", role: "Manager" },
+      { id: "4", name: "Sarah Williams", email: "sarah@company.com", role: "Developer" },
+      { id: "5", name: "Tom Brown", email: "tom@company.com", role: "Tester" },
     ];
   };
 
-  const handleUserSelect = (taskId: string, userId: string, userName: string) => {
-    // TODO: API call to assign user to task
-    console.log(`Assigning ${userName} to task ${taskId}`);
+  const handleUserSelect = (taskId: string, selectedOption: any) => {
+    if (selectedOption) {
+      // TODO: API call to assign user to task
+      console.log(`Assigning ${selectedOption.label} to task ${taskId}`);
+    }
+  };
+
+  const getUserOptions = (companyId: string) => {
+    return getCompanyUsers(companyId).map((user) => ({
+      value: user.id,
+      label: `${user.name} - ${user.role}`,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    }));
+  };
+
+  const customStyles = {
+    control: (provided: any, state: any) => ({
+      ...provided,
+      minHeight: "38px",
+      borderColor: state.isFocused ? "#3b82f6" : "#d1d5db",
+      boxShadow: state.isFocused ? "0 0 0 2px rgba(59, 130, 246, 0.5)" : "none",
+      "&:hover": {
+        borderColor: "#9ca3af",
+      },
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected
+        ? "#3b82f6"
+        : state.isFocused
+        ? "#dbeafe"
+        : "white",
+      color: state.isSelected ? "white" : "#1f2937",
+      "&:active": {
+        backgroundColor: "#3b82f6",
+      },
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      zIndex: 50,
+    }),
+    menuList: (provided: any) => ({
+      ...provided,
+      maxHeight: "none",
+      overflow: "visible",
+    }),
   };
   return (
     <div className="space-y-3">
@@ -86,7 +134,7 @@ const TableContent = ({
           </div>
 
           {/* Created Date */}
-          <div className="col-span-1 md:col-span-2 mb-3 md:mb-0 px-4 text-sm text-gray-600">
+          <div className="col-span-1 md:col-span-1 mb-3 md:mb-0 px-4 text-sm text-gray-600">
             {task?.createdAt
               ? formatDistanceToNow(new Date(task.createdAt), {
                   addSuffix: true,
@@ -95,27 +143,29 @@ const TableContent = ({
           </div>
 
           {/* Assign */}
-          <div className="col-span-1 md:col-span-2 mb-3 md:mb-0 px-4 relative">
-            <select
-              onChange={(e) => handleUserSelect(task.id, e.target.value, e.target.options[e.target.selectedIndex].text)}
-              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:border-gray-400"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select User
-              </option>
-              {task?.company?.id ? (
-                getCompanyUsers(task.company.id).map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.name} - {user.role}
-                  </option>
-                ))
-              ) : (
-                <option value="" disabled>
-                  No company assigned
-                </option>
-              )}
-            </select>
+          <div className="col-span-1 md:col-span-3 mb-3 md:mb-0 px-4 relative">
+            {task?.company?.id ? (
+              <Select
+                options={getUserOptions(task.company.id)}
+                onChange={(selectedOption) => handleUserSelect(task.id, selectedOption)}
+                placeholder="Select User"
+                isClearable
+                isSearchable
+                styles={customStyles}
+                className="text-sm"
+                classNamePrefix="react-select"
+                maxMenuHeight={9999}
+              />
+            ) : (
+              <Select
+                options={[]}
+                placeholder="No company assigned"
+                isDisabled
+                styles={customStyles}
+                className="text-sm"
+                classNamePrefix="react-select"
+              />
+            )}
           </div>
 
           {/* Action */}

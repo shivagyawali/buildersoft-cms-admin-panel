@@ -11,7 +11,7 @@ const SubTaskPage = () => {
           href={`/admin/tasks/subtask/create`}
           className="px-2.5 py-2.5 text-md text-white bg-[#036EFF] rounded-2xl"
         >
-          Assign Sub Task
+          Create Sub-Task
         </Link>
       </BreadCrumb>
       <div className="mt-10">
