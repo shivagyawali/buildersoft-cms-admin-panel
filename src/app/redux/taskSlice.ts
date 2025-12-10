@@ -11,6 +11,12 @@ export interface Task {
   [key: string]: any;
 }
 
+export interface TaskFilterParams {
+  name?: string;
+  date?: string;
+  status?: string;
+}
+
 interface TaskState {
   tasks: Task[];
   task: Task | null;
@@ -28,8 +34,21 @@ const initialState: TaskState = {
 // 🟢 GET all tasks
 export const getTasks = createAsyncThunk(
   "tasks/fetch",
-  async (page: number = 1) => {
-    const response = await axiosInstance.get(`${API_URL}/list?page=${page}`);
+  async ({ page = 1, filters }: { page?: number; filters?: TaskFilterParams } = {}) => {
+    let url = `${API_URL}/list?page=${page}`;
+    
+    if (filters) {
+      const queryParams = new URLSearchParams();
+      queryParams.append("page", page.toString());
+      
+      if (filters.name) queryParams.append("name", filters.name);
+      if (filters.date) queryParams.append("date", filters.date);
+      if (filters.status) queryParams.append("status", filters.status);
+      
+      url = `${API_URL}/list?${queryParams.toString()}`;
+    }
+    
+    const response = await axiosInstance.get(url);
     return response.data.data;
   }
 );

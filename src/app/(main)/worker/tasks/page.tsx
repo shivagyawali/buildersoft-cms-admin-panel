@@ -14,7 +14,7 @@ const UserTasks = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    dispatch(getTasks(currentPage));
+    dispatch(getTasks({ page: currentPage }));
   }, [dispatch, currentPage]);
 
   const totalPages = tasks?.totalPages || 1;
