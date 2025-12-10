@@ -2,7 +2,7 @@
 import { AppDispatch } from "@app/app/redux/store";
 import { getUsers } from "@app/app/redux/userSlice";
 import BreadCrumb from "@app/components/Breadcrumb";
-import Filter from "@app/components/Filter";
+import UserFilter, { UserFilterValues } from "@app/components/Filter/UserFilter";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,10 +16,23 @@ const Page = () => {
     (state: { users: any }) => state.users
   );
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeFilters, setActiveFilters] = useState<Partial<UserFilterValues> | null>(null);
 
   useEffect(() => {
-    dispatch(getUsers(currentPage));
-  }, [dispatch, currentPage]);
+    dispatch(getUsers({ page: currentPage, filters: activeFilters || undefined }));
+  }, [dispatch, currentPage, activeFilters]);
+
+  // Handle filter submission
+  const handleFilter = (filters: Partial<UserFilterValues>) => {
+    setActiveFilters(filters);
+    setCurrentPage(1);
+  };
+
+  // Handle reset
+  const handleReset = () => {
+    setActiveFilters(null);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
@@ -43,7 +56,11 @@ const Page = () => {
         className="bg-white rounded-3xl p-8 mt-6 shadow-xl"
       >
         <div className="mb-8">
-          {/* <Filter />todo */}
+          <UserFilter
+            onFilter={handleFilter}
+            onReset={handleReset}
+            isLoading={loading}
+          />
         </div>
 
         {loading ? (

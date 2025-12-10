@@ -37,10 +37,10 @@ const Filter: React.FC<FilterProps> = ({ onFilter, onReset, isLoading = false })
               <SelectField
                 name="status"
                 options={[
-                  {
-                    label: "Select Status",
-                    value: "",
-                  },
+                  // {
+                  //   label: "Select Status",
+                  //   value: "",
+                  // },
                   {
                     label: "In Process",
                     value: "In_Process",
