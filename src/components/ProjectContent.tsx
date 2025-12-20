@@ -1,6 +1,6 @@
 "use client";
 
-import {Project } from "@app/app/redux/projectSlice";
+import { Project } from "@app/app/redux/projectSlice";
 
 import {
   FgDocumentIcon,
@@ -25,7 +25,7 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
 }) => {
   const router = useRouter();
 
-  const projectList = projects?? [];
+  const projectList = projects ?? [];
 
   if (loading) return <p className="text-center py-10">Loading projects...</p>;
   if (error)
@@ -33,11 +33,7 @@ const ProjectContent: React.FC<ProjectContentProps> = ({
 
   const handleEditClick = (e: React.MouseEvent, project: Project) => {
     e.stopPropagation();
-    router.push(
-      `/admin/projects/${project.id}/edit?name=${encodeURIComponent(
-        project.name
-      )}&description=${encodeURIComponent(project.description || "")}`
-    );
+    router.push(`/admin/projects/${project.id}/edit`);
   };
 
   const handleDeleteClick = (e: React.MouseEvent, project: Project) => {

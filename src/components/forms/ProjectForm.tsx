@@ -3,12 +3,13 @@ import { Form, Formik } from "formik";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@app/app/redux/store";
-import { createProject } from "@app/app/redux/projectSlice";
+import { createProject, updateProject } from "@app/app/redux/projectSlice";
 import InputField from "./InputField";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 interface ProjectFormValues {
+  id?: string;
   name: string;
   description: string;
 }
@@ -16,14 +17,12 @@ interface ProjectFormValues {
 interface ProjectFormProps {
   mode?: "create" | "edit";
   initialValues?: ProjectFormValues;
-  projectId?: string;
   onDiscard?: () => void;
 }
 
 const ProjectForm: React.FC<ProjectFormProps> = ({
   mode = "create",
   initialValues,
-  projectId,
   onDiscard,
 }) => {
   const router = useRouter();
@@ -48,9 +47,26 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
   };
 
   const handleUpdateProject = async (values: ProjectFormValues) => {
-    // TODO: API integration
-    toast.success("Project updated successfully!");
-    router.push("/admin/projects");
+    if (!values.id) return;
+
+    const resultAction = await dispatch(
+      updateProject({
+        id: values.id,
+        data: {
+          name: values.name,
+          description: values.description,
+        },
+      })
+    );
+
+    if (updateProject.fulfilled.match(resultAction)) {
+      toast.success("Project updated successfully");
+      router.push("/admin/projects");
+    } else {
+      toast.error(
+        (resultAction.payload as string) || "Failed to update project"
+      );
+    }
   };
 
   const handleSubmit = async (values: ProjectFormValues) => {
