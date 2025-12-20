@@ -1,4 +1,5 @@
-'use client'
+"use client";
+import { Task } from "@app/app/redux/taskSlice";
 import BreadCrumb from "@app/components/Breadcrumb";
 import Filter, { FilterValues } from "@app/components/Filter";
 import TableContent from "@app/components/TableContent";
@@ -15,19 +16,20 @@ const CompanyPage = () => {
     setIsLoading(true);
     // Filter tasks based on criteria
     let filtered = tasks;
-    
+
     if (filters.name) {
-      filtered = filtered.filter((task: any) => 
+      filtered = filtered.filter((task: any) =>
         task.company?.name?.toLowerCase().includes(filters.name!.toLowerCase())
       );
     }
-    
+
     if (filters.status) {
-      filtered = filtered.filter((task: any) => 
-        task.status?.toLowerCase() === filters.status!.toLowerCase()
+      filtered = filtered.filter(
+        (task: any) =>
+          task.status?.toLowerCase() === filters.status!.toLowerCase()
       );
     }
-    
+
     setFilteredData(filtered);
     setIsLoading(false);
   };
@@ -49,13 +51,13 @@ const CompanyPage = () => {
 
       <div className="bg-white p-8 rounded-2xl mt-6">
         <div className="pb-6">
-          <Filter 
+          <Filter
             onFilter={handleFilter}
             onReset={handleReset}
             isLoading={isLoading}
           />
         </div>
-        <TableContent data={filteredData} />
+        <TableContent data={filteredData as unknown as Task[]} />
       </div>
     </div>
   );
