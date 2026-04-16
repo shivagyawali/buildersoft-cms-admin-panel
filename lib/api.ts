@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const BASE ="https://api.buildersoft.ca";
+const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export const api = axios.create({
   baseURL: `${BASE}/api`,
@@ -27,7 +27,8 @@ api.interceptors.response.use(
 );
 
 export const authApi = {
-  register: (d: { firstName: string; lastName: string; email: string; password: string; role: string }) => api.post("/auth/register", d),
+  register: (d: { firstName: string; lastName: string; email: string; password: string; role: string }) =>
+    api.post("/auth/register", d),
   login: (d: { email: string; password: string }) => api.post("/auth/login", d),
   getProfile: () => api.get("/auth/profile"),
   updateProfile: (d: { phone?: string; company?: string }) => api.patch("/auth/profile", d),
@@ -44,13 +45,14 @@ export const clientsApi = {
 };
 
 export const projectsApi = {
-  list: (p?: { status?: string; clientId?: string; limit?: number; offset?: number }) =>
-    api.get("/projects", { params: p }),
+  list: (p?: { status?: string; limit?: number; offset?: number }) => api.get("/projects", { params: p }),
   get: (id: string) => api.get(`/projects/${id}`),
   create: (d: object) => api.post("/projects", d),
   update: (id: string, d: object) => api.patch(`/projects/${id}`, d),
   delete: (id: string) => api.delete(`/projects/${id}`),
   getStats: (id: string) => api.get(`/projects/${id}/stats`),
+  assignWorker: (id: string, workerId: string) => api.post(`/projects/${id}/workers`, { workerId }),
+  removeWorker: (id: string, workerId: string) => api.delete(`/projects/${id}/workers/${workerId}`),
 };
 
 export const tasksApi = {
@@ -61,24 +63,8 @@ export const tasksApi = {
   update: (id: string, d: object) => api.patch(`/tasks/${id}`, d),
   updateProgress: (id: string, progress: number) => api.patch(`/tasks/${id}/progress`, { progress }),
   delete: (id: string) => api.delete(`/tasks/${id}`),
-};
-
-export const workersApi = {
-  list: (p?: { limit?: number; offset?: number; status?: string }) => api.get("/workers", { params: p }),
-  get: (id: string) => api.get(`/workers/${id}`),
-  create: (d: object) => api.post("/workers", d),
-  update: (id: string, d: object) => api.patch(`/workers/${id}`, d),
-  delete: (id: string) => api.delete(`/workers/${id}`),
-};
-
-export const workerLogsApi = {
-  list: (p?: { clientId?: string; projectId?: string; workerId?: string; status?: string; limit?: number; offset?: number }) => api.get("/worker-logs", { params: p }),
-  get: (id: string) => api.get(`/worker-logs/${id}`),
-  create: (d: object) => api.post("/worker-logs", d),
-  update: (id: string, d: object) => api.patch(`/worker-logs/${id}`, d),
-  delete: (id: string) => api.delete(`/worker-logs/${id}`),
-  approve: (id: string) => api.patch(`/worker-logs/${id}/approve`),
-  reject: (id: string, reason: string) => api.patch(`/worker-logs/${id}/reject`, { reason }),
+  assignWorker: (id: string, workerId: string) => api.post(`/tasks/${id}/workers`, { workerId }),
+  removeWorker: (id: string, workerId: string) => api.delete(`/tasks/${id}/workers/${workerId}`),
 };
 
 export const invoicesApi = {
@@ -88,4 +74,20 @@ export const invoicesApi = {
   update: (id: string, d: object) => api.patch(`/invoices/${id}`, d),
   delete: (id: string) => api.delete(`/invoices/${id}`),
   recordPayment: (id: string, d: object) => api.post(`/invoices/${id}/payments`, d),
+};
+
+export const workersApi = {
+  list: (p?: { status?: string; limit?: number }) => api.get("/workers", { params: p }),
+  get: (id: string) => api.get(`/workers/${id}`),
+  create: (d: object) => api.post("/workers", d),
+  update: (id: string, d: object) => api.patch(`/workers/${id}`, d),
+  delete: (id: string) => api.delete(`/workers/${id}`),
+};
+
+export const invoicePeriodsApi = {
+  list: (p?: { workerId?: string; limit?: number }) => api.get("/invoice-periods", { params: p }),
+  get: (id: string) => api.get(`/invoice-periods/${id}`),
+  create: (d: object) => api.post("/invoice-periods", d),
+  update: (id: string, d: object) => api.patch(`/invoice-periods/${id}`, d),
+  delete: (id: string) => api.delete(`/invoice-periods/${id}`),
 };

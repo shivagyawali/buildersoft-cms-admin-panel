@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { invoicesApi } from "@/lib/api";
 import { PageHeader, Spinner, Modal, Field, Alert } from "@/components/ui/UI";
 import { ArrowLeft, CreditCard, CheckCircle } from "lucide-react";
-import { formatDate, formatCurrency, getStatusColor, capitalize, getErrMsg } from "@/lib/utils";
+import { formatDate, formatCurrency, getStatusColor, capitalize, getErrMsg, extractArray } from "@/lib/utils";
 import Link from "next/link";
 import clsx from "clsx";
 

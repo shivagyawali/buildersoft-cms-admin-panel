@@ -1,33 +1,33 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
 import { Spinner } from "@/components/ui/UI";
 
+const AUTH_ROUTES = ["/auth/login", "/auth/register"];
+
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) router.push("/auth/login");
-  }, [user, loading, router]);
+  const pathname = usePathname();
+  const isAuth = AUTH_ROUTES.includes(pathname);
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-stone-50">
+      <div className="min-h-screen flex items-center justify-center bg-[#0f0f11]">
         <Spinner size="lg" />
       </div>
     );
   }
 
-  if (!user) return null;
+  if (isAuth || !user) return <>{children}</>;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-stone-100">
+    <div className="flex min-h-screen bg-[#0f0f11]">
       <Sidebar />
-      <main className="flex-1 ml-56 overflow-y-auto">
-        <div className="min-h-full p-8 max-w-7xl">{children}</div>
+      <main className="flex-1 pl-[220px]">
+        <div className="max-w-7xl mx-auto px-8 py-8">
+          {children}
+        </div>
       </main>
     </div>
   );

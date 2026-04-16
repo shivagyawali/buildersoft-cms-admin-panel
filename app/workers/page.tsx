@@ -3,45 +3,59 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { workersApi } from "@/lib/api";
 import { Worker } from "@/types";
-import { PageHeader, Modal, EmptyState, Spinner, ConfirmDialog, Field, Alert } from "@/components/ui/UI";
-import { Plus, Search, Pencil, Trash2, Phone, Mail, HardHat } from "lucide-react";
-import { formatDate, getErrMsg, capitalize, getInitials } from "@/lib/utils";
+import { PageHeader, Modal, EmptyState, Spinner, ConfirmDialog, Field, Alert, WorkerPopup } from "@/components/ui/UI";
+import { Plus, HardHat, Pencil, Trash2, Mail, Phone, DollarSign, Clock, Info } from "lucide-react";
+import { formatDate, getStatusColor, capitalize, getErrMsg, extractArray } from "@/lib/utils";
 import clsx from "clsx";
 
-function extractArray<T>(data: unknown): T[] {
-  if (!data) return [];
-  if (Array.isArray(data)) return data as T[];
-  if (typeof data !== "object" || data === null) return [];
-  const d = data as Record<string, unknown>;
-  if ("data" in d && d.data !== undefined) return extractArray(d.data);
-  for (const key in d) { if (Array.isArray(d[key])) return d[key] as T[]; }
-  return [];
-}
-
-const TRADES = ["general", "electrician", "plumber", "carpenter", "mason", "painter", "welder", "hvac", "roofer", "other"];
-const BLANK = { firstName: "", lastName: "", email: "", phone: "", trade: "general", hourlyRate: "", overtimeRate: "", notes: "" };
+const ROLES = ["worker", "foreman", "supervisor", "engineer", "manager", "subcontractor"];
+const BLANK = { firstName: "", lastName: "", email: "", phone: "", role: "worker", hourlyRate: "", overtimeRate: "", status: "active" };
+interface FormErrors { firstName?: string; lastName?: string; email?: string; role?: string; }
 
 export default function WorkersPage() {
   const qc = useQueryClient();
-  const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Worker | null>(null);
   const [delTarget, setDelTarget] = useState<Worker | null>(null);
   const [form, setForm] = useState(BLANK);
   const [err, setErr] = useState("");
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [popup, setPopup] = useState<Worker | null>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["workers"],
-    queryFn: () => workersApi.list({ limit: 100 }),
-  });
+  const { data, isLoading } = useQuery({ queryKey: ["workers"], queryFn: () => workersApi.list({ limit: 100 }) });
+  const workers: Worker[] = extractArray<Worker>(data);
+
+  const s = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm((p) => ({ ...p, [k]: e.target.value }));
+    setFormErrors((p) => ({ ...p, [k]: undefined }));
+  };
+
+  const validate = () => {
+    const errs: FormErrors = {};
+    if (!form.firstName.trim()) errs.firstName = "First name is required";
+    if (!form.lastName.trim()) errs.lastName = "Last name is required";
+    if (!form.email.trim()) errs.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = "Invalid email";
+    if (!form.role) errs.role = "Role is required";
+    setFormErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const openCreate = () => { setEditing(null); setForm(BLANK); setErr(""); setFormErrors({}); setOpen(true); };
+  const openEdit = (w: Worker) => {
+    setEditing(w);
+    setForm({ firstName: w.firstName, lastName: w.lastName, email: w.email, phone: w.phone ?? "", role: w.role, hourlyRate: String(w.hourlyRate ?? ""), overtimeRate: String(w.overtimeRate ?? ""), status: w.status });
+    setErr(""); setFormErrors({}); setOpen(true);
+  };
 
   const saveMut = useMutation({
     mutationFn: () => {
+      if (!validate()) return Promise.reject(new Error("Validation failed"));
       const payload = { ...form, hourlyRate: form.hourlyRate ? Number(form.hourlyRate) : undefined, overtimeRate: form.overtimeRate ? Number(form.overtimeRate) : undefined };
       return editing ? workersApi.update(editing.id, payload) : workersApi.create(payload);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["workers"] }); setOpen(false); },
-    onError: (e) => setErr(getErrMsg(e)),
+    onError: (e: unknown) => { if ((e as Error).message !== "Validation failed") setErr(getErrMsg(e)); },
   });
 
   const delMut = useMutation({
@@ -49,90 +63,64 @@ export default function WorkersPage() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["workers"] }); setDelTarget(null); },
   });
 
-  const workers: Worker[] = extractArray<Worker>(data);
-  const filtered = workers.filter((w) =>
-    `${w.firstName} ${w.lastName} ${w.email} ${w.trade}`.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const s = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-    setForm((p) => ({ ...p, [k]: e.target.value }));
-
-  const openCreate = () => { setEditing(null); setForm(BLANK); setErr(""); setOpen(true); };
-  const openEdit = (w: Worker) => {
-    setEditing(w);
-    setForm({ firstName: w.firstName, lastName: w.lastName, email: w.email, phone: w.phone ?? "",
-      trade: w.trade, hourlyRate: String(w.hourlyRate ?? ""), overtimeRate: String(w.overtimeRate ?? ""), notes: w.notes ?? "" });
-    setErr(""); setOpen(true);
-  };
-
-  const tradeColors: Record<string, string> = {
-    electrician: "bg-yellow-50 text-yellow-700", plumber: "bg-blue-50 text-blue-700",
-    carpenter: "bg-amber-50 text-amber-700", mason: "bg-stone-100 text-stone-600",
-    painter: "bg-purple-50 text-purple-700", welder: "bg-red-50 text-red-700",
-    hvac: "bg-cyan-50 text-cyan-700", roofer: "bg-orange-50 text-orange-700",
-    general: "bg-stone-100 text-stone-600", other: "bg-stone-100 text-stone-500",
-  };
-
   return (
     <div className="animate-fade-in">
-      <PageHeader
-        title="Workers"
-        subtitle={`${workers.length} worker${workers.length !== 1 ? "s" : ""}`}
-        action={<button className="btn btn-primary" onClick={openCreate}><Plus size={16} />New Worker</button>}
-      />
-
-      <div className="relative mb-6 max-w-xs">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-        <input className="input pl-9" placeholder="Search workers…" value={search} onChange={(e) => setSearch(e.target.value)} />
-      </div>
+      <PageHeader title="Workers" subtitle={`${workers.length} worker${workers.length !== 1 ? "s" : ""}`}
+        action={<button className="btn btn-primary" onClick={openCreate}><Plus size={15} />Add Worker</button>} />
 
       <div className="card overflow-hidden">
         {isLoading ? (
           <div className="flex justify-center py-16"><Spinner /></div>
-        ) : filtered.length === 0 ? (
-          <EmptyState icon={<HardHat size={20} />} title="No workers yet" description="Add your first worker to assign tasks and log hours"
-            action={<button className="btn btn-primary" onClick={openCreate}><Plus size={16} />Add Worker</button>} />
+        ) : workers.length === 0 ? (
+          <EmptyState icon={<HardHat size={20} />} title="No workers yet" description="Add your first worker to get started"
+            action={<button className="btn btn-primary" onClick={openCreate}><Plus size={15} />Add Worker</button>} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-stone-100 bg-stone-50">
-                  {["Worker", "Contact", "Trade", "Rate", "Status", "Since", ""].map((h) => (
-                    <th key={h} className="text-left text-xs font-medium text-stone-400 uppercase tracking-wide px-5 py-3">{h}</th>
+                <tr className="border-b border-white/[0.06] bg-white/[0.02]">
+                  {["Worker", "Contact", "Role", "Hourly", "Overtime", "Status", "Since", ""].map((h) => (
+                    <th key={h} className="table-header">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((w) => (
-                  <tr key={w.id} className="border-b border-stone-50 hover:bg-stone-50 transition-colors">
-                    <td className="px-5 py-3.5">
+                {workers.map((w) => (
+                  <tr key={w.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                    <td className="table-cell">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center text-xs font-semibold text-stone-700 flex-shrink-0">
-                          {getInitials(w.firstName, w.lastName)}
+                        <div className="w-8 h-8 rounded-xl bg-violet-600/20 border border-violet-500/20 flex items-center justify-center text-xs font-bold text-violet-400 flex-shrink-0">
+                          {w.firstName[0]}{w.lastName[0]}
                         </div>
-                        <p className="font-medium text-stone-800 text-sm">{w.firstName} {w.lastName}</p>
+                        <p className="font-medium text-gray-200 text-sm">{w.firstName} {w.lastName}</p>
                       </div>
                     </td>
-                    <td className="px-5 py-3.5">
-                      <p className="text-xs text-stone-500 flex items-center gap-1"><Mail size={10} />{w.email}</p>
-                      {w.phone && <p className="text-xs text-stone-500 flex items-center gap-1 mt-0.5"><Phone size={10} />{w.phone}</p>}
+                    <td className="table-cell">
+                      <p className="text-xs text-gray-500 flex items-center gap-1"><Mail size={10} />{w.email}</p>
+                      {w.phone && <p className="text-xs text-gray-600 flex items-center gap-1 mt-0.5"><Phone size={10} />{w.phone}</p>}
                     </td>
-                    <td className="px-5 py-3.5">
-                      <span className={clsx("badge", tradeColors[w.trade] ?? "bg-stone-100 text-stone-600")}>{capitalize(w.trade)}</span>
+                    <td className="table-cell"><span className="badge bg-white/[0.06] text-gray-400">{capitalize(w.role)}</span></td>
+                    <td className="table-cell">
+                      {w.hourlyRate != null ? (
+                        <span className="text-sm text-emerald-400 font-semibold flex items-center gap-1">
+                          <DollarSign size={12} />{Number(w.hourlyRate).toFixed(2)}<span className="text-gray-600 font-normal">/hr</span>
+                        </span>
+                      ) : <span className="text-gray-600 text-sm">—</span>}
                     </td>
-                    <td className="px-5 py-3.5 text-xs text-stone-600">
-                      {w.hourlyRate ? `$${w.hourlyRate}/hr` : "—"}
+                    <td className="table-cell">
+                      {w.overtimeRate != null ? (
+                        <span className="text-sm text-amber-400 font-semibold flex items-center gap-1">
+                          <Clock size={12} />{Number(w.overtimeRate).toFixed(2)}<span className="text-gray-600 font-normal">/hr</span>
+                        </span>
+                      ) : <span className="text-gray-600 text-sm">—</span>}
                     </td>
-                    <td className="px-5 py-3.5">
-                      <span className={clsx("badge", w.status === "active" ? "bg-emerald-50 text-emerald-700" : "bg-stone-100 text-stone-400")}>
-                        {capitalize(w.status)}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5 text-xs text-stone-400">{formatDate(w.createdAt)}</td>
-                    <td className="px-5 py-3.5">
+                    <td className="table-cell"><span className={clsx("badge", getStatusColor(w.status))}>{capitalize(w.status)}</span></td>
+                    <td className="table-cell text-xs text-gray-600">{formatDate(w.createdAt)}</td>
+                    <td className="table-cell">
                       <div className="flex items-center gap-1 justify-end">
+                        <button className="btn btn-ghost p-1.5 text-gray-500" onClick={() => setPopup(w)}><Info size={14} /></button>
                         <button className="btn btn-ghost p-1.5" onClick={() => openEdit(w)}><Pencil size={14} /></button>
-                        <button className="btn btn-ghost p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50" onClick={() => setDelTarget(w)}><Trash2 size={14} /></button>
+                        <button className="btn btn-ghost p-1.5 text-red-500/50 hover:text-red-400 hover:bg-red-950/30" onClick={() => setDelTarget(w)}><Trash2 size={14} /></button>
                       </div>
                     </td>
                   </tr>
@@ -143,35 +131,51 @@ export default function WorkersPage() {
         )}
       </div>
 
-      <Modal open={open} onClose={() => setOpen(false)} title={editing ? "Edit Worker" : "New Worker"} size="lg">
+      <Modal open={open} onClose={() => setOpen(false)} title={editing ? "Edit Worker" : "Add Worker"} size="lg">
         {err && <Alert type="error" message={err} />}
         <div className="grid grid-cols-2 gap-4">
-          <Field label="First Name"><input className="input" value={form.firstName} onChange={s("firstName")} required /></Field>
-          <Field label="Last Name"><input className="input" value={form.lastName} onChange={s("lastName")} required /></Field>
-          <Field label="Email"><input type="email" className="input" value={form.email} onChange={s("email")} required /></Field>
-          <Field label="Phone"><input className="input" value={form.phone} onChange={s("phone")} /></Field>
-          <Field label="Trade">
-            <select className="input" value={form.trade} onChange={s("trade")}>
-              {TRADES.map((t) => <option key={t} value={t}>{capitalize(t)}</option>)}
+          <Field label="First Name" required error={formErrors.firstName}>
+            <input className="input" value={form.firstName} onChange={s("firstName")} placeholder="John" />
+          </Field>
+          <Field label="Last Name" required error={formErrors.lastName}>
+            <input className="input" value={form.lastName} onChange={s("lastName")} placeholder="Doe" />
+          </Field>
+          <Field label="Email" required error={formErrors.email}>
+            <input type="email" className="input" value={form.email} onChange={s("email")} placeholder="john@example.com" />
+          </Field>
+          <Field label="Phone">
+            <input className="input" value={form.phone} onChange={s("phone")} placeholder="+1-555-0123" />
+          </Field>
+          <Field label="Role" required error={formErrors.role}>
+            <select className="input" value={form.role} onChange={s("role")}>
+              {ROLES.map((r) => <option key={r} value={r}>{capitalize(r)}</option>)}
             </select>
           </Field>
-          <div />
-          <Field label="Hourly Rate (CAD)"><input type="number" step="0.01" className="input" value={form.hourlyRate} onChange={s("hourlyRate")} placeholder="0.00" /></Field>
-          <Field label="Overtime Rate (CAD)"><input type="number" step="0.01" className="input" value={form.overtimeRate} onChange={s("overtimeRate")} placeholder="0.00" /></Field>
-          <div className="col-span-2">
-            <Field label="Notes"><textarea className="input resize-none min-h-[70px]" value={form.notes} onChange={s("notes")} /></Field>
-          </div>
+          <Field label="Status">
+            <select className="input" value={form.status} onChange={s("status")}>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </Field>
+          <Field label="Hourly Rate (CAD)">
+            <input type="number" className="input" value={form.hourlyRate} onChange={s("hourlyRate")} placeholder="0.00" min="0" step="0.01" />
+          </Field>
+          <Field label="Overtime Rate (CAD)">
+            <input type="number" className="input" value={form.overtimeRate} onChange={s("overtimeRate")} placeholder="0.00" min="0" step="0.01" />
+          </Field>
         </div>
         <div className="flex gap-3 justify-end mt-5">
           <button className="btn btn-secondary" onClick={() => setOpen(false)}>Cancel</button>
           <button className="btn btn-primary" onClick={() => saveMut.mutate()} disabled={saveMut.isPending}>
-            {saveMut.isPending && <Spinner size="sm" />}{editing ? "Save Changes" : "Create Worker"}
+            {saveMut.isPending && <Spinner size="sm" />}{editing ? "Save Changes" : "Add Worker"}
           </button>
         </div>
       </Modal>
 
-      <ConfirmDialog open={!!delTarget} onClose={() => setDelTarget(null)} onConfirm={() => delMut.mutate()} loading={delMut.isPending}
-        title="Delete Worker" description={`Delete ${delTarget?.firstName} ${delTarget?.lastName}? This cannot be undone.`} />
+      <ConfirmDialog open={!!delTarget} onClose={() => setDelTarget(null)} onConfirm={() => delMut.mutate()}
+        loading={delMut.isPending} title="Remove Worker" description={`Remove ${delTarget?.firstName} ${delTarget?.lastName}? This cannot be undone.`} />
+
+      {popup && <WorkerPopup worker={popup} onClose={() => setPopup(null)} />}
     </div>
   );
 }
