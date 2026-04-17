@@ -2,6 +2,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { AuthProvider } from "@/lib/auth-context";
+import { PermissionsProvider } from "@/lib/permissions-context";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [qc] = useState(
@@ -17,7 +18,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={qc}>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <PermissionsProvider>
+          {children}
+        </PermissionsProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
