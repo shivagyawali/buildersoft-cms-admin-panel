@@ -1,1 +1,10 @@
-{}
+{
+  "/dashboard/page": "app/dashboard/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/clients/page": "app/clients/page.js",
+  "/admin/roles/page": "app/admin/roles/page.js",
+  "/workers/page": "app/workers/page.js",
+  "/projects/page": "app/projects/page.js",
+  "/invoice-periods/page": "app/invoice-periods/page.js",
+  "/invoices/page": "app/invoices/page.js"
+}
