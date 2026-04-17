@@ -1,16 +1,59 @@
 "use client";
-import { ReactNode } from "react";
-import { X, AlertCircle, CheckCircle2, Building2, TrendingUp, Users, FolderKanban, FileText, HardHat } from "lucide-react";
+import { ReactNode, useState } from "react";
+import { X, AlertCircle, CheckCircle2, Info, AlertTriangle } from "lucide-react";
 import clsx from "clsx";
 
 /* ── Spinner ──────────────────────────────────────────────────────────────── */
 export function Spinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  const s = { sm: "w-3.5 h-3.5 border-2", md: "w-5 h-5 border-2", lg: "w-7 h-7 border-[3px]" }[size];
+  const s = { sm: "w-3.5 h-3.5 border-2", md: "w-5 h-5 border-2", lg: "w-8 h-8 border-[3px]" }[size];
   return (
     <div
-      className={clsx("rounded-full animate-spin flex-shrink-0", s)}
-      style={{ borderColor: "var(--ln2)", borderTopColor: "var(--am)" }}
+      className={clsx("rounded-full flex-shrink-0", s)}
+      style={{
+        borderColor: "var(--line-strong)",
+        borderTopColor: "var(--acc)",
+        animation: "spin 0.75s linear infinite",
+      }}
     />
+  );
+}
+
+/* ── Theme Toggle ─────────────────────────────────────────────────────────── */
+export function ThemeToggle() {
+  const [dark, setDark] = useState(() =>
+    typeof window !== "undefined" && document.documentElement.classList.contains("dark")
+  );
+
+  const toggle = () => {
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  };
+
+  return (
+    <button
+      onClick={toggle}
+      className="relative w-12 h-6 rounded-full transition-all duration-300 flex-shrink-0 overflow-hidden"
+      style={{
+        background: dark ? "var(--acc)" : "var(--bg-sunken)",
+        border: "1.5px solid var(--line-strong)",
+      }}
+      title={dark ? "Switch to light" : "Switch to dark"}
+    >
+      {/* Track icons */}
+      <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-[9px] select-none" style={{ opacity: dark ? 0 : 1, transition: "opacity 0.2s" }}>☀️</span>
+      <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] select-none" style={{ opacity: dark ? 1 : 0, transition: "opacity 0.2s" }}>🌙</span>
+      {/* Knob */}
+      <span
+        className="absolute top-0.5 w-4 h-4 rounded-full transition-all duration-300"
+        style={{
+          background: dark ? "#fff" : "var(--acc)",
+          left: dark ? "calc(100% - 20px)" : 3,
+          boxShadow: dark ? "0 1px 4px rgba(0,0,0,0.4)" : "0 1px 4px rgba(249,115,22,0.4)",
+        }}
+      />
+    </button>
   );
 }
 
@@ -23,45 +66,43 @@ export function Modal({ open, onClose, title, children, size = "md" }: {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0"
-        style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)" }}
+        className="absolute inset-0 backdrop-blur-sm"
+        style={{ background: "var(--bg-overlay)" }}
         onClick={onClose}
       />
       <div
         className={clsx("relative w-full animate-slide-up overflow-y-auto", w)}
         style={{
-          background: "var(--c2)",
-          border: "1px solid var(--ln2)",
-          borderTop: "2px solid var(--am)",
-          borderRadius: 2,
+          background: "var(--bg-card)",
+          border: "1.5px solid var(--line-strong)",
+          borderRadius: "var(--radius-lg)",
           boxShadow: "var(--shadow-lg)",
           maxHeight: "90vh",
         }}
       >
+        {/* Orange top bar */}
+        <div style={{ height: 3, background: "linear-gradient(90deg,var(--acc),var(--acc-2))", borderRadius: "var(--radius-lg) var(--radius-lg) 0 0" }} />
         <div
           className="flex items-center justify-between px-6 py-4 sticky top-0 z-10"
-          style={{ background: "var(--c2)", borderBottom: "1px solid var(--ln)" }}
+          style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--line)" }}
         >
-          <h2
-            className="font-display font-bold text-[15px] uppercase tracking-[0.06em]"
-            style={{ color: "var(--t1)" }}
-          >
-            {title}
-          </h2>
+          <div className="flex items-center gap-3">
+            {/* Orange diamond icon */}
+            <div className="w-7 h-7 rotate-45 flex-shrink-0" style={{ background: "var(--acc-subtle)", border: "1.5px solid var(--acc-border)", borderRadius: 4 }}>
+              <div className="w-full h-full -rotate-45 flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full" style={{ background: "var(--acc)" }} />
+              </div>
+            </div>
+            <h2 className="font-display text-[20px] tracking-wide" style={{ color: "var(--tx)" }}>{title.toUpperCase()}</h2>
+          </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center transition-all"
-            style={{ color: "var(--t3)", border: "1px solid var(--ln)", borderRadius: 2 }}
-            onMouseOver={e => {
-              (e.currentTarget as HTMLElement).style.borderColor = "var(--am)";
-              (e.currentTarget as HTMLElement).style.color = "var(--am)";
-            }}
-            onMouseOut={e => {
-              (e.currentTarget as HTMLElement).style.borderColor = "var(--ln)";
-              (e.currentTarget as HTMLElement).style.color = "var(--t3)";
-            }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+            style={{ color: "var(--tx-3)" }}
+            onMouseOver={e => { (e.currentTarget as HTMLElement).style.background = "var(--err-bg)"; (e.currentTarget as HTMLElement).style.color = "var(--err)"; }}
+            onMouseOut={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--tx-3)"; }}
           >
-            <X size={13} />
+            <X size={15} />
           </button>
         </div>
         <div className="px-6 py-5">{children}</div>
@@ -71,23 +112,39 @@ export function Modal({ open, onClose, title, children, size = "md" }: {
 }
 
 /* ── PageHeader ───────────────────────────────────────────────────────────── */
-export function PageHeader({ title, subtitle, action }: {
-  title: string; subtitle?: string; action?: ReactNode;
+export function PageHeader({ title, subtitle, action, icon }: {
+  title: string; subtitle?: string; action?: ReactNode; icon?: ReactNode;
 }) {
   return (
     <div className="mb-8">
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <h1 className="page-title">{title}</h1>
-          {subtitle && (
-            <p className="mt-1.5 text-[13px]" style={{ color: "var(--t2)", fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-              {subtitle}
-            </p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-4">
+          {icon && (
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: "var(--acc-subtle)", border: "1.5px solid var(--acc-border)", color: "var(--acc)" }}
+            >
+              {icon}
+            </div>
           )}
+          <div>
+            <h1 className="font-display text-[38px] leading-none tracking-wide" style={{ color: "var(--tx)" }}>
+              {title.toUpperCase()}
+            </h1>
+            {subtitle && (
+              <p className="mt-1.5 text-[13px]" style={{ color: "var(--tx-2)", fontFamily: "var(--font-mono)" }}>
+                {subtitle}
+              </p>
+            )}
+          </div>
         </div>
-        {action && <div className="flex-shrink-0">{action}</div>}
+        {action && <div className="flex-shrink-0 pt-1">{action}</div>}
       </div>
-      <div className="hairline-strong mt-5" />
+      {/* Accent underline */}
+      <div className="mt-4 flex items-center gap-3">
+        <div style={{ height: 2, width: 48, background: "var(--acc)", borderRadius: 99 }} />
+        <div style={{ height: 2, flex: 1, background: "var(--line)" }} />
+      </div>
     </div>
   );
 }
@@ -99,16 +156,16 @@ export function EmptyState({ icon, title, description, action }: {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center px-4">
       <div
-        className="w-12 h-12 flex items-center justify-center mb-4"
-        style={{ background: "var(--c3)", border: "1px solid var(--ln2)", color: "var(--t3)", borderRadius: 2 }}
+        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 hazard-stripe"
+        style={{ border: "1.5px dashed var(--acc-border)", color: "var(--tx-3)" }}
       >
         {icon}
       </div>
-      <h3 className="font-display font-bold text-[13px] uppercase tracking-[0.08em] mb-1" style={{ color: "var(--t2)" }}>
-        {title}
+      <h3 className="font-display text-[22px] tracking-wide mb-2" style={{ color: "var(--tx)" }}>
+        {title.toUpperCase()}
       </h3>
       {description && (
-        <p className="text-[12.5px] mb-5 max-w-xs" style={{ color: "var(--t3)", fontFamily: "var(--font-mono)", letterSpacing: "0.05em" }}>
+        <p className="text-[13px] mb-6 max-w-xs" style={{ color: "var(--tx-2)", fontFamily: "var(--font-mono)" }}>
           {description}
         </p>
       )}
@@ -118,76 +175,113 @@ export function EmptyState({ icon, title, description, action }: {
 }
 
 /* ── Field ────────────────────────────────────────────────────────────────── */
-export function Field({ label, error, required, children }: {
-  label: string; error?: string; required?: boolean; children: ReactNode;
+export function Field({ label, error, required, children, hint }: {
+  label: string; error?: string; required?: boolean; children: ReactNode; hint?: string;
 }) {
   return (
     <div>
       <label className="label">
-        {label}
-        {required && <span className="ml-0.5" style={{ color: "var(--am)" }}>*</span>}
+        {label}{required && <span style={{ color: "var(--acc)" }}>*</span>}
       </label>
       {children}
+      {hint && !error && <p className="text-[11px] mt-1" style={{ color: "var(--tx-3)", fontFamily: "var(--font-mono)" }}>{hint}</p>}
       {error && (
-        <p className="text-[11px] mt-1.5 flex items-center gap-1" style={{ color: "var(--err)", fontFamily: "var(--font-mono)" }}>
-          <AlertCircle size={10} />{error}
+        <p className="text-[11.5px] mt-1.5 flex items-center gap-1.5" style={{ color: "var(--err)", fontFamily: "var(--font-mono)" }}>
+          <AlertCircle size={11} />{error}
         </p>
       )}
     </div>
   );
 }
 
-/* ── StatCard ─────────────────────────────────────────────────────────────── */
-export function StatCard({ label, value, icon, sub, color = "amber" }: {
-  label: string; value: string | number; icon: ReactNode; sub?: string; color?: string;
+/* ── StatCard — construction site tile ────────────────────────────────────── */
+export function StatCard({ label, value, icon, sub, color = "orange", trend }: {
+  label: string; value: string | number; icon: ReactNode; sub?: string;
+  color?: "orange" | "green" | "blue" | "red" | "violet" | "yellow";
+  trend?: { value: string; up: boolean };
 }) {
-  const colors: Record<string, { text: string; bg: string; border: string }> = {
-    amber:   { text: "var(--am)",     bg: "var(--am3)",             border: "rgba(232,160,32,0.25)" },
-    green:   { text: "var(--ok)",     bg: "var(--ok-bg)",           border: "rgba(61,153,112,0.25)" },
-    blue:    { text: "var(--bl)",     bg: "var(--bl2)",             border: "rgba(74,127,165,0.25)" },
-    red:     { text: "var(--err)",    bg: "var(--err-bg)",          border: "rgba(192,57,43,0.25)" },
-    violet:  { text: "var(--violet)", bg: "var(--violet-bg)",       border: "rgba(142,107,191,0.25)" },
-    orange:  { text: "var(--am)",     bg: "var(--am3)",             border: "rgba(232,160,32,0.25)" },
-    emerald: { text: "var(--ok)",     bg: "var(--ok-bg)",           border: "rgba(61,153,112,0.25)" },
+  const palette: Record<string, { bg: string; border: string; text: string; glow: string }> = {
+    orange: { bg: "var(--acc-subtle)",   border: "var(--acc-border)", text: "var(--acc)",    glow: "rgba(249,115,22,0.2)" },
+    green:  { bg: "var(--ok-bg)",        border: "rgba(22,163,74,0.3)", text: "var(--ok)",   glow: "rgba(22,163,74,0.2)" },
+    blue:   { bg: "var(--info-bg)",      border: "rgba(37,99,235,0.3)", text: "var(--info)", glow: "rgba(37,99,235,0.2)" },
+    red:    { bg: "var(--err-bg)",       border: "rgba(220,38,38,0.3)", text: "var(--err)",  glow: "rgba(220,38,38,0.2)" },
+    violet: { bg: "var(--purple-bg)",    border: "rgba(124,58,237,0.3)", text: "var(--purple)", glow: "rgba(124,58,237,0.2)" },
+    yellow: { bg: "var(--warn-bg)",      border: "rgba(217,119,6,0.3)", text: "var(--warn)", glow: "rgba(217,119,6,0.2)" },
   };
-  const c = colors[color] ?? colors.amber;
+  const p = palette[color];
+
   return (
-    <div className="kpi">
-      <div className="kpi-label">
-        <span>{label}</span>
+    <div
+      className="kpi-tile group"
+      style={{ cursor: "default" }}
+    >
+      {/* Corner accent */}
+      <div className="absolute top-0 right-0 w-12 h-12 overflow-hidden rounded-tr-2xl">
+        <div style={{
+          position: "absolute", top: 0, right: 0,
+          width: 0, height: 0,
+          borderStyle: "solid",
+          borderWidth: "0 48px 48px 0",
+          borderColor: `transparent ${p.bg} transparent transparent`,
+        }} />
+      </div>
+      <div className="flex items-start justify-between mb-4 relative">
+        <div>
+          <p className="label mb-0">{label}</p>
+        </div>
         <div
-          className="w-7 h-7 flex items-center justify-center flex-shrink-0"
-          style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text, borderRadius: 2 }}
+          className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
+          style={{ background: p.bg, border: `1.5px solid ${p.border}`, color: p.text }}
         >
           {icon}
         </div>
       </div>
-      <div className="kpi-value">{value}</div>
-      {sub && (
-        <div className="mt-2" style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--t3)", letterSpacing: "0.08em" }}>
-          {sub}
-        </div>
-      )}
+      <div className="font-display text-[36px] leading-none" style={{ color: "var(--tx)" }}>
+        {value}
+      </div>
+      <div className="flex items-center justify-between mt-3">
+        {sub && <p className="text-[12px]" style={{ color: "var(--tx-2)", fontFamily: "var(--font-mono)" }}>{sub}</p>}
+        {trend && (
+          <span
+            className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+            style={{
+              background: trend.up ? "var(--ok-bg)" : "var(--err-bg)",
+              color: trend.up ? "var(--ok)" : "var(--err)",
+            }}
+          >
+            {trend.up ? "↑" : "↓"} {trend.value}
+          </span>
+        )}
+      </div>
+      {/* Animated bottom accent line */}
+      <div
+        className="absolute bottom-0 left-0 h-0.5 transition-all duration-300"
+        style={{ width: "0%", background: p.text, borderRadius: "0 0 0 var(--radius-lg)" }}
+        onMouseEnter={e => (e.currentTarget.style.width = "100%")}
+        onMouseLeave={e => (e.currentTarget.style.width = "0%")}
+      />
     </div>
   );
 }
 
 /* ── ConfirmDialog ────────────────────────────────────────────────────────── */
-export function ConfirmDialog({ open, onClose, onConfirm, title, description, loading }: {
+export function ConfirmDialog({ open, onClose, onConfirm, title, description, loading, danger = true }: {
   open: boolean; onClose: () => void; onConfirm: () => void;
-  title: string; description?: string; loading?: boolean;
+  title: string; description?: string; loading?: boolean; danger?: boolean;
 }) {
   return (
     <Modal open={open} onClose={onClose} title={title} size="sm">
       {description && (
-        <p className="text-[13px] mb-6" style={{ color: "var(--t2)", fontFamily: "var(--font-mono)", letterSpacing: "0.04em" }}>
-          {description}
-        </p>
+        <p className="text-[14px] mb-6" style={{ color: "var(--tx-2)" }}>{description}</p>
       )}
       <div className="flex gap-3 justify-end">
         <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
-        <button className="btn btn-danger" onClick={onConfirm} disabled={loading}>
-          {loading && <Spinner size="sm" />}Delete
+        <button
+          className={danger ? "btn btn-danger" : "btn btn-primary"}
+          onClick={onConfirm}
+          disabled={loading}
+        >
+          {loading && <Spinner size="sm" />}Confirm
         </button>
       </div>
     </Modal>
@@ -196,112 +290,32 @@ export function ConfirmDialog({ open, onClose, onConfirm, title, description, lo
 
 /* ── Alert ────────────────────────────────────────────────────────────────── */
 export function Alert({ type, message }: { type: "error" | "success" | "info" | "warning"; message: string }) {
-  const styles: Record<string, { bg: string; border: string; color: string }> = {
-    error:   { bg: "var(--err-bg)",    border: "rgba(192,57,43,0.3)",    color: "#e05a4e" },
-    success: { bg: "var(--ok-bg)",     border: "rgba(61,153,112,0.3)",   color: "var(--ok)" },
-    info:    { bg: "var(--info-bg)",   border: "rgba(74,127,165,0.3)",   color: "var(--bl)" },
-    warning: { bg: "var(--warn-bg)",   border: "rgba(232,160,32,0.3)",   color: "var(--am)" },
-  };
-  const st = styles[type] ?? styles.info;
-  const Icon = type === "error" ? AlertCircle : CheckCircle2;
+  const cfg = {
+    error:   { bg: "var(--err-bg)",   border: "rgba(220,38,38,0.3)",   color: "var(--err)",    Icon: AlertCircle },
+    success: { bg: "var(--ok-bg)",    border: "rgba(22,163,74,0.3)",   color: "var(--ok)",     Icon: CheckCircle2 },
+    info:    { bg: "var(--info-bg)",  border: "rgba(37,99,235,0.3)",   color: "var(--info)",   Icon: Info },
+    warning: { bg: "var(--warn-bg)",  border: "rgba(217,119,6,0.3)",   color: "var(--warn)",   Icon: AlertTriangle },
+  }[type];
+  const { Icon } = cfg;
   return (
     <div
-      className="px-4 py-3 text-[12.5px] mb-4 flex items-center gap-2"
-      style={{ background: st.bg, border: `1px solid ${st.border}`, color: st.color, borderRadius: 2, fontFamily: "var(--font-mono)" }}
+      className="flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] mb-4"
+      style={{ background: cfg.bg, border: `1.5px solid ${cfg.border}`, color: cfg.color }}
     >
-      <Icon size={13} className="flex-shrink-0" />{message}
+      <Icon size={15} className="flex-shrink-0" />{message}
     </div>
   );
 }
 
-/* ── WorkerPopup ──────────────────────────────────────────────────────────── */
-export function WorkerPopup({ worker, onClose }: { worker: any; onClose: () => void }) {
+/* ── SectionDivider ───────────────────────────────────────────────────────── */
+export function SectionDivider({ label }: { label: string }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.7)" }} onClick={onClose} />
-      <div
-        className="relative w-full max-w-sm animate-slide-up p-6"
-        style={{ background: "var(--c2)", border: "1px solid var(--ln2)", borderTop: "2px solid var(--am)", borderRadius: 2, boxShadow: "var(--shadow-lg)" }}
-      >
-        <button onClick={onClose} className="absolute top-4 right-4 btn btn-ghost p-1.5">
-          <X size={14} />
-        </button>
-        <div className="flex items-center gap-4 mb-5">
-          <div
-            className="w-11 h-11 flex items-center justify-center font-display font-bold text-base"
-            style={{ background: "var(--am3)", border: "1px solid rgba(232,160,32,0.3)", color: "var(--am)", borderRadius: 2 }}
-          >
-            {worker.firstName?.[0]}{worker.lastName?.[0]}
-          </div>
-          <div>
-            <p className="font-display font-bold text-[15px] uppercase tracking-[0.04em]" style={{ color: "var(--t1)" }}>
-              {worker.firstName} {worker.lastName}
-            </p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.12em] mt-0.5" style={{ color: "var(--t3)" }}>
-              {worker.role}
-            </p>
-          </div>
-        </div>
-        <div className="space-y-2.5">
-          {[
-            { label: "Email",  value: worker.email },
-            { label: "Phone",  value: worker.phone },
-            { label: "Status", value: worker.status },
-          ].filter(r => r.value).map(({ label, value }) => (
-            <div key={label} className="flex justify-between text-[13px]" style={{ borderBottom: "1px solid var(--ln)", paddingBottom: 8 }}>
-              <span className="font-mono text-[10px] uppercase tracking-[0.1em]" style={{ color: "var(--t3)" }}>{label}</span>
-              <span style={{ color: "var(--t1)" }}>{value}</span>
-            </div>
-          ))}
-          {worker.hourlyRate != null && (
-            <div className="flex justify-between text-[13px]" style={{ borderBottom: "1px solid var(--ln)", paddingBottom: 8 }}>
-              <span className="font-mono text-[10px] uppercase tracking-[0.1em]" style={{ color: "var(--t3)" }}>Hourly Rate</span>
-              <span className="font-display font-bold" style={{ color: "var(--ok)" }}>${Number(worker.hourlyRate).toFixed(2)}/hr</span>
-            </div>
-          )}
-          {worker.overtimeRate != null && (
-            <div className="flex justify-between text-[13px]">
-              <span className="font-mono text-[10px] uppercase tracking-[0.1em]" style={{ color: "var(--t3)" }}>OT Rate</span>
-              <span className="font-display font-bold" style={{ color: "var(--am)" }}>${Number(worker.overtimeRate).toFixed(2)}/hr</span>
-            </div>
-          )}
-        </div>
-      </div>
+    <div className="flex items-center gap-3 my-6">
+      <div style={{ width: 20, height: 2, background: "var(--acc)", borderRadius: 99 }} />
+      <span className="font-display text-[14px] tracking-widest" style={{ color: "var(--acc)" }}>
+        {label.toUpperCase()}
+      </span>
+      <div style={{ flex: 1, height: 1, background: "var(--line)" }} />
     </div>
-  );
-}
-
-/* ── PlanBadge ────────────────────────────────────────────────────────────── */
-export function PlanBadge({ plan }: { plan: string }) {
-  const styles: Record<string, { bg: string; color: string }> = {
-    free:       { bg: "rgba(107,96,80,0.18)", color: "#6b6050" },
-    starter:    { bg: "rgba(74,127,165,0.18)", color: "#4a7fa5" },
-    pro:        { bg: "rgba(232,160,32,0.14)", color: "#e8a020" },
-    enterprise: { bg: "rgba(142,107,191,0.15)", color: "#8e6bbf" },
-  };
-  const s = styles[plan] ?? styles.free;
-  return (
-    <span
-      className="inline-flex items-center px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] font-semibold"
-      style={{ background: s.bg, color: s.color, borderRadius: 2 }}
-    >
-      {plan}
-    </span>
-  );
-}
-
-/* ── CompanyStatusBadge ───────────────────────────────────────────────────── */
-export function CompanyStatusBadge({ status }: { status: string }) {
-  const styles: Record<string, { bg: string; color: string }> = {
-    active:    { bg: "var(--ok-bg)",   color: "var(--ok)" },
-    trial:     { bg: "var(--am3)",     color: "var(--am)" },
-    suspended: { bg: "var(--err-bg)",  color: "var(--err)" },
-    inactive:  { bg: "var(--muted-bg)", color: "var(--muted)" },
-  };
-  const s = styles[status] ?? styles.inactive;
-  return (
-    <span className="badge" style={{ background: s.bg, color: s.color }}>
-      {status}
-    </span>
   );
 }

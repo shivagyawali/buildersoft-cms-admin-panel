@@ -4,12 +4,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { clientsApi } from "@/lib/api";
 import { Client } from "@/types";
 import { PageHeader, Modal, EmptyState, Spinner, ConfirmDialog, Field, Alert } from "@/components/ui/UI";
-import { Plus, Users, Search, Pencil, Trash2, ArrowUpRight, Phone, Mail, Building2 } from "lucide-react";
+import { Plus, Users, Search, Pencil, Trash2, ArrowRight, Phone, Mail, Building2, MapPin, UserCheck } from "lucide-react";
 import { getInitials, formatDate, getErrMsg, extractArray } from "@/lib/utils";
 import Link from "next/link";
 
 const BLANK = { firstName:"",lastName:"",email:"",phone:"",company:"",address:"",city:"",province:"",postalCode:"",country:"",notes:"" };
-interface FE { firstName?:string; lastName?:string; email?:string; }
+interface FE { firstName?:string; lastName?:string; email?:string }
+
+const ACCENT_COLORS = ["#f97316","#3b82f6","#22c55e","#a855f7","#ef4444","#f59e0b","#06b6d4","#ec4899"];
 
 export default function ClientsPage() {
   const qc = useQueryClient();
@@ -25,83 +27,97 @@ export default function ClientsPage() {
   const clients:Client[] = extractArray<Client>(data);
   const filtered = clients.filter(c=>`${c.firstName} ${c.lastName} ${c.email} ${c.company??""}`.toLowerCase().includes(search.toLowerCase()));
 
-  const s=(k:string)=>(e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>)=>{ setForm(p=>({...p,[k]:e.target.value})); setFe(p=>({...p,[k]:undefined})); };
+  const s=(k:string)=>(e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>)=>{setForm(p=>({...p,[k]:e.target.value}));setFe(p=>({...p,[k]:undefined}));};
   const validate=()=>{const e:FE={};if(!form.firstName.trim())e.firstName="Required";if(!form.lastName.trim())e.lastName="Required";if(!form.email.trim())e.email="Required";else if(!/\S+@\S+\.\S+/.test(form.email))e.email="Invalid email";setFe(e);return!Object.keys(e).length;};
   const openCreate=()=>{setEditing(null);setForm(BLANK);setErr("");setFe({});setOpen(true);};
   const openEdit=(c:Client)=>{setEditing(c);setForm({firstName:c.firstName,lastName:c.lastName,email:c.email,phone:c.phone??"",company:c.company??"",address:c.address??"",city:c.city??"",province:c.province??"",postalCode:c.postalCode??"",country:c.country??"",notes:c.notes??""});setErr("");setFe({});setOpen(true);};
   const saveMut=useMutation({mutationFn:()=>{if(!validate())return Promise.reject(new Error("v"));return editing?clientsApi.update(editing.id,form):clientsApi.create(form);},onSuccess:()=>{qc.invalidateQueries({queryKey:["clients"]});setOpen(false);},onError:(e:unknown)=>{if((e as Error).message!=="v")setErr(getErrMsg(e));}});
   const delMut=useMutation({mutationFn:()=>clientsApi.delete(delTarget!.id),onSuccess:()=>{qc.invalidateQueries({queryKey:["clients"]});setDelTarget(null);}});
 
-  const COLORS=[{bg:"var(--am3)",fg:"var(--am)"},{bg:"var(--bl2)",fg:"var(--bl)"},{bg:"var(--ok-bg)",fg:"var(--ok)"},{bg:"var(--err-bg)",fg:"var(--err)"},{bg:"var(--violet-bg)",fg:"var(--violet)"}];
-
   return (
-    <div className="animate-fade-in relative z-10">
-      <PageHeader title="Clients" subtitle={`${clients.length} on file`} action={<button className="btn btn-primary" onClick={openCreate}><Plus size={13}/>New Client</button>} />
-      <div className="relative mb-5 max-w-xs">
-        <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{color:"var(--t3)"}}/>
-        <input className="input pl-9" placeholder="Search clients…" value={search} onChange={e=>setSearch(e.target.value)}/>
+    <div className="animate-fade-in space-y-6">
+      <PageHeader title="Clients" subtitle={`${clients.length} client${clients.length!==1?"s":""} on record`} icon={<Users size={22}/>}
+        action={<button className="btn btn-primary" onClick={openCreate}><Plus size={15}/>New Client</button>}/>
+
+      {/* Search bar */}
+      <div className="flex items-center gap-3">
+        <div className="relative flex-1 max-w-md">
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2" style={{color:"var(--tx-3)"}}/>
+          <input className="input pl-11" placeholder="Search by name, email, company…" value={search} onChange={e=>setSearch(e.target.value)}/>
+        </div>
+        <div className="font-mono text-[12px]" style={{color:"var(--tx-3)"}}>{filtered.length} results</div>
       </div>
-      <div className="card overflow-hidden">
-        {isLoading?<div className="flex justify-center py-16"><Spinner/></div>:filtered.length===0?(
-          <EmptyState icon={<Users size={18}/>} title="No clients yet" description="Add your first client" action={<button className="btn btn-primary" onClick={openCreate}><Plus size={13}/>Add Client</button>}/>
-        ):(
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead><tr>{["#","Client","Contact","Location","Since",""].map(h=><th key={h} className="table-header">{h}</th>)}</tr></thead>
-              <tbody>
-                {filtered.map((c,i)=>{const col=COLORS[i%COLORS.length];return(
-                  <tr key={c.id}>
-                    <td className="table-cell font-mono text-[10.5px] w-10" style={{color:"var(--t3)"}}>{String(i+1).padStart(2,"0")}</td>
-                    <td className="table-cell">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center font-mono text-[11px] font-semibold" style={{background:col.bg,color:col.fg,borderRadius:2}}>{getInitials(c.firstName,c.lastName)}</div>
-                        <div>
-                          <div className="text-[14px] font-semibold" style={{color:"var(--t1)"}}>{c.firstName} {c.lastName}</div>
-                          {c.company&&<div className="text-[11.5px] flex items-center gap-1 mt-0.5" style={{color:"var(--t3)"}}><Building2 size={10}/>{c.company}</div>}
-                        </div>
+
+      {isLoading ? (
+        <div className="flex justify-center py-20"><Spinner size="lg"/></div>
+      ) : filtered.length === 0 ? (
+        <EmptyState icon={<Users size={28}/>} title="No Clients Found" description={search?"Try a different search term":"Add your first client to get started"} action={!search?<button className="btn btn-primary" onClick={openCreate}><Plus size={15}/>Add Client</button>:undefined}/>
+      ) : (
+        /* Card grid view */
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 stagger">
+          {filtered.map((c,i)=>{
+            const color = ACCENT_COLORS[i%ACCENT_COLORS.length];
+            return (
+              <div key={c.id} className="card card-hover group relative overflow-hidden">
+                {/* Color top strip */}
+                <div className="absolute top-0 left-0 right-0 h-1 transition-all duration-300" style={{background:`linear-gradient(90deg,${color},${color}88)`}}/>
+                <div className="p-5">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-xl flex items-center justify-center font-display text-[16px] font-bold flex-shrink-0"
+                        style={{background:`${color}18`,color,border:`1.5px solid ${color}40`}}>
+                        {getInitials(c.firstName,c.lastName)}
                       </div>
-                    </td>
-                    <td className="table-cell">
-                      <div className="text-[12.5px] flex items-center gap-1.5" style={{color:"var(--t2)"}}><Mail size={10} className="flex-shrink-0"/>{c.email}</div>
-                      {c.phone&&<div className="text-[12px] flex items-center gap-1.5 mt-1" style={{color:"var(--t3)"}}><Phone size={10} className="flex-shrink-0"/>{c.phone}</div>}
-                    </td>
-                    <td className="table-cell text-[13px]" style={{color:"var(--t2)"}}>{[c.city,c.province].filter(Boolean).join(", ")||"—"}</td>
-                    <td className="table-cell font-mono text-[11.5px]" style={{color:"var(--t3)"}}>{formatDate(c.createdAt)}</td>
-                    <td className="table-cell">
-                      <div className="row-action flex items-center gap-0.5 justify-end">
-                        <Link href={`/clients/${c.id}`} className="btn btn-ghost p-2"><ArrowUpRight size={13}/></Link>
-                        <button className="btn btn-ghost p-2" onClick={()=>openEdit(c)}><Pencil size={13}/></button>
-                        <button className="btn btn-ghost p-2" style={{color:"var(--err)",opacity:0.45}} onMouseOver={e=>{(e.currentTarget as HTMLElement).style.opacity="1";(e.currentTarget as HTMLElement).style.background="var(--err-bg)"}} onMouseOut={e=>{(e.currentTarget as HTMLElement).style.opacity="0.45";(e.currentTarget as HTMLElement).style.background="transparent"}} onClick={()=>setDelTarget(c)}><Trash2 size={13}/></button>
+                      <div>
+                        <p className="font-semibold text-[15px]" style={{color:"var(--tx)"}}>{c.firstName} {c.lastName}</p>
+                        {c.company&&<p className="text-[12px] flex items-center gap-1 mt-0.5" style={{color:"var(--tx-3)"}}><Building2 size={10}/>{c.company}</p>}
                       </div>
-                    </td>
-                  </tr>
-                );})}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+                    </div>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button className="btn btn-ghost p-1.5 rounded-lg" onClick={e=>{e.stopPropagation();openEdit(c)}}><Pencil size={13}/></button>
+                      <button className="btn btn-ghost p-1.5 rounded-lg" style={{color:"var(--err)"}} onClick={e=>{e.stopPropagation();setDelTarget(c)}}><Trash2 size={13}/></button>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5 mb-4">
+                    <div className="flex items-center gap-2 text-[12.5px]" style={{color:"var(--tx-2)"}}><Mail size={11} style={{color:"var(--tx-3)"}}/>{c.email}</div>
+                    {c.phone&&<div className="flex items-center gap-2 text-[12.5px]" style={{color:"var(--tx-2)"}}><Phone size={11} style={{color:"var(--tx-3)"}}/>{c.phone}</div>}
+                    {(c.city||c.province)&&<div className="flex items-center gap-2 text-[12.5px]" style={{color:"var(--tx-2)"}}><MapPin size={11} style={{color:"var(--tx-3)"}}/>{[c.city,c.province].filter(Boolean).join(", ")}</div>}
+                  </div>
+                  <div className="flex items-center justify-between pt-3" style={{borderTop:"1px solid var(--line)"}}>
+                    <span className="font-mono text-[11px]" style={{color:"var(--tx-3)"}}>Since {formatDate(c.createdAt)}</span>
+                    <Link href={`/clients/${c.id}`} className="flex items-center gap-1 text-[12px] font-medium transition-colors" style={{color}}
+                      onMouseOver={e=>(e.currentTarget.style.opacity="0.8")} onMouseOut={e=>(e.currentTarget.style.opacity="1")}>
+                      View <ArrowRight size={12}/>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       <Modal open={open} onClose={()=>setOpen(false)} title={editing?"Edit Client":"New Client"} size="lg">
         {err&&<Alert type="error" message={err}/>}
-        <div className="grid grid-cols-2 gap-x-5 gap-y-1">
+        <div className="grid grid-cols-2 gap-4">
           <Field label="First Name" required error={fe.firstName}><input className="input" value={form.firstName} onChange={s("firstName")} placeholder="John"/></Field>
           <Field label="Last Name" required error={fe.lastName}><input className="input" value={form.lastName} onChange={s("lastName")} placeholder="Doe"/></Field>
           <Field label="Email" required error={fe.email}><input type="email" className="input" value={form.email} onChange={s("email")} placeholder="john@example.com"/></Field>
           <Field label="Phone"><input className="input" value={form.phone} onChange={s("phone")} placeholder="+1-555-0123"/></Field>
-          <Field label="Company"><input className="input" value={form.company} onChange={s("company")} placeholder="Company name"/></Field>
+          <Field label="Company"><input className="input" value={form.company} onChange={s("company")} placeholder="Acme Construction"/></Field>
           <Field label="Address"><input className="input" value={form.address} onChange={s("address")} placeholder="123 Main St"/></Field>
           <Field label="City"><input className="input" value={form.city} onChange={s("city")} placeholder="Toronto"/></Field>
           <Field label="Province"><input className="input" value={form.province} onChange={s("province")} placeholder="ON"/></Field>
           <Field label="Postal Code"><input className="input" value={form.postalCode} onChange={s("postalCode")} placeholder="M5H 2N2"/></Field>
           <Field label="Country"><input className="input" value={form.country} onChange={s("country")} placeholder="Canada"/></Field>
-          <div className="col-span-2"><Field label="Notes"><textarea className="input resize-none min-h-[72px]" value={form.notes} onChange={s("notes")}/></Field></div>
+          <div className="col-span-2"><Field label="Notes"><textarea className="input resize-none min-h-[80px]" value={form.notes} onChange={s("notes")} placeholder="Additional notes…"/></Field></div>
         </div>
-        <div className="flex gap-3 justify-end mt-5 pt-4" style={{borderTop:"1px solid var(--ln)"}}>
+        <div className="flex gap-3 justify-end mt-5 pt-4" style={{borderTop:"1px solid var(--line)"}}>
           <button className="btn btn-secondary" onClick={()=>setOpen(false)}>Cancel</button>
           <button className="btn btn-primary" onClick={()=>saveMut.mutate()} disabled={saveMut.isPending}>{saveMut.isPending&&<Spinner size="sm"/>}{editing?"Save Changes":"Create Client"}</button>
         </div>
       </Modal>
-      <ConfirmDialog open={!!delTarget} onClose={()=>setDelTarget(null)} onConfirm={()=>delMut.mutate()} loading={delMut.isPending} title="Delete Client" description={`Delete ${delTarget?.firstName} ${delTarget?.lastName}?`}/>
+      <ConfirmDialog open={!!delTarget} onClose={()=>setDelTarget(null)} onConfirm={()=>delMut.mutate()} loading={delMut.isPending} title="Delete Client" description={`Remove ${delTarget?.firstName} ${delTarget?.lastName}? This cannot be undone.`}/>
     </div>
   );
 }

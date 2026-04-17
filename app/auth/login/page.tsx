@@ -2,148 +2,166 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { HardHat, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, HardHat, Hammer, Wrench, Truck } from "lucide-react";
 import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
-  const [form, setForm]     = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [err, setErr]       = useState("");
+  const [err, setErr] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(""); setLoading(true);
-    try {
-      await login(form.email, form.password);
-      router.push("/dashboard");
-    } catch (error: any) {
-      setErr(error?.response?.data?.message ?? "Invalid email or password");
-    } finally { setLoading(false); }
+    try { await login(form.email, form.password); router.push("/dashboard"); }
+    catch (error: any) { setErr(error?.response?.data?.message ?? "Invalid credentials"); }
+    finally { setLoading(false); }
   };
 
   return (
-    <div className="min-h-screen flex relative z-10" style={{ background: "var(--c0)" }}>
-      {/* Left panel - brand */}
+    <div className="min-h-screen flex" style={{ background: "var(--bg)", fontFamily: "var(--font-sans)" }}>
+      {/* LEFT PANEL — Construction art */}
       <div
-        className="hidden lg:flex flex-col justify-between p-12 w-[420px] flex-shrink-0"
-        style={{ background: "var(--c1)", borderRight: "1px solid var(--ln)" }}
+        className="hidden lg:flex flex-col justify-between p-12 w-[520px] flex-shrink-0 relative overflow-hidden"
+        style={{ background: "#0d1117" }}
       >
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 flex items-center justify-center" style={{ background: "var(--am)", borderRadius: 2 }}>
-            <HardHat size={16} color="#000" />
-          </div>
-          <div>
-            <div className="font-display font-bold text-[16px] uppercase tracking-[0.06em]" style={{ color: "var(--t1)" }}>BuilderSoft</div>
-            <div className="font-mono text-[8.5px] uppercase tracking-[0.16em]" style={{ color: "var(--t3)" }}>Construction CMS</div>
+        {/* Grid background */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: "linear-gradient(rgba(249,115,22,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.06) 1px, transparent 1px)",
+          backgroundSize: "40px 40px"
+        }} />
+
+        {/* Hazard stripes at top */}
+        <div className="absolute top-0 left-0 right-0 h-2" style={{
+          background: "repeating-linear-gradient(90deg, #f97316 0px, #f97316 24px, #1a1208 24px, #1a1208 48px)"
+        }} />
+
+        {/* Large construction icon */}
+        <div className="absolute right-[-40px] bottom-[-40px] opacity-5">
+          <HardHat size={320} color="#f97316" />
+        </div>
+
+        {/* Brand */}
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "#f97316" }}>
+              <HardHat size={24} color="#fff" />
+            </div>
+            <div>
+              <div className="font-display text-[28px] leading-none tracking-wider text-white">BuilderSoft</div>
+              <div className="font-mono text-[9px] tracking-[0.2em] mt-0.5" style={{ color: "rgba(249,115,22,0.6)" }}>CONSTRUCTION MANAGEMENT</div>
+            </div>
           </div>
         </div>
 
-        <div>
-          <div className="w-12 h-[2px] mb-6" style={{ background: "var(--am)" }} />
-          <h2 className="font-display font-bold text-[36px] uppercase tracking-[0.03em] leading-none mb-4" style={{ color: "var(--t1)" }}>
-            Multi-Tenant<br />Construction<br />Management
+        {/* Center content */}
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-6">
+            <div style={{ width: 32, height: 3, background: "#f97316", borderRadius: 99 }} />
+            <div style={{ width: 16, height: 3, background: "rgba(249,115,22,0.4)", borderRadius: 99 }} />
+          </div>
+          <h2 className="font-display text-[52px] leading-none tracking-wider text-white mb-4">
+            BUILD.<br/>TRACK.<br/>DELIVER.
           </h2>
-          <p className="text-[13.5px] leading-relaxed" style={{ color: "var(--t2)", fontFamily: "var(--font-mono)", letterSpacing: "0.04em" }}>
-            Projects · Clients · Workers<br />
-            Invoices · Pay Periods · Teams
+          <p className="text-[14px] leading-relaxed" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-mono)" }}>
+            Full-stack construction management.<br/>
+            Multi-tenant. Role-based access.<br/>
+            Real-time project oversight.
           </p>
         </div>
 
-        <div className="space-y-3">
+        {/* Feature pills */}
+        <div className="relative z-10 flex flex-wrap gap-2">
           {[
-            { role: "SuperAdmin",  desc: "Platform-wide oversight" },
-            { role: "Admin",       desc: "Full company access" },
-            { role: "Manager",     desc: "Projects & billing" },
-            { role: "Supervisor",  desc: "Field oversight" },
-            { role: "Worker",      desc: "Task access" },
-          ].map(({ role, desc }) => (
-            <div key={role} className="flex items-center gap-3">
-              <div className="w-1.5 h-1.5 flex-shrink-0" style={{ background: "var(--am)", borderRadius: "50%" }} />
-              <span className="font-mono text-[10px] uppercase tracking-[0.1em]" style={{ color: "var(--t2)" }}>
-                <span style={{ color: "var(--am)" }}>{role}</span> — {desc}
-              </span>
+            { icon: <HardHat size={12} />, label: "Workers" },
+            { icon: <Hammer size={12} />, label: "Projects" },
+            { icon: <Wrench size={12} />, label: "Tasks" },
+            { icon: <Truck size={12} />, label: "Invoices" },
+          ].map(({ icon, label }) => (
+            <div key={label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium"
+              style={{ background: "rgba(249,115,22,0.12)", border: "1px solid rgba(249,115,22,0.25)", color: "#f97316" }}>
+              {icon}{label}
             </div>
           ))}
         </div>
+
+        {/* Bottom hazard stripe */}
+        <div className="absolute bottom-0 left-0 right-0 h-2" style={{
+          background: "repeating-linear-gradient(90deg, #f97316 0px, #f97316 24px, #1a1208 24px, #1a1208 48px)"
+        }} />
       </div>
 
-      {/* Right panel - form */}
+      {/* RIGHT PANEL — Login form */}
       <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-sm">
-          <div className="lg:hidden flex items-center gap-3 mb-8">
-            <div className="w-9 h-9 flex items-center justify-center" style={{ background: "var(--am)", borderRadius: 2 }}>
-              <HardHat size={16} color="#000" />
+        <div className="w-full max-w-[400px]">
+          {/* Mobile brand */}
+          <div className="flex items-center gap-3 mb-8 lg:hidden">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "var(--acc)" }}>
+              <HardHat size={20} color="#fff" />
             </div>
-            <div className="font-display font-bold text-[16px] uppercase tracking-[0.06em]" style={{ color: "var(--t1)" }}>BuilderSoft</div>
+            <div className="font-display text-[24px] tracking-wider" style={{ color: "var(--tx)" }}>BuilderSoft</div>
           </div>
 
           <div className="mb-8">
-            <h1 className="font-display font-bold text-[28px] uppercase tracking-[0.05em] leading-none" style={{ color: "var(--t1)" }}>Sign In</h1>
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.14em] mt-2" style={{ color: "var(--t3)" }}>
-              Access your workspace
-            </p>
+            <h1 className="font-display text-[40px] leading-none tracking-wider mb-2" style={{ color: "var(--tx)" }}>
+              SIGN IN
+            </h1>
+            <p className="text-[14px]" style={{ color: "var(--tx-2)" }}>Access your construction command center</p>
           </div>
 
           {err && (
-            <div className="flex items-center gap-2 px-4 py-3 text-[12px] mb-5 font-mono"
-              style={{ background: "var(--err-bg)", border: "1px solid rgba(192,57,43,0.3)", color: "var(--err)", borderRadius: 2 }}>
-              <AlertCircle size={13} />{err}
+            <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl text-[13px] mb-5"
+              style={{ background: "var(--err-bg)", border: "1.5px solid rgba(220,38,38,0.3)", color: "var(--err)" }}>
+              <AlertCircle size={14} />{err}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="label">Email address</label>
+              <label className="label">Email Address</label>
               <input
-                type="email" className="input"
+                type="email" className="input" required autoComplete="email"
                 value={form.email}
                 onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
                 placeholder="you@company.com"
-                required autoComplete="email"
               />
             </div>
             <div>
               <label className="label">Password</label>
               <div className="relative">
                 <input
-                  type={showPw ? "text" : "password"} className="input pr-10"
+                  type={showPw ? "text" : "password"} className="input pr-12" required
                   value={form.password}
                   onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
                   placeholder="••••••••"
-                  required autoComplete="current-password"
+                  autoComplete="current-password"
                 />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: "var(--t3)" }}
-                  onClick={() => setShowPw(v => !v)}
-                  onMouseOver={e => (e.currentTarget.style.color = "var(--am)")}
-                  onMouseOut={e => (e.currentTarget.style.color = "var(--t3)")}
-                >
-                  {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
+                <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded"
+                  style={{ color: "var(--tx-3)" }}
+                  onClick={() => setShowPw(v => !v)}>
+                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
-            <button
-              type="submit" className="btn btn-primary w-full justify-center"
-              disabled={loading} style={{ width: "100%", marginTop: 8 }}
-            >
-              {loading
-                ? <div className="w-4 h-4 rounded-full animate-spin border-2 border-black/30 border-t-black" />
-                : "Sign In"}
+
+            <button type="submit" className="btn btn-primary w-full justify-center" disabled={loading} style={{ width: "100%", paddingTop: 12, paddingBottom: 12 }}>
+              {loading ? (
+                <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white" style={{ animation: "spin 0.75s linear infinite" }} />
+              ) : (
+                <>
+                  <HardHat size={16} />
+                  Sign In to BuilderSoft
+                </>
+              )}
             </button>
           </form>
 
-          <p className="text-center text-[12.5px] mt-6 font-mono uppercase tracking-[0.1em]" style={{ color: "var(--t3)" }}>
-            No account?{" "}
-            <Link href="/auth/register" className="transition-colors" style={{ color: "var(--am)" }}
-              onMouseOver={e => (e.currentTarget.style.color = "var(--am2)")}
-              onMouseOut={e => (e.currentTarget.style.color = "var(--am)")}>
-              Register
-            </Link>
+          <p className="text-center text-[13px] mt-6" style={{ color: "var(--tx-3)" }}>
+            New to BuilderSoft?{" "}
+            <Link href="/auth/register" style={{ color: "var(--acc)", fontWeight: 600 }}>Create account</Link>
           </p>
         </div>
       </div>
