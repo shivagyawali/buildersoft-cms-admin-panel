@@ -1,5 +1,22 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/auth/register/page": "app/auth/register/page.js",
+  "/page": "app/page.js",
+  "/admin/roles/page": "app/admin/roles/page.js",
+  "/clients/page": "app/clients/page.js",
   "/companies/page": "app/companies/page.js",
+  "/invoices/page": "app/invoices/page.js",
+  "/clients/[id]/page": "app/clients/[id]/page.js",
+  "/projects/[id]/page": "app/projects/[id]/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/projects/page": "app/projects/page.js",
+  "/workers/page": "app/workers/page.js",
   "/superadmin/page": "app/superadmin/page.js",
+  "/admin/users/page": "app/admin/users/page.js",
+  "/invoices/[id]/page": "app/invoices/[id]/page.js",
+  "/invoice-periods/page": "app/invoice-periods/page.js",
+  "/tasks/page": "app/tasks/page.js",
   "/superadmin/users/page": "app/superadmin/users/page.js"
 }
