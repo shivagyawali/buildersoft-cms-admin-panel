@@ -1,4 +1,4 @@
 import AppShell from "@/components/layout/AppShell";
-export default function AdminRolesLayout({ children }: { children: React.ReactNode }) {
+export default function L({ children }: { children: React.ReactNode }) {
   return <AppShell>{children}</AppShell>;
 }

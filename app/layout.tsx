@@ -3,8 +3,8 @@ import "./globals.css";
 import Providers from "@/components/ui/Providers";
 
 export const metadata: Metadata = {
-  title: "Buildersoft CMS",
-  description: "Construction Management System",
+  title: "BuilderSoft CMS",
+  description: "Multi-tenant Construction Management System",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

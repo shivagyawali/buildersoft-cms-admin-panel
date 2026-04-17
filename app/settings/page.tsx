@@ -4,176 +4,117 @@ import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { usePermissions } from "@/lib/permissions-context";
-import { PageHeader, Field, Spinner, Alert } from "@/components/ui/UI";
+import { Field, Spinner, Alert } from "@/components/ui/UI";
 import { User, Lock, Shield, ExternalLink } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import Link from "next/link";
 
+const ROLE_STYLES: Record<string,{bg:string;fg:string;border:string}> = {
+  admin:      {bg:"rgba(192,57,43,0.14)",    fg:"var(--err)",    border:"rgba(192,57,43,0.3)"},
+  manager:    {bg:"rgba(232,160,32,0.14)",   fg:"var(--am)",     border:"rgba(232,160,32,0.3)"},
+  supervisor: {bg:"rgba(74,127,165,0.18)",   fg:"var(--bl)",     border:"rgba(74,127,165,0.3)"},
+  worker:     {bg:"rgba(61,153,112,0.14)",   fg:"var(--ok)",     border:"rgba(61,153,112,0.3)"},
+};
+const ROUTE_LABELS: Record<string,string> = {
+  "/dashboard":"Dashboard","/clients":"Clients","/projects":"Projects",
+  "/tasks":"Tasks","/workers":"Workers","/invoice-periods":"Pay Periods",
+  "/invoices":"Invoices","/admin":"Admin","/settings":"Settings",
+};
+
 export default function SettingsPage() {
-  const { user, refreshUser } = useAuth();
-  const { permissions } = usePermissions();
-  const [profileForm, setProfileForm] = useState({ phone: user?.phone ?? "", company: user?.company ?? "" });
-  const [pwForm, setPwForm] = useState({ oldPassword: "", newPassword: "", confirmPassword: "" });
-  const [profileMsg, setProfileMsg] = useState("");
-  const [pwMsg, setPwMsg] = useState("");
-  const [pwErr, setPwErr] = useState("");
-  const [pwFormErrors, setPwFormErrors] = useState<{ oldPassword?: string; newPassword?: string; confirmPassword?: string }>({});
+  const {user,refreshUser}=useAuth();
+  const {permissions}=usePermissions();
+  const [pf,setPf]=useState({phone:user?.phone??"",company:user?.company??""});
+  const [pw,setPw]=useState({oldPassword:"",newPassword:"",confirmPassword:""});
+  const [pMsg,setPMsg]=useState("");
+  const [wMsg,setWMsg]=useState("");
+  const [wErr,setWErr]=useState("");
+  const [wFe,setWFe]=useState<{oldPassword?:string;newPassword?:string;confirmPassword?:string}>({});
 
-  const sp = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setProfileForm(p => ({ ...p, [k]: e.target.value }));
-  const sw = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => { setPwForm(p => ({ ...p, [k]: e.target.value })); setPwFormErrors(p => ({ ...p, [k]: undefined })); };
+  const sp=(k:string)=>(e:React.ChangeEvent<HTMLInputElement>)=>setPf(p=>({...p,[k]:e.target.value}));
+  const sw=(k:string)=>(e:React.ChangeEvent<HTMLInputElement>)=>{setPw(p=>({...p,[k]:e.target.value}));setWFe(p=>({...p,[k]:undefined}));};
 
-  const profileMut = useMutation({
-    mutationFn: () => authApi.updateProfile(profileForm),
-    onSuccess: () => { refreshUser(); setProfileMsg("Profile updated!"); setTimeout(() => setProfileMsg(""), 3000); },
-  });
+  const profileMut=useMutation({mutationFn:()=>authApi.updateProfile(pf),onSuccess:()=>{refreshUser();setPMsg("Profile updated!");setTimeout(()=>setPMsg(""),3000);}});
+  const pwMut=useMutation({mutationFn:()=>authApi.changePassword({oldPassword:pw.oldPassword,newPassword:pw.newPassword}),onSuccess:()=>{setPw({oldPassword:"",newPassword:"",confirmPassword:""});setWMsg("Password changed!");setTimeout(()=>setWMsg(""),3000);},onError:(e:unknown)=>{const err=e as {response?:{data?:{message?:string}}};setWErr(err?.response?.data?.message??"Failed to update password");}});
 
-  const pwMut = useMutation({
-    mutationFn: () => authApi.changePassword({ oldPassword: pwForm.oldPassword, newPassword: pwForm.newPassword }),
-    onSuccess: () => { setPwForm({ oldPassword: "", newPassword: "", confirmPassword: "" }); setPwMsg("Password changed!"); setTimeout(() => setPwMsg(""), 3000); },
-    onError: (e: unknown) => { const err = e as { response?: { data?: { message?: string } } }; setPwErr(err?.response?.data?.message ?? "Failed to update password"); },
-  });
+  const validatePw=()=>{const e:{oldPassword?:string;newPassword?:string;confirmPassword?:string}={};if(!pw.oldPassword)e.oldPassword="Required";if(!pw.newPassword||pw.newPassword.length<8)e.newPassword="Min 8 characters";if(pw.newPassword!==pw.confirmPassword)e.confirmPassword="Passwords do not match";setWFe(e);return!Object.keys(e).length;};
+  const handlePwSubmit=(e:React.FormEvent)=>{e.preventDefault();setWErr("");if(!validatePw())return;pwMut.mutate();};
 
-  const validatePw = () => {
-    const errs: Record<string, string> = {};
-    if (!pwForm.oldPassword) errs.oldPassword = "Current password required";
-    if (!pwForm.newPassword || pwForm.newPassword.length < 8) errs.newPassword = "At least 8 characters";
-    if (pwForm.newPassword !== pwForm.confirmPassword) errs.confirmPassword = "Passwords do not match";
-    setPwFormErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-
-  const handlePwSubmit = (e: React.FormEvent) => { e.preventDefault(); setPwErr(""); if (!validatePw()) return; pwMut.mutate(); };
-
-  if (!user) return null;
-
-  const myAllowedRoutes = permissions[user.role] ?? [];
-  const isAdmin = user.role === "admin";
-
-  const card = { background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", boxShadow: "var(--shadow-sm)", borderRadius: 16, padding: 24, marginBottom: 16 } as const;
-
-  const ROLE_COLOR: Record<string, string> = {
-    admin: "#f87171", manager: "var(--brand-500)", supervisor: "#60a5fa", worker: "#34d399",
-  };
-  const roleColor = ROLE_COLOR[user.role] ?? "var(--brand-500)";
+  if(!user)return null;
+  const routes=permissions[user.role]??[];
+  const isAdmin=user.role==="admin";
+  const rs=ROLE_STYLES[user.role]??ROLE_STYLES.manager;
 
   return (
-    <div className="animate-fade-in max-w-2xl">
-      <PageHeader title="Settings" subtitle="Manage your account and preferences" />
+    <div className="animate-fade-in relative z-10 max-w-2xl">
+      <div className="mb-6">
+        <div className="page-sub mb-1.5">Account / Settings</div>
+        <h1 className="page-title">Your Account</h1>
+      </div>
+      <div className="hairline-strong mb-7"/>
 
-      {/* Profile card */}
-      <div style={card}>
-        <div className="flex items-center gap-4 mb-6 pb-5" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-          <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0"
-            style={{ background: "rgba(249,115,22,0.1)", border: "1px solid rgba(249,115,22,0.25)", color: "var(--brand-500)" }}
-          >
-            {getInitials(user.firstName, user.lastName)}
-          </div>
+      {/* Identity card */}
+      <div className="card mb-4">
+        <div className="flex items-center gap-4 px-6 py-5 border-b border-[color:var(--ln)]">
+          <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center font-display font-bold text-lg border" style={{background:rs.bg,borderColor:rs.border,color:rs.fg,borderRadius:2}}>{getInitials(user.firstName,user.lastName)}</div>
           <div>
-            <p className="font-bold font-display text-base" style={{ color: "var(--text-primary)" }}>{user.firstName} {user.lastName}</p>
-            <p className="text-sm mt-0.5" style={{ color: "var(--text-secondary)" }}>{user.email}</p>
-            <span
-              className="inline-block mt-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold capitalize"
-              style={{ background: `${roleColor}18`, color: roleColor, border: `1px solid ${roleColor}30` }}
-            >
-              {user.role}
-            </span>
+            <div className="font-display font-bold text-[20px] uppercase tracking-[0.04em] leading-none">{user.firstName} {user.lastName}</div>
+            <div className="text-[13px] text-[color:var(--t2)] mt-1">{user.email}</div>
+            <span className="inline-block mt-2 px-2.5 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.12em] border" style={{background:rs.bg,color:rs.fg,borderColor:rs.border,borderRadius:2}}>{user.role}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 mb-4">
-          <User size={14} style={{ color: "var(--text-tertiary)" }} />
-          <span className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>Edit Profile</span>
+        {/* Profile form */}
+        <div className="px-6 py-5">
+          <div className="flex items-center gap-2 mb-5"><User size={13} className="text-[color:var(--t3)]"/><span className="label mb-0">Edit Profile</span></div>
+          {pMsg&&<Alert type="success" message={pMsg}/>}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-1 mb-5">
+            <div><label className="label">First Name</label><input className="input opacity-40 cursor-not-allowed" value={user.firstName} readOnly/></div>
+            <div><label className="label">Last Name</label><input className="input opacity-40 cursor-not-allowed" value={user.lastName} readOnly/></div>
+            <div className="col-span-2"><label className="label">Email</label><input className="input opacity-40 cursor-not-allowed" value={user.email} readOnly/></div>
+            <Field label="Phone"><input className="input" value={pf.phone} onChange={sp("phone")} placeholder="+1-555-0123"/></Field>
+            <Field label="Company"><input className="input" value={pf.company} onChange={sp("company")} placeholder="Company name"/></Field>
+          </div>
+          <button className="btn btn-primary" onClick={()=>profileMut.mutate()} disabled={profileMut.isPending}>{profileMut.isPending&&<Spinner size="sm"/>}Save Profile</button>
         </div>
-        {profileMsg && <Alert type="success" message={profileMsg} />}
-        <div className="grid grid-cols-2 gap-4 mb-5">
-          <div><label className="label">First Name</label><input className="input opacity-50 cursor-not-allowed" value={user.firstName} readOnly /></div>
-          <div><label className="label">Last Name</label><input className="input opacity-50 cursor-not-allowed" value={user.lastName} readOnly /></div>
-          <div className="col-span-2"><label className="label">Email</label><input className="input opacity-50 cursor-not-allowed" value={user.email} readOnly /></div>
-          <Field label="Phone"><input className="input" value={profileForm.phone} onChange={sp("phone")} placeholder="+1-555-0123" /></Field>
-          <Field label="Company"><input className="input" value={profileForm.company} onChange={sp("company")} placeholder="Company name" /></Field>
-        </div>
-        <button className="btn btn-primary" onClick={() => profileMut.mutate()} disabled={profileMut.isPending}>
-          {profileMut.isPending && <Spinner size="sm" />}Save Profile
-        </button>
       </div>
 
       {/* Password card */}
-      <div style={card}>
-        <div className="flex items-center gap-2 mb-5">
-          <Lock size={14} style={{ color: "var(--text-tertiary)" }} />
-          <span className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>Change Password</span>
+      <div className="card mb-4">
+        <div className="px-6 py-5">
+          <div className="flex items-center gap-2 mb-5"><Lock size={13} className="text-[color:var(--t3)]"/><span className="label mb-0">Change Password</span></div>
+          {wMsg&&<Alert type="success" message={wMsg}/>}
+          {wErr&&<Alert type="error" message={wErr}/>}
+          <form onSubmit={handlePwSubmit} className="space-y-1">
+            <Field label="Current Password" error={wFe.oldPassword}><input type="password" className="input" value={pw.oldPassword} onChange={sw("oldPassword")}/></Field>
+            <Field label="New Password" error={wFe.newPassword}><input type="password" className="input" value={pw.newPassword} onChange={sw("newPassword")}/></Field>
+            <Field label="Confirm Password" error={wFe.confirmPassword}><input type="password" className="input" value={pw.confirmPassword} onChange={sw("confirmPassword")}/></Field>
+            <div className="pt-3"><button type="submit" className="btn btn-primary" disabled={pwMut.isPending}>{pwMut.isPending&&<Spinner size="sm"/>}Update Password</button></div>
+          </form>
         </div>
-        {pwMsg && <Alert type="success" message={pwMsg} />}
-        {pwErr && <Alert type="error" message={pwErr} />}
-        <form onSubmit={handlePwSubmit} className="space-y-4">
-          <Field label="Current Password" error={pwFormErrors.oldPassword}><input type="password" className="input" value={pwForm.oldPassword} onChange={sw("oldPassword")} /></Field>
-          <Field label="New Password" error={pwFormErrors.newPassword}><input type="password" className="input" value={pwForm.newPassword} onChange={sw("newPassword")} /></Field>
-          <Field label="Confirm Password" error={pwFormErrors.confirmPassword}><input type="password" className="input" value={pwForm.confirmPassword} onChange={sw("confirmPassword")} /></Field>
-          <button type="submit" className="btn btn-primary" disabled={pwMut.isPending}>
-            {pwMut.isPending && <Spinner size="sm" />}Update Password
-          </button>
-        </form>
       </div>
 
-      {/* My access card */}
-      <div style={card}>
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2">
-            <Shield size={14} style={{ color: "var(--text-tertiary)" }} />
-            <span className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>My Access</span>
+      {/* Access card */}
+      <div className="card">
+        <div className="px-6 py-5">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-2"><Shield size={13} className="text-[color:var(--t3)]"/><span className="label mb-0">My Access</span></div>
+            {isAdmin&&<Link href="/admin/roles" className="btn btn-secondary text-[12px] py-1.5"><ExternalLink size={12}/>Manage Roles</Link>}
           </div>
-          {isAdmin && (
-            <Link href="/admin/roles" className="btn btn-secondary text-xs flex items-center gap-1.5">
-              <ExternalLink size={12} />Manage All Roles
-            </Link>
-          )}
+          <div className="border p-4 mb-4" style={{background:rs.bg,borderColor:rs.border,borderRadius:2}}>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="px-2.5 py-1 font-mono text-[9.5px] uppercase tracking-[0.12em] border" style={{background:rs.bg,color:rs.fg,borderColor:rs.border}}>{user.role}</span>
+              <span className="text-[12px] text-[color:var(--t3)]">Current role</span>
+            </div>
+            <p className="text-[13px] mb-3 text-[color:var(--t2)]">Access to <strong>{routes.length}</strong> sections.</p>
+            <div className="flex flex-wrap gap-1.5">
+              {routes.map(href=>(
+                <span key={href} className="font-mono text-[10.5px] px-2.5 py-1 border" style={{background:"var(--c2)",border:"1px solid var(--ln)",color:"var(--t2)",borderRadius:2}}>{ROUTE_LABELS[href]??href}</span>
+              ))}
+            </div>
+          </div>
+          {isAdmin&&<p className="text-[12.5px] text-[color:var(--t3)]">Admin: manage permissions from <Link href="/admin/roles" className="text-[color:var(--am)] underline underline-offset-2">Roles &amp; Permissions</Link>.</p>}
         </div>
-
-        <div
-          className="rounded-xl p-4 mb-4"
-          style={{ background: `${roleColor}08`, border: `1px solid ${roleColor}25` }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <span
-              className="px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wide capitalize"
-              style={{ background: `${roleColor}18`, color: roleColor }}
-            >
-              {user.role}
-            </span>
-            <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>Your current role</span>
-          </div>
-          <p className="text-xs mb-3" style={{ color: "var(--text-secondary)" }}>
-            You have access to <strong>{myAllowedRoutes.length}</strong> sections of the application.
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {myAllowedRoutes.map(href => (
-              <span
-                key={href}
-                className="text-[11px] px-2.5 py-1 rounded-lg font-medium"
-                style={{ background: "var(--bg-sunken)", border: "1px solid var(--border-default)", color: "var(--text-secondary)" }}
-              >
-                {href === "/dashboard" ? "Dashboard" :
-                 href === "/clients" ? "Clients" :
-                 href === "/projects" ? "Projects" :
-                 href === "/tasks" ? "Tasks" :
-                 href === "/workers" ? "Workers" :
-                 href === "/invoice-periods" ? "Pay Periods" :
-                 href === "/invoices" ? "Invoices" : href}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {isAdmin && (
-          <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
-            As an admin, you can manage role permissions from the{" "}
-            <Link href="/admin/roles" style={{ color: "var(--brand-500)" }} className="underline underline-offset-2">
-              Roles & Permissions
-            </Link>{" "}
-            page.
-          </p>
-        )}
       </div>
     </div>
   );

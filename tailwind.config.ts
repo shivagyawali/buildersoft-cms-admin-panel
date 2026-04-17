@@ -9,23 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans:    ["Inter", "sans-serif"],
-        display: ["Syne", "sans-serif"],
-        mono:    ["JetBrains Mono", "monospace"],
-      },
-      colors: {
-        brand: {
-          50:  "#fff7ed",
-          100: "#ffedd5",
-          200: "#fed7aa",
-          300: "#fdba74",
-          400: "#fb923c",
-          500: "#f97316",
-          600: "#ea6c10",
-          700: "#c2570d",
-          800: "#9a3f08",
-          900: "#7c3a0a",
-        },
+        sans:    ["Barlow", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["Barlow Condensed", "Barlow", "sans-serif"],
+        mono:    ["JetBrains Mono", "ui-monospace", "monospace"],
       },
     },
   },

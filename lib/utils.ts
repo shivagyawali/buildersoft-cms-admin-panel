@@ -50,3 +50,18 @@ export function extractArray<T>(data: unknown): T[] {
   }
   return [];
 }
+
+export function getPlanColor(plan: string): string {
+  const map: Record<string, string> = {
+    free: "#6b6050", starter: "#4a7fa5", pro: "#e8a020", enterprise: "#8e6bbf",
+  };
+  return map[plan] ?? "#6b6050";
+}
+
+export function getStatusBgColor(status: string): string {
+  const map: Record<string, string> = {
+    active: "rgba(61,153,112,0.14)", trial: "rgba(232,160,32,0.14)",
+    suspended: "rgba(192,57,43,0.14)", inactive: "rgba(107,96,80,0.18)",
+  };
+  return map[status] ?? "rgba(107,96,80,0.18)";
+}
