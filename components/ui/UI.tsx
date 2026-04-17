@@ -57,55 +57,125 @@ export function ThemeToggle() {
   );
 }
 
-/* ── Modal ────────────────────────────────────────────────────────────────── */
-export function Modal({ open, onClose, title, children, size = "md" }: {
-  open: boolean; onClose: () => void; title: string; children: ReactNode; size?: "sm" | "md" | "lg" | "xl";
+
+
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+  size = "md",
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  children: ReactNode;
+  size?: "sm" | "md" | "lg" | "xl";
 }) {
   if (!open) return null;
-  const w = { sm: "max-w-sm", md: "max-w-lg", lg: "max-w-2xl", xl: "max-w-4xl" }[size];
+
+  const maxWidth = {
+    sm: "max-w-sm",
+    md: "max-w-lg",
+    lg: "max-w-2xl",
+    xl: "max-w-4xl",
+  }[size];
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    /*
+     * Portal root — full-screen fixed overlay.
+     * Flex centers the modal; p-4 gives breathing room on small screens.
+     */
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:items-center min-h-screen"
+     
+      onClick={onClose}
+    >
+      {/*
+       * Modal panel.
+       * • my-4 keeps it off the top on short viewports instead of being cut off.
+       * • max-h-[calc(100vh-2rem)] + overflow-y-auto: the panel scrolls, not the page.
+       * • w-full ensures it never busts its container on small screens.
+       * Clicking inside stops propagation so onClose isn't triggered.
+       */}
       <div
-        className="absolute inset-0 backdrop-blur-sm"
-        style={{ background: "var(--bg-overlay)" }}
-        onClick={onClose}
-      />
-      <div
-        className={clsx("relative w-full animate-slide-up overflow-y-auto", w)}
+        className={clsx(
+          "relative w-full animate-slide-up my-4 flex flex-col",
+          maxWidth
+        )}
         style={{
           background: "var(--bg-card)",
           border: "1.5px solid var(--line-strong)",
-          borderRadius: "var(--radius-lg)",
-          boxShadow: "var(--shadow-lg)",
-          maxHeight: "90vh",
+          borderRadius: "var(--radius-lg, 12px)",
+          boxShadow: "var(--shadow-lg, 0 8px 32px rgba(0,0,0,0.18))",
+          maxHeight: "calc(100vh - 2rem)",
         }}
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Orange top bar */}
-        <div style={{ height: 3, background: "linear-gradient(90deg,var(--acc),var(--acc-2))", borderRadius: "var(--radius-lg) var(--radius-lg) 0 0" }} />
+        {/* Accent top bar */}
         <div
-          className="flex items-center justify-between px-6 py-4 sticky top-0 z-10"
-          style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--line)" }}
+          style={{
+            height: 3,
+            flexShrink: 0,
+            background: "linear-gradient(90deg, var(--acc), var(--acc-2, var(--acc)))",
+            borderRadius:
+              "var(--radius-lg, 12px) var(--radius-lg, 12px) 0 0",
+          }}
+        />
+
+        {/* Header — sticky inside the panel, not the viewport */}
+        <div
+          className="flex items-center justify-between gap-3 px-5 py-3.5"
+          style={{
+            flexShrink: 0,
+            borderBottom: "1px solid var(--line)",
+            background: "var(--bg-card)",
+          }}
         >
-          <div className="flex items-center gap-3">
-            {/* Orange diamond icon */}
-            <div className="w-7 h-7 rotate-45 flex-shrink-0" style={{ background: "var(--acc-subtle)", border: "1.5px solid var(--acc-border)", borderRadius: 4 }}>
-              <div className="w-full h-full -rotate-45 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full" style={{ background: "var(--acc)" }} />
-              </div>
+          {/* Diamond icon + title */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div
+              className="w-6 h-6 rotate-45 flex-shrink-0 flex items-center justify-center"
+              style={{
+                background: "var(--acc-subtle)",
+                border: "1.5px solid var(--acc-border)",
+                borderRadius: 4,
+              }}
+            >
+              <div
+                className="-rotate-45 w-2 h-2 rounded-full"
+                style={{ background: "var(--acc)" }}
+              />
             </div>
-            <h2 className="font-display text-[20px] tracking-wide" style={{ color: "var(--tx)" }}>{title.toUpperCase()}</h2>
+
+            <h2
+              className="font-display text-[17px] sm:text-[19px] tracking-wide truncate"
+              style={{ color: "var(--tx)" }}
+            >
+              {title.toUpperCase()}
+            </h2>
           </div>
+
+          {/* Close button */}
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+            className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all"
             style={{ color: "var(--tx-3)" }}
-            onMouseOver={e => { (e.currentTarget as HTMLElement).style.background = "var(--err-bg)"; (e.currentTarget as HTMLElement).style.color = "var(--err)"; }}
-            onMouseOut={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--tx-3)"; }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = "var(--err-bg)";
+              e.currentTarget.style.color = "var(--err)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = "var(--tx-3)";
+            }}
           >
-            <X size={15} />
+            <X size={14} />
           </button>
         </div>
-        <div className="px-6 py-5">{children}</div>
+
+        {/* Body — scrolls independently when content overflows */}
+        <div className="overflow-y-auto px-5 py-5 flex-1">{children}</div>
       </div>
     </div>
   );
