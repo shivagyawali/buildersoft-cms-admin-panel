@@ -64,7 +64,7 @@ export function Modal({
   onClose,
   title,
   children,
-  size = "md",
+  size = "lg",
 }: {
   open: boolean;
   onClose: () => void;
@@ -87,8 +87,7 @@ export function Modal({
      * Flex centers the modal; p-4 gives breathing room on small screens.
      */
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:items-center min-h-screen"
-     
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-2 sm:items-center min-h-screen"
       onClick={onClose}
     >
       {/*
