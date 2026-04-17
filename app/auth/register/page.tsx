@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function RegisterPage() {
   const router = useRouter();
   const { register } = useAuth();
-  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", confirmPassword: "" ,role:"worker"});
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", confirmPassword: "", role: "worker" });
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -19,7 +19,7 @@ export default function RegisterPage() {
     if (form.password.length < 8) { setErr("Password must be at least 8 characters"); return; }
     setErr(""); setLoading(true);
     try {
-      await register(form.firstName, form.lastName, form.email, form.password,form.role);
+      await register(form.firstName, form.lastName, form.email, form.password, form.role);
       router.push("/dashboard");
     } catch (error: any) {
       setErr(error?.response?.data?.message ?? "Registration failed");
@@ -28,7 +28,8 @@ export default function RegisterPage() {
     }
   };
 
-  const f = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setForm(p => ({ ...p, [k]: e.target.value }));
+  // Updated to support both input and select elements
+  const f = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm(p => ({ ...p, [k]: e.target.value }));
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--bg-base)" }}>
@@ -58,6 +59,7 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name fields */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="label">First Name</label>
@@ -68,10 +70,14 @@ export default function RegisterPage() {
                 <input className="input" value={form.lastName} onChange={f("lastName")} placeholder="Doe" required />
               </div>
             </div>
+
+           
+
             <div>
               <label className="label">Email</label>
               <input type="email" className="input" value={form.email} onChange={f("email")} placeholder="you@company.com" required />
             </div>
+
             <div>
               <label className="label">Password</label>
               <div className="relative">
@@ -81,10 +87,27 @@ export default function RegisterPage() {
                 </button>
               </div>
             </div>
+
             <div>
               <label className="label">Confirm Password</label>
               <input type="password" className="input" value={form.confirmPassword} onChange={f("confirmPassword")} placeholder="Re-enter password" required />
             </div>
+             {/* New Role dropdown */}
+            <div>
+              <label className="label">Role</label>
+              <select 
+                className="input" 
+                value={form.role} 
+                onChange={f("role")} 
+                required
+              >
+                <option value="admin">Admin</option>
+                <option value="manager">Manager</option>
+                <option value="supervisor">Supervisor</option>
+                <option value="worker">Worker</option>
+              </select>
+            </div>
+
             <button type="submit" className="btn btn-primary w-full justify-center mt-2" disabled={loading} style={{ width: "100%" }}>
               {loading ? <div className="w-4 h-4 rounded-full animate-spin border-2 border-white/30 border-t-white" /> : "Create account"}
             </button>
