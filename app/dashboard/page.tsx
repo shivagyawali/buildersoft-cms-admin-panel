@@ -61,7 +61,7 @@ export default function DashboardPage() {
           ) : projects.length === 0 ? (
             <p className="text-center text-sm py-10" style={{ color: "var(--text-tertiary)" }}>No active projects</p>
           ) : (
-            <div style={{ divide: "border" }}>
+            <div className="flex flex-col">
               {projects.map((p) => (
                 <Link
                   key={p.id}

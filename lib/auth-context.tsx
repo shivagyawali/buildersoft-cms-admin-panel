@@ -14,6 +14,7 @@ interface AuthCtx {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (firstName: string, lastName: string, email: string, password: string, role: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -51,6 +52,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(u);
   };
 
+  const register = async (firstName: string, lastName: string, email: string, password: string, role: string) => {
+    const res = await authApi.register({ firstName, lastName, email, password, role });
+    const payload = res.data.data ?? res.data;
+    const { accessToken, refreshToken, user: u } = payload;
+    Cookies.set("accessToken", accessToken, { expires: 7 });
+    if (refreshToken) Cookies.set("refreshToken", refreshToken, { expires: 30 });
+    setUser(u);
+  };
+
   const logout = () => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
@@ -59,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

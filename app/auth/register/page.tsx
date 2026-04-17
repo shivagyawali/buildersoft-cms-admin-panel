@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function RegisterPage() {
   const router = useRouter();
   const { register } = useAuth();
-  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", confirmPassword: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", confirmPassword: "" ,role:"worker"});
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -19,7 +19,7 @@ export default function RegisterPage() {
     if (form.password.length < 8) { setErr("Password must be at least 8 characters"); return; }
     setErr(""); setLoading(true);
     try {
-      await register(form.firstName, form.lastName, form.email, form.password);
+      await register(form.firstName, form.lastName, form.email, form.password,form.role);
       router.push("/dashboard");
     } catch (error: any) {
       setErr(error?.response?.data?.message ?? "Registration failed");
