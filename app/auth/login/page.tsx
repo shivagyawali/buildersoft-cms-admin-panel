@@ -1,82 +1,131 @@
 "use client";
 import { useState } from "react";
-import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
-import { HardHat, Eye, EyeOff } from "lucide-react";
-import { Spinner, Alert } from "@/components/ui/UI";
+import { useAuth } from "@/lib/auth-context";
+import { HardHat, Eye, EyeOff, AlertCircle } from "lucide-react";
 import Link from "next/link";
 
-interface FormErrors { email?: string; password?: string; }
-
 export default function LoginPage() {
-  const { login } = useAuth();
   const router = useRouter();
+  const { login } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
-  const [err, setErr] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
-  const [formErrors, setFormErrors] = useState<FormErrors>({});
-
-  const s = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((p) => ({ ...p, [k]: e.target.value }));
-    setFormErrors((p) => ({ ...p, [k]: undefined }));
-  };
-
-  const validate = () => {
-    const errs: FormErrors = {};
-    if (!form.email.trim()) errs.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = "Invalid email";
-    if (!form.password) errs.password = "Password is required";
-    setFormErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); setErr("");
-    if (!validate()) return;
+    e.preventDefault();
+    setErr("");
     setLoading(true);
-    try { await login(form.email, form.password); router.push("/dashboard"); }
-    catch { setErr("Invalid email or password"); }
-    finally { setLoading(false); }
+    try {
+      await login(form.email, form.password);
+      router.push("/dashboard");
+    } catch (error: any) {
+      setErr(error?.response?.data?.message ?? "Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#0f0f11] flex items-center justify-center p-4">
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{ background: "var(--bg-base)" }}
+    >
+      {/* Background accent */}
+      <div
+        className="fixed top-0 right-0 w-96 h-96 rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)", transform: "translate(30%, -30%)" }}
+      />
+
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-violet-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-violet-900/50">
-            <HardHat size={22} className="text-white" />
+        {/* Logo */}
+        <div className="flex flex-col items-center mb-8">
+          <div
+            className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+            style={{
+              background: "linear-gradient(135deg, var(--brand-500), var(--brand-700))",
+              boxShadow: "0 8px 24px rgba(249,115,22,0.35)",
+            }}
+          >
+            <HardHat size={24} className="text-white" />
           </div>
-          <h1 className="font-display font-700 text-white text-2xl">Buildersoft</h1>
-          <p className="text-gray-600 text-sm mt-1">Sign in to your account</p>
+          <h1 className="font-display font-bold text-2xl" style={{ color: "var(--text-primary)" }}>Buildersoft</h1>
+          <p className="text-sm mt-1" style={{ color: "var(--text-tertiary)" }}>Construction Management System</p>
         </div>
 
-        <div className="card p-6">
-          {err && <Alert type="error" message={err} />}
+        {/* Card */}
+        <div
+          className="rounded-2xl p-8"
+          style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", boxShadow: "var(--shadow-md)" }}
+        >
+          <h2 className="font-bold text-lg mb-1 font-display" style={{ color: "var(--text-primary)" }}>Sign in</h2>
+          <p className="text-sm mb-6" style={{ color: "var(--text-tertiary)" }}>Welcome back to your workspace</p>
+
+          {err && (
+            <div
+              className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm mb-5"
+              style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#f87171" }}
+            >
+              <AlertCircle size={14} />{err}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="label">Email</label>
-              <input type="email" className="input" value={form.email} onChange={s("email")} placeholder="you@example.com" autoComplete="email" />
-              {formErrors.email && <p className="text-xs text-red-400 mt-1">{formErrors.email}</p>}
+              <label className="label">Email address</label>
+              <input
+                type="email"
+                className="input"
+                value={form.email}
+                onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                placeholder="you@company.com"
+                required
+                autoComplete="email"
+              />
             </div>
             <div>
               <label className="label">Password</label>
               <div className="relative">
-                <input type={showPw ? "text" : "password"} className="input pr-10" value={form.password} onChange={s("password")} placeholder="••••••••" autoComplete="current-password" />
-                <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400">
-                  {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
+                <input
+                  type={showPw ? "text" : "password"}
+                  className="input pr-10"
+                  value={form.password}
+                  onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+                  placeholder="••••••••"
+                  required
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: "var(--text-tertiary)" }}
+                  onClick={() => setShowPw(v => !v)}
+                >
+                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
-              {formErrors.password && <p className="text-xs text-red-400 mt-1">{formErrors.password}</p>}
             </div>
-            <button type="submit" className="btn btn-primary w-full justify-center mt-2" disabled={loading}>
-              {loading && <Spinner size="sm" />}Sign In
+
+            <button
+              type="submit"
+              className="btn btn-primary w-full justify-center mt-2"
+              disabled={loading}
+              style={{ width: "100%" }}
+            >
+              {loading ? (
+                <div className="w-4 h-4 rounded-full animate-spin border-2 border-white/30 border-t-white" />
+              ) : "Sign in"}
             </button>
           </form>
-          <p className="text-center text-sm text-gray-600 mt-4">
-            Don't have an account? <Link href="/auth/register" className="text-violet-400 hover:text-violet-300">Register</Link>
-          </p>
         </div>
+
+        <p className="text-center text-sm mt-5" style={{ color: "var(--text-tertiary)" }}>
+          Don&apos;t have an account?{" "}
+          <Link href="/auth/register" className="font-medium transition-colors" style={{ color: "var(--brand-500)" }}>
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );

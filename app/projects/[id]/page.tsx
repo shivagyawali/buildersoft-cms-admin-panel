@@ -122,10 +122,10 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
         <div className="card p-5 mb-6">
           <div className="flex justify-between text-sm mb-3">
             <span className="font-medium text-gray-300">Overall Progress</span>
-            <span className="font-display font-600 text-violet-400">{project.progress}%</span>
+            <span className="font-display font-600 text-orange-400">{project.progress}%</span>
           </div>
           <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden">
-            <div className="h-full bg-violet-500 rounded-full transition-all duration-500" style={{ width: `${project.progress}%` }} />
+            <div className="h-full bg-orange-500/15 rounded-full transition-all duration-500" style={{ width: `${project.progress}%` }} />
           </div>
           {stats && (
             <div className="flex gap-5 mt-3 text-xs text-gray-600">
@@ -149,9 +149,9 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
               <button
                 key={w.id}
                 onClick={() => setWorkerPopup(w)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-violet-500/30 hover:bg-violet-950/20 transition-all text-xs text-gray-400"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-orange-50/5 dark:bg-black/[0.04] dark:bg-white/[0.04] border border-black/7 dark:border-white/[0.08] hover:border-orange-500/25 hover:bg-orange-950/20 transition-all text-xs text-gray-400"
               >
-                <div className="w-5 h-5 rounded-lg bg-violet-600/20 flex items-center justify-center text-[9px] font-bold text-violet-400">
+                <div className="w-5 h-5 rounded-lg bg-orange-500/10 flex items-center justify-center text-[9px] font-bold text-orange-400">
                   {w.firstName[0]}{w.lastName[0]}
                 </div>
                 {w.firstName} {w.lastName}
@@ -164,14 +164,14 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
       {/* Tasks */}
       <div className="card overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-white/[0.06]">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-black/6 dark:border-white/[0.06]">
           <span className="font-display font-600 text-white">Tasks</span>
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex gap-0.5 bg-white/[0.04] p-0.5 rounded-xl">
+            <div className="flex gap-0.5 bg-orange-50/5 dark:bg-black/[0.04] dark:bg-white/[0.04] p-0.5 rounded-xl">
               {["", ...STATUSES].map((st) => (
                 <button key={st} onClick={() => setStatusFilter(st)}
                   className={clsx("px-2.5 py-1 rounded-lg text-xs font-medium transition-all",
-                    statusFilter === st ? "bg-violet-600 text-white shadow-sm" : "text-gray-500 hover:text-gray-300")}>
+                    statusFilter === st ? "bg-brand-500 text-white shadow-sm" : "text-gray-500 hover:text-gray-300")}>
                   {st ? capitalize(st) : "All"}
                 </button>
               ))}
@@ -186,9 +186,9 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
           <EmptyState icon={<CheckSquare size={18} />} title="No tasks yet"
             action={<button className="btn btn-primary" onClick={openCreate}><Plus size={14} />Add Task</button>} />
         ) : (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-black/5 dark:divide-white/[0.04]">
             {tasks.map((t) => (
-              <div key={t.id} className="flex items-center gap-4 px-5 py-4 hover:bg-white/[0.02] transition-colors">
+              <div key={t.id} className="flex items-center gap-4 px-5 py-4 hover:bg-orange-50/3 dark:bg-black/[0.02] dark:bg-white/[0.02] transition-colors">
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-200 text-sm">{t.title}</p>
                   {t.description && <p className="text-xs text-gray-600 line-clamp-1 mt-0.5">{t.description}</p>}
@@ -197,7 +197,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                     <span className={clsx("badge", getStatusColor(t.priority))}>{capitalize(t.priority)}</span>
                     {t.dueDate && <span className="text-xs text-gray-600 flex items-center gap-1"><Calendar size={10} />{formatDate(t.dueDate)}</span>}
                     {t.assignedWorkers && t.assignedWorkers.length > 0 && (
-                      <span className="flex items-center gap-1 text-xs text-violet-400">
+                      <span className="flex items-center gap-1 text-xs text-orange-400">
                         <Users size={10} />{t.assignedWorkers.length} worker{t.assignedWorkers.length !== 1 ? "s" : ""}
                       </span>
                     )}
@@ -208,10 +208,10 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                     <div className="flex justify-between text-xs text-gray-600 mb-1"><span>Progress</span><span>{t.progress}%</span></div>
                     <input type="range" min={0} max={100} value={t.progress}
                       onChange={(e) => progressMut.mutate({ id: t.id, progress: Number(e.target.value) })}
-                      className="w-full accent-violet-500 cursor-pointer h-1.5" />
+                      className="w-full accent-orange-500 cursor-pointer h-1.5" />
                   </div>
                   <button className="btn btn-ghost p-1.5" onClick={() => openEdit(t)}><Pencil size={13} /></button>
-                  <button className="btn btn-ghost p-1.5 text-red-500/50 hover:text-red-400 hover:bg-red-950/30" onClick={() => setDelTask(t)}><Trash2 size={13} /></button>
+                  <button className="btn btn-ghost p-1.5 text-red-400/50 hover:text-red-400 hover:bg-red-500/10" onClick={() => setDelTask(t)}><Trash2 size={13} /></button>
                 </div>
               </div>
             ))}
@@ -260,12 +260,12 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                       className={clsx(
                         "flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs border transition-all",
                         selected
-                          ? "bg-violet-600/20 text-violet-300 border-violet-500/40"
-                          : "bg-white/[0.03] text-gray-500 border-white/[0.08] hover:border-white/20"
+                          ? "bg-orange-500/10 text-orange-300 border-orange-500/30"
+                          : "bg-orange-50/5 dark:bg-black/[0.03] dark:bg-white/[0.03] text-gray-500 border-black/7 dark:border-white/[0.08] hover:border-white/20"
                       )}
                     >
                       <div className={clsx("w-4 h-4 rounded flex items-center justify-center text-[9px] font-bold",
-                        selected ? "bg-violet-500 text-white" : "bg-white/10 text-gray-500")}>
+                        selected ? "bg-orange-500/15 text-white" : "bg-white/10 text-gray-500")}>
                         {w.firstName[0]}{w.lastName[0]}
                       </div>
                       {w.firstName} {w.lastName}

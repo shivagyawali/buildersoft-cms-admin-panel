@@ -78,7 +78,7 @@ export default function WorkersPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/[0.06] bg-white/[0.02]">
+                <tr className="border-b border-black/6 dark:border-white/[0.06] bg-orange-50/3 dark:bg-black/[0.02] dark:bg-white/[0.02]">
                   {["Worker", "Contact", "Role", "Hourly", "Overtime", "Status", "Since", ""].map((h) => (
                     <th key={h} className="table-header">{h}</th>
                   ))}
@@ -86,10 +86,10 @@ export default function WorkersPage() {
               </thead>
               <tbody>
                 {workers.map((w) => (
-                  <tr key={w.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                  <tr key={w.id} className="border-b border-black/5 dark:border-white/[0.04] hover:bg-orange-50/3 dark:bg-black/[0.02] dark:bg-white/[0.02] transition-colors">
                     <td className="table-cell">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-violet-600/20 border border-violet-500/20 flex items-center justify-center text-xs font-bold text-violet-400 flex-shrink-0">
+                        <div className="w-8 h-8 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-xs font-bold text-orange-400 flex-shrink-0">
                           {w.firstName[0]}{w.lastName[0]}
                         </div>
                         <p className="font-medium text-gray-200 text-sm">{w.firstName} {w.lastName}</p>
@@ -120,7 +120,7 @@ export default function WorkersPage() {
                       <div className="flex items-center gap-1 justify-end">
                         <button className="btn btn-ghost p-1.5 text-gray-500" onClick={() => setPopup(w)}><Info size={14} /></button>
                         <button className="btn btn-ghost p-1.5" onClick={() => openEdit(w)}><Pencil size={14} /></button>
-                        <button className="btn btn-ghost p-1.5 text-red-500/50 hover:text-red-400 hover:bg-red-950/30" onClick={() => setDelTarget(w)}><Trash2 size={14} /></button>
+                        <button className="btn btn-ghost p-1.5 text-red-400/50 hover:text-red-400 hover:bg-red-500/10" onClick={() => setDelTarget(w)}><Trash2 size={14} /></button>
                       </div>
                     </td>
                   </tr>

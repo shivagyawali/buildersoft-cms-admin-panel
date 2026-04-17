@@ -99,8 +99,8 @@ export default function InvoicesPage() {
             className={clsx(
               "px-3 py-1.5 rounded-xl text-xs font-medium border transition-all",
               statusFilter === key
-                ? "bg-violet-600/20 text-violet-300 border-violet-500/30"
-                : "bg-white/[0.03] text-gray-500 border-white/[0.06] hover:border-white/[0.14] hover:text-gray-300"
+                ? "bg-orange-500/10 text-orange-300 border-orange-500/25"
+                : "bg-orange-50/5 dark:bg-black/[0.03] dark:bg-white/[0.03] text-gray-500 border-black/6 dark:border-white/[0.06] hover:border-white/[0.14] hover:text-gray-300"
             )}
           >{label}</button>
         ))}
@@ -116,7 +116,7 @@ export default function InvoicesPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/[0.06] bg-white/[0.02]">
+                <tr className="border-b border-black/6 dark:border-white/[0.06] bg-orange-50/3 dark:bg-black/[0.02] dark:bg-white/[0.02]">
                   {["Invoice #", "Client", "Issue Date", "Due Date", "Total", "Status", ""].map((h) => (
                     <th key={h} className="table-header">{h}</th>
                   ))}
@@ -124,7 +124,7 @@ export default function InvoicesPage() {
               </thead>
               <tbody>
                 {invoices.map((inv) => (
-                  <tr key={inv.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                  <tr key={inv.id} className="border-b border-black/5 dark:border-white/[0.04] hover:bg-orange-50/3 dark:bg-black/[0.02] dark:bg-white/[0.02] transition-colors">
                     <td className="table-cell font-mono text-sm text-gray-300">{inv.invoiceNumber}</td>
                     <td className="table-cell">
                       <p className="text-sm text-gray-300">{inv.client ? `${inv.client.firstName} ${inv.client.lastName}` : "—"}</p>
@@ -144,7 +144,7 @@ export default function InvoicesPage() {
                     <td className="table-cell">
                       <div className="flex items-center gap-1 justify-end">
                         <Link href={`/invoices/${inv.id}`} className="btn btn-ghost p-1.5"><ExternalLink size={14} /></Link>
-                        <button className="btn btn-ghost p-1.5 text-red-500/50 hover:text-red-400 hover:bg-red-950/30" onClick={() => setDelTarget(inv)}><Trash2 size={14} /></button>
+                        <button className="btn btn-ghost p-1.5 text-red-400/50 hover:text-red-400 hover:bg-red-500/10" onClick={() => setDelTarget(inv)}><Trash2 size={14} /></button>
                       </div>
                     </td>
                   </tr>
@@ -184,15 +184,15 @@ export default function InvoicesPage() {
 
           <div>
             <label className="label">Line Items{formErrors.items && <span className="text-red-400 ml-2 normal-case text-xs">{formErrors.items}</span>}</label>
-            <div className="border border-white/[0.08] rounded-xl overflow-hidden">
-              <div className="grid grid-cols-12 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-gray-600 uppercase tracking-widest border-b border-white/[0.06]">
+            <div className="border border-black/7 dark:border-white/[0.08] rounded-xl overflow-hidden">
+              <div className="grid grid-cols-12 bg-orange-50/5 dark:bg-black/[0.03] dark:bg-white/[0.03] px-3 py-2 text-xs font-semibold text-gray-600 uppercase tracking-widest border-b border-black/6 dark:border-white/[0.06]">
                 <span className="col-span-6">Description</span>
                 <span className="col-span-2 text-right">Qty</span>
                 <span className="col-span-3 text-right">Unit Price</span>
                 <span className="col-span-1" />
               </div>
               {items.map((item, i) => (
-                <div key={i} className="grid grid-cols-12 gap-1.5 px-3 py-2 border-b border-white/[0.04] items-center">
+                <div key={i} className="grid grid-cols-12 gap-1.5 px-3 py-2 border-b border-black/5 dark:border-white/[0.04] items-center">
                   <input className="input col-span-6 text-sm" placeholder="Description" value={item.description} onChange={(e) => setItem(i, "description", e.target.value)} />
                   <input type="number" className="input col-span-2 text-sm text-right" placeholder="1" value={item.quantity} onChange={(e) => setItem(i, "quantity", e.target.value)} />
                   <input type="number" className="input col-span-3 text-sm text-right" placeholder="0.00" value={item.unitPrice} onChange={(e) => setItem(i, "unitPrice", e.target.value)} />
@@ -200,20 +200,20 @@ export default function InvoicesPage() {
                 </div>
               ))}
               <div className="px-3 py-2">
-                <button className="btn btn-ghost text-xs text-violet-400 py-1" onClick={() => setItems((p) => [...p, { description: "", quantity: "1", unitPrice: "" }])}>
+                <button className="btn btn-ghost text-xs text-orange-400 py-1" onClick={() => setItems((p) => [...p, { description: "", quantity: "1", unitPrice: "" }])}>
                   <Plus size={13} />Add line
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="bg-white/[0.03] rounded-xl p-4 space-y-2.5 text-sm border border-white/[0.06]">
+          <div className="bg-orange-50/5 dark:bg-black/[0.03] dark:bg-white/[0.03] rounded-xl p-4 space-y-2.5 text-sm border border-black/6 dark:border-white/[0.06]">
             <div className="flex justify-between text-gray-400"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
             <div className="flex justify-between items-center text-gray-400">
               <span>Tax</span>
               <input type="number" className="input w-28 text-right text-sm py-1.5" placeholder="0.00" value={form.taxAmount} onChange={sf("taxAmount")} />
             </div>
-            <div className="flex justify-between font-display font-600 text-white pt-2 border-t border-white/[0.08]">
+            <div className="flex justify-between font-display font-600 text-white pt-2 border-t border-black/7 dark:border-white/[0.08]">
               <span>Total</span><span>{formatCurrency(subtotal + tax)}</span>
             </div>
           </div>

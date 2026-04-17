@@ -112,9 +112,9 @@ export default function InvoicePeriodsPage() {
 
       {/* Worker filter */}
       <div className="flex flex-wrap gap-1.5 mb-6">
-        <button onClick={() => setWorkerFilter("")} className={clsx("px-3 py-1.5 rounded-xl text-xs font-medium border transition-all", !workerFilter ? "bg-violet-600/20 text-violet-300 border-violet-500/30" : "bg-white/[0.03] text-gray-500 border-white/[0.06] hover:border-white/[0.14]")}>All Workers</button>
+        <button onClick={() => setWorkerFilter("")} className={clsx("px-3 py-1.5 rounded-xl text-xs font-medium border transition-all", !workerFilter ? "bg-orange-500/10 text-orange-300 border-orange-500/25" : "bg-orange-50/5 dark:bg-black/[0.03] dark:bg-white/[0.03] text-gray-500 border-black/6 dark:border-white/[0.06] hover:border-white/[0.14]")}>All Workers</button>
         {workers.map((w) => (
-          <button key={w.id} onClick={() => setWorkerFilter(w.id)} className={clsx("px-3 py-1.5 rounded-xl text-xs font-medium border transition-all", workerFilter === w.id ? "bg-violet-600/20 text-violet-300 border-violet-500/30" : "bg-white/[0.03] text-gray-500 border-white/[0.06] hover:border-white/[0.14]")}>
+          <button key={w.id} onClick={() => setWorkerFilter(w.id)} className={clsx("px-3 py-1.5 rounded-xl text-xs font-medium border transition-all", workerFilter === w.id ? "bg-orange-500/10 text-orange-300 border-orange-500/25" : "bg-orange-50/5 dark:bg-black/[0.03] dark:bg-white/[0.03] text-gray-500 border-black/6 dark:border-white/[0.06] hover:border-white/[0.14]")}>
             {w.firstName} {w.lastName}
           </button>
         ))}
@@ -130,7 +130,7 @@ export default function InvoicePeriodsPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/[0.06] bg-white/[0.02]">
+                <tr className="border-b border-black/6 dark:border-white/[0.06] bg-orange-50/3 dark:bg-black/[0.02] dark:bg-white/[0.02]">
                   {["Worker", "Period", "Regular Hours", "Overtime Hours", "Rate", "OT Rate", "Total Pay", ""].map((h) => (
                     <th key={h} className="table-header">{h}</th>
                   ))}
@@ -140,7 +140,7 @@ export default function InvoicePeriodsPage() {
                 {periods.map((p) => {
                   const worker = workers.find((w) => w.id === p.workerId) ?? p.worker;
                   return (
-                    <tr key={p.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                    <tr key={p.id} className="border-b border-black/5 dark:border-white/[0.04] hover:bg-orange-50/3 dark:bg-black/[0.02] dark:bg-white/[0.02] transition-colors">
                       <td className="table-cell">
                         {worker ? (
                           <div>
@@ -167,7 +167,7 @@ export default function InvoicePeriodsPage() {
                       <td className="table-cell">
                         <div className="flex items-center gap-1 justify-end">
                           <button className="btn btn-ghost p-1.5" onClick={() => openEdit(p)}><Pencil size={14} /></button>
-                          <button className="btn btn-ghost p-1.5 text-red-500/50 hover:text-red-400 hover:bg-red-950/30" onClick={() => setDelTarget(p)}><Trash2 size={14} /></button>
+                          <button className="btn btn-ghost p-1.5 text-red-400/50 hover:text-red-400 hover:bg-red-500/10" onClick={() => setDelTarget(p)}><Trash2 size={14} /></button>
                         </div>
                       </td>
                     </tr>
@@ -214,7 +214,7 @@ export default function InvoicePeriodsPage() {
             </Field>
           </div>
           {(form.regularHours || form.overtimeHours) && (
-            <div className="col-span-2 bg-white/[0.03] rounded-xl p-4 border border-white/[0.06]">
+            <div className="col-span-2 bg-orange-50/5 dark:bg-black/[0.03] dark:bg-white/[0.03] rounded-xl p-4 border border-black/6 dark:border-white/[0.06]">
               <p className="text-xs text-gray-600 uppercase tracking-widest mb-2">Pay Summary</p>
               <div className="flex gap-6 text-sm">
                 <div>

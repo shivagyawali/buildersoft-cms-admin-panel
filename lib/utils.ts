@@ -14,29 +14,7 @@ export function formatCurrency(amount: number | null | undefined): string {
 }
 
 export function getStatusColor(status: string): string {
-  const map: Record<string, string> = {
-    draft: "bg-gray-800 text-gray-400",
-    sent: "bg-blue-950 text-blue-400",
-    viewed: "bg-purple-950 text-purple-400",
-    partially_paid: "bg-amber-950 text-amber-400",
-    paid: "bg-emerald-950 text-emerald-400",
-    overdue: "bg-red-950 text-red-400",
-    cancelled: "bg-gray-900 text-gray-600",
-    planning: "bg-gray-800 text-gray-400",
-    active: "bg-emerald-950 text-emerald-400",
-    on_hold: "bg-amber-950 text-amber-400",
-    completed: "bg-blue-950 text-blue-400",
-    todo: "bg-gray-800 text-gray-400",
-    in_progress: "bg-blue-950 text-blue-400",
-    review: "bg-purple-950 text-purple-400",
-    done: "bg-emerald-950 text-emerald-400",
-    low: "bg-gray-800 text-gray-500",
-    medium: "bg-blue-950 text-blue-400",
-    high: "bg-amber-950 text-amber-400",
-    urgent: "bg-red-950 text-red-400",
-    inactive: "bg-gray-900 text-gray-600",
-  };
-  return map[status] ?? "bg-gray-800 text-gray-400";
+  return `status-${status}`;
 }
 
 export function capitalize(str: string): string {

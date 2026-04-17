@@ -73,14 +73,11 @@ export default function ProjectsPage() {
     mutationFn: () => {
       if (!validate()) return Promise.reject(new Error("Validation failed"));
       const payload = {
-        name: form.name,
-        description: form.description,
-        clientId: form.clientId,
+        name: form.name, description: form.description, clientId: form.clientId,
         budgetAmount: form.budgetAmount ? Number(form.budgetAmount) : undefined,
         startDate: form.startDate || undefined,
         expectedEndDate: form.expectedEndDate || undefined,
-        priority: form.priority,
-        status: form.status,
+        priority: form.priority, status: form.status,
       };
       return editing ? projectsApi.update(editing.id, payload) : projectsApi.create(payload);
     },
@@ -116,15 +113,20 @@ export default function ProjectsPage() {
           <button
             key={key}
             onClick={() => setStatusFilter(key)}
-            className={clsx(
-              "px-3 py-1.5 rounded-xl text-xs font-medium border transition-all flex items-center gap-1.5",
-              statusFilter === key
-                ? "bg-violet-600/20 text-violet-300 border-violet-500/30"
-                : "bg-white/[0.03] text-gray-500 border-white/[0.06] hover:border-white/[0.14] hover:text-gray-300"
-            )}
+            className="px-3 py-1.5 rounded-xl text-xs font-medium border transition-all flex items-center gap-1.5"
+            style={statusFilter === key
+              ? { background: "rgba(249,115,22,0.12)", color: "var(--brand-600)", borderColor: "rgba(249,115,22,0.3)" }
+              : { background: "var(--bg-sunken)", color: "var(--text-tertiary)", borderColor: "var(--border-subtle)" }
+            }
           >
             {label}
-            <span className={clsx("text-[10px] rounded-full px-1.5 py-0.5", statusFilter === key ? "bg-violet-500/30 text-violet-300" : "bg-white/[0.06] text-gray-600")}>
+            <span
+              className="text-[10px] rounded-full px-1.5 py-0.5"
+              style={statusFilter === key
+                ? { background: "rgba(249,115,22,0.2)", color: "var(--brand-600)" }
+                : { background: "var(--border-subtle)", color: "var(--text-tertiary)" }
+              }
+            >
               {count}
             </span>
           </button>
@@ -146,20 +148,32 @@ export default function ProjectsPage() {
             <div key={p.id} className="card card-hover p-5 flex flex-col gap-3">
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                  <Link href={`/projects/${p.id}`} className="font-display font-600 text-white hover:text-violet-300 transition-colors line-clamp-1 text-sm">
+                  <Link
+                    href={`/projects/${p.id}`}
+                    className="font-display font-bold text-sm transition-colors line-clamp-1"
+                    style={{ color: "var(--text-primary)" }}
+                    onMouseOver={e => (e.currentTarget as HTMLElement).style.color = "var(--brand-500)"}
+                    onMouseOut={e => (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"}
+                  >
                     {p.name}
                   </Link>
                   {p.client && (
-                    <p className="text-xs text-gray-600 mt-0.5">{p.client.firstName} {p.client.lastName}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--text-tertiary)" }}>{p.client.firstName} {p.client.lastName}</p>
                   )}
                 </div>
                 <div className="flex gap-1 ml-2 flex-shrink-0">
                   <button className="btn btn-ghost p-1.5" onClick={() => openEdit(p)}><Pencil size={12} /></button>
-                  <button className="btn btn-ghost p-1.5 text-red-500/50 hover:text-red-400 hover:bg-red-950/30" onClick={() => setDelTarget(p)}><Trash2 size={12} /></button>
+                  <button
+                    className="btn btn-ghost p-1.5"
+                    style={{ color: "rgba(239,68,68,0.4)" }}
+                    onMouseOver={e => { (e.currentTarget as HTMLElement).style.color = "#f87171"; (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.08)"; }}
+                    onMouseOut={e => { (e.currentTarget as HTMLElement).style.color = "rgba(239,68,68,0.4)"; (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                    onClick={() => setDelTarget(p)}
+                  ><Trash2 size={12} /></button>
                 </div>
               </div>
 
-              {p.description && <p className="text-xs text-gray-600 line-clamp-2">{p.description}</p>}
+              {p.description && <p className="text-xs line-clamp-2" style={{ color: "var(--text-tertiary)" }}>{p.description}</p>}
 
               <div className="flex flex-wrap items-center gap-1.5">
                 <span className={clsx("badge", getStatusColor(p.status))}>{capitalize(p.status)}</span>
@@ -168,24 +182,36 @@ export default function ProjectsPage() {
 
               {typeof p.progress === "number" && (
                 <div>
-                  <div className="flex justify-between text-xs text-gray-600 mb-1.5">
+                  <div className="flex justify-between text-xs mb-1.5" style={{ color: "var(--text-tertiary)" }}>
                     <span>Progress</span>
-                    <span className="text-gray-400">{p.progress}%</span>
+                    <span>{p.progress}%</span>
                   </div>
-                  <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
-                    <div className="h-full bg-violet-500 rounded-full transition-all" style={{ width: `${p.progress}%` }} />
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--bg-sunken)" }}>
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${p.progress}%`, background: "linear-gradient(90deg, var(--brand-500), var(--brand-400))" }}
+                    />
                   </div>
                 </div>
               )}
 
-              <div className="flex items-center justify-between text-xs text-gray-600 pt-1 border-t border-white/[0.04]">
+              <div
+                className="flex items-center justify-between text-xs pt-2"
+                style={{ borderTop: "1px solid var(--border-subtle)", color: "var(--text-tertiary)" }}
+              >
                 {p.expectedEndDate ? (
                   <span className="flex items-center gap-1"><Calendar size={11} />{formatDate(p.expectedEndDate)}</span>
                 ) : <span />}
                 {p.budgetAmount && (
-                  <span className="flex items-center gap-1 text-emerald-500"><TrendingUp size={11} />${Number(p.budgetAmount).toLocaleString()}</span>
+                  <span className="flex items-center gap-1" style={{ color: "#10b981" }}>
+                    <TrendingUp size={11} />${Number(p.budgetAmount).toLocaleString()}
+                  </span>
                 )}
-                <Link href={`/projects/${p.id}`} className="flex items-center gap-1 text-violet-400 hover:text-violet-300">
+                <Link
+                  href={`/projects/${p.id}`}
+                  className="flex items-center gap-1 transition-colors"
+                  style={{ color: "var(--brand-500)" }}
+                >
                   Open <ExternalLink size={11} />
                 </Link>
               </div>
@@ -194,7 +220,6 @@ export default function ProjectsPage() {
         </div>
       )}
 
-      {/* Create / Edit Modal */}
       <Modal open={open} onClose={() => setOpen(false)} title={editing ? "Edit Project" : "New Project"} size="lg">
         {err && <Alert type="error" message={err} />}
         <div className="grid grid-cols-2 gap-4">

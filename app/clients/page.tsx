@@ -65,11 +65,14 @@ export default function ClientsPage() {
 
   return (
     <div className="animate-fade-in">
-      <PageHeader title="Clients" subtitle={`${clients.length} client${clients.length !== 1 ? "s" : ""}`}
-        action={<button className="btn btn-primary" onClick={openCreate}><Plus size={15} />New Client</button>} />
+      <PageHeader
+        title="Clients"
+        subtitle={`${clients.length} client${clients.length !== 1 ? "s" : ""}`}
+        action={<button className="btn btn-primary" onClick={openCreate}><Plus size={15} />New Client</button>}
+      />
 
       <div className="relative mb-6 max-w-xs">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-tertiary)" }} />
         <input className="input pl-9" placeholder="Search clients…" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
@@ -77,41 +80,67 @@ export default function ClientsPage() {
         {isLoading ? (
           <div className="flex justify-center py-16"><Spinner /></div>
         ) : filtered.length === 0 ? (
-          <EmptyState icon={<Users size={20} />} title="No clients yet" description="Add your first client to get started"
-            action={<button className="btn btn-primary" onClick={openCreate}><Plus size={15} />Add Client</button>} />
+          <EmptyState
+            icon={<Users size={20} />}
+            title="No clients yet"
+            description="Add your first client to get started"
+            action={<button className="btn btn-primary" onClick={openCreate}><Plus size={15} />Add Client</button>}
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                  {["Client", "Contact", "Location", "Since", ""].map((h) => <th key={h} className="table-header">{h}</th>)}
+                <tr>
+                  {["Client", "Contact", "Location", "Since", ""].map((h) => (
+                    <th key={h} className="table-header">{h}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((c) => (
-                  <tr key={c.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                  <tr
+                    key={c.id}
+                    style={{ borderBottom: "1px solid var(--border-subtle)", transition: "background 0.1s" }}
+                    onMouseOver={e => (e.currentTarget as HTMLElement).style.background = "var(--bg-sunken)"}
+                    onMouseOut={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
+                  >
                     <td className="table-cell">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-violet-600/20 border border-violet-500/20 flex items-center justify-center text-xs font-bold text-violet-400 flex-shrink-0">
+                        <div
+                          className="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold flex-shrink-0"
+                          style={{ background: "rgba(249,115,22,0.1)", border: "1px solid rgba(249,115,22,0.2)", color: "var(--brand-600)" }}
+                        >
                           {getInitials(c.firstName, c.lastName)}
                         </div>
                         <div>
-                          <p className="font-medium text-gray-200 text-sm">{c.firstName} {c.lastName}</p>
-                          {c.company && <p className="text-xs text-gray-600 flex items-center gap-1"><Building2 size={10} />{c.company}</p>}
+                          <p className="font-medium text-sm" style={{ color: "var(--text-primary)" }}>{c.firstName} {c.lastName}</p>
+                          {c.company && (
+                            <p className="text-xs flex items-center gap-1" style={{ color: "var(--text-tertiary)" }}>
+                              <Building2 size={10} />{c.company}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </td>
                     <td className="table-cell">
-                      <p className="text-xs text-gray-500 flex items-center gap-1"><Mail size={10} />{c.email}</p>
-                      {c.phone && <p className="text-xs text-gray-600 flex items-center gap-1 mt-0.5"><Phone size={10} />{c.phone}</p>}
+                      <p className="text-xs flex items-center gap-1" style={{ color: "var(--text-secondary)" }}><Mail size={10} />{c.email}</p>
+                      {c.phone && <p className="text-xs flex items-center gap-1 mt-0.5" style={{ color: "var(--text-tertiary)" }}><Phone size={10} />{c.phone}</p>}
                     </td>
-                    <td className="table-cell text-xs text-gray-500">{[c.city, c.province].filter(Boolean).join(", ") || "—"}</td>
-                    <td className="table-cell text-xs text-gray-600">{formatDate(c.createdAt)}</td>
+                    <td className="table-cell text-xs" style={{ color: "var(--text-secondary)" }}>
+                      {[c.city, c.province].filter(Boolean).join(", ") || "—"}
+                    </td>
+                    <td className="table-cell text-xs" style={{ color: "var(--text-tertiary)" }}>{formatDate(c.createdAt)}</td>
                     <td className="table-cell">
                       <div className="flex items-center gap-1 justify-end">
                         <Link href={`/clients/${c.id}`} className="btn btn-ghost p-1.5"><ExternalLink size={14} /></Link>
                         <button className="btn btn-ghost p-1.5" onClick={() => openEdit(c)}><Pencil size={14} /></button>
-                        <button className="btn btn-ghost p-1.5 text-red-500/50 hover:text-red-400 hover:bg-red-950/30" onClick={() => setDelTarget(c)}><Trash2 size={14} /></button>
+                        <button
+                          className="btn btn-ghost p-1.5"
+                          style={{ color: "rgba(239,68,68,0.4)" }}
+                          onMouseOver={e => { (e.currentTarget as HTMLElement).style.color = "#f87171"; (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.08)"; }}
+                          onMouseOut={e => { (e.currentTarget as HTMLElement).style.color = "rgba(239,68,68,0.4)"; (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                          onClick={() => setDelTarget(c)}
+                        ><Trash2 size={14} /></button>
                       </div>
                     </td>
                   </tr>
@@ -145,8 +174,11 @@ export default function ClientsPage() {
         </div>
       </Modal>
 
-      <ConfirmDialog open={!!delTarget} onClose={() => setDelTarget(null)} onConfirm={() => delMut.mutate()}
-        loading={delMut.isPending} title="Delete Client" description={`Delete ${delTarget?.firstName} ${delTarget?.lastName}? This cannot be undone.`} />
+      <ConfirmDialog
+        open={!!delTarget} onClose={() => setDelTarget(null)} onConfirm={() => delMut.mutate()}
+        loading={delMut.isPending} title="Delete Client"
+        description={`Delete ${delTarget?.firstName} ${delTarget?.lastName}? This cannot be undone.`}
+      />
     </div>
   );
 }

@@ -13,14 +13,33 @@ export function Modal({
   const w = { sm: "max-w-sm", md: "max-w-lg", lg: "max-w-2xl", xl: "max-w-4xl" }[size];
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={onClose} />
-      <div className={clsx(
-        "relative bg-[#16161e] border border-white/10 rounded-2xl shadow-2xl w-full animate-slide-up overflow-y-auto max-h-[90vh]",
-        w
-      )}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] sticky top-0 bg-[#16161e] rounded-t-2xl z-10">
-          <h2 className="font-display font-600 text-white text-base">{title}</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/8 transition-all">
+      <div className="absolute inset-0 backdrop-blur-sm" style={{ background: "rgba(0,0,0,0.55)" }} onClick={onClose} />
+      <div
+        className={clsx("relative w-full animate-slide-up overflow-y-auto", w)}
+        style={{
+          background: "var(--bg-elevated)",
+          border: "1px solid var(--border-default)",
+          borderRadius: "20px",
+          boxShadow: "var(--shadow-lg)",
+          maxHeight: "90vh",
+        }}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between px-6 py-4 sticky top-0 z-10 rounded-t-[20px]"
+          style={{
+            background: "var(--bg-elevated)",
+            borderBottom: "1px solid var(--border-subtle)",
+          }}
+        >
+          <h2 className="font-display font-bold text-base" style={{ color: "var(--text-primary)" }}>{title}</h2>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg transition-all"
+            style={{ color: "var(--text-tertiary)" }}
+            onMouseOver={e => { (e.currentTarget as HTMLButtonElement).style.background = "var(--bg-sunken)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--text-primary)"; }}
+            onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; (e.currentTarget as HTMLButtonElement).style.color = "var(--text-tertiary)"; }}
+          >
             <X size={16} />
           </button>
         </div>
@@ -33,7 +52,12 @@ export function Modal({
 /* ── Spinner ────────────────────────────────────────────────────── */
 export function Spinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const s = { sm: "w-4 h-4 border-2", md: "w-6 h-6 border-2", lg: "w-8 h-8 border-[3px]" }[size];
-  return <div className={clsx("rounded-full animate-spin border-white/10 border-t-violet-500", s)} />;
+  return (
+    <div
+      className={clsx("rounded-full animate-spin", s)}
+      style={{ borderColor: "var(--border-default)", borderTopColor: "var(--brand-500)" }}
+    />
+  );
 }
 
 /* ── PageHeader ─────────────────────────────────────────────────── */
@@ -44,7 +68,7 @@ export function PageHeader({ title, subtitle, action }: {
     <div className="flex items-start justify-between mb-8">
       <div>
         <h1 className="page-title">{title}</h1>
-        {subtitle && <p className="text-gray-500 text-sm mt-1">{subtitle}</p>}
+        {subtitle && <p className="text-sm mt-1" style={{ color: "var(--text-tertiary)" }}>{subtitle}</p>}
       </div>
       {action && <div>{action}</div>}
     </div>
@@ -57,11 +81,14 @@ export function EmptyState({ icon, title, description, action }: {
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center px-4">
-      <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center mb-4 text-gray-600">
+      <div
+        className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+        style={{ background: "var(--bg-sunken)", border: "1px solid var(--border-default)", color: "var(--text-tertiary)" }}
+      >
         {icon}
       </div>
-      <h3 className="font-medium text-gray-400 mb-1 text-sm">{title}</h3>
-      {description && <p className="text-sm text-gray-600 mb-5 max-w-xs">{description}</p>}
+      <h3 className="font-medium text-sm mb-1" style={{ color: "var(--text-secondary)" }}>{title}</h3>
+      {description && <p className="text-sm mb-5 max-w-xs" style={{ color: "var(--text-tertiary)" }}>{description}</p>}
       {action}
     </div>
   );
@@ -74,34 +101,43 @@ export function Field({ label, error, required, children }: {
   return (
     <div>
       <label className="label">
-        {label}{required && <span className="text-violet-400 ml-0.5">*</span>}
+        {label}{required && <span className="ml-0.5" style={{ color: "var(--brand-500)" }}>*</span>}
       </label>
       {children}
-      {error && <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1"><AlertCircle size={11} />{error}</p>}
+      {error && (
+        <p className="text-xs mt-1.5 flex items-center gap-1" style={{ color: "#f87171" }}>
+          <AlertCircle size={11} />{error}
+        </p>
+      )}
     </div>
   );
 }
 
 /* ── StatCard ───────────────────────────────────────────────────── */
-export function StatCard({ label, value, icon, sub, color = "violet" }: {
+export function StatCard({ label, value, icon, sub, color = "orange" }: {
   label: string; value: string | number; icon: ReactNode; sub?: string; color?: string;
 }) {
-  const colors: Record<string, string> = {
-    violet: "from-violet-500/10 to-violet-600/5 border-violet-500/20 text-violet-400",
-    emerald: "from-emerald-500/10 to-emerald-600/5 border-emerald-500/20 text-emerald-400",
-    blue: "from-blue-500/10 to-blue-600/5 border-blue-500/20 text-blue-400",
-    amber: "from-amber-500/10 to-amber-600/5 border-amber-500/20 text-amber-400",
+  const iconBg: Record<string, { bg: string; color: string; border: string }> = {
+    orange:  { bg: "rgba(249,115,22,0.1)",  color: "var(--brand-500)", border: "rgba(249,115,22,0.2)" },
+    emerald: { bg: "rgba(16,185,129,0.1)",  color: "#10b981",          border: "rgba(16,185,129,0.2)" },
+    blue:    { bg: "rgba(59,130,246,0.1)",  color: "#3b82f6",           border: "rgba(59,130,246,0.2)" },
+    amber:   { bg: "rgba(245,158,11,0.1)",  color: "#f59e0b",           border: "rgba(245,158,11,0.2)" },
+    violet:  { bg: "rgba(139,92,246,0.1)",  color: "#8b5cf6",           border: "rgba(139,92,246,0.2)" },
   };
+  const ic = iconBg[color] ?? iconBg.orange;
   return (
-    <div className="card p-5">
+    <div className="card p-5 card-hover">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-xs font-semibold text-gray-600 uppercase tracking-widest">{label}</span>
-        <div className={clsx("w-9 h-9 rounded-xl bg-gradient-to-br border flex items-center justify-center", colors[color] ?? colors.violet)}>
+        <span className="label mb-0">{label}</span>
+        <div
+          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+          style={{ background: ic.bg, color: ic.color, border: `1px solid ${ic.border}` }}
+        >
           {icon}
         </div>
       </div>
-      <div className="text-2xl font-display font-700 text-white">{value}</div>
-      {sub && <div className="text-xs text-gray-600 mt-1">{sub}</div>}
+      <div className="text-2xl font-bold font-display" style={{ color: "var(--text-primary)" }}>{value}</div>
+      {sub && <div className="text-xs mt-1" style={{ color: "var(--text-tertiary)" }}>{sub}</div>}
     </div>
   );
 }
@@ -112,7 +148,7 @@ export function ConfirmDialog({ open, onClose, onConfirm, title, description, lo
 }) {
   return (
     <Modal open={open} onClose={onClose} title={title} size="sm">
-      {description && <p className="text-sm text-gray-400 mb-5">{description}</p>}
+      {description && <p className="text-sm mb-5" style={{ color: "var(--text-secondary)" }}>{description}</p>}
       <div className="flex gap-3 justify-end">
         <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
         <button className="btn btn-danger" onClick={onConfirm} disabled={loading}>
@@ -125,12 +161,17 @@ export function ConfirmDialog({ open, onClose, onConfirm, title, description, lo
 
 /* ── Alert ──────────────────────────────────────────────────────── */
 export function Alert({ type, message }: { type: "error" | "success"; message: string }) {
-  const styles = type === "error"
-    ? "bg-red-950/40 border-red-900/50 text-red-400"
-    : "bg-emerald-950/40 border-emerald-900/50 text-emerald-400";
-  const Icon = type === "error" ? AlertCircle : CheckCircle2;
+  const isError = type === "error";
+  const Icon = isError ? AlertCircle : CheckCircle2;
   return (
-    <div className={clsx("px-4 py-3 rounded-xl border text-sm mb-4 flex items-center gap-2", styles)}>
+    <div
+      className="px-4 py-3 rounded-xl text-sm mb-4 flex items-center gap-2"
+      style={{
+        background: isError ? "rgba(239,68,68,0.08)" : "rgba(16,185,129,0.08)",
+        border: `1px solid ${isError ? "rgba(239,68,68,0.2)" : "rgba(16,185,129,0.2)"}`,
+        color: isError ? "#f87171" : "#34d399",
+      }}
+    >
       <Icon size={14} className="flex-shrink-0" />{message}
     </div>
   );
@@ -140,48 +181,64 @@ export function Alert({ type, message }: { type: "error" | "success"; message: s
 export function WorkerPopup({ worker, onClose }: { worker: any; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={onClose} />
-      <div className="relative bg-[#16161e] border border-white/10 rounded-2xl shadow-2xl w-full max-w-sm animate-slide-up p-6">
-        <button onClick={onClose} className="absolute top-4 right-4 p-1.5 rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/8 transition-all">
+      <div className="absolute inset-0 backdrop-blur-sm" style={{ background: "rgba(0,0,0,0.55)" }} onClick={onClose} />
+      <div
+        className="relative w-full max-w-sm animate-slide-up p-6"
+        style={{
+          background: "var(--bg-elevated)",
+          border: "1px solid var(--border-default)",
+          borderRadius: "20px",
+          boxShadow: "var(--shadow-lg)",
+        }}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-1.5 rounded-lg transition-all"
+          style={{ color: "var(--text-tertiary)" }}
+        >
           <X size={16} />
         </button>
         <div className="flex items-center gap-4 mb-5">
-          <div className="w-12 h-12 rounded-2xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400 font-display font-700 text-base">
+          <div
+            className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-base font-display"
+            style={{
+              background: "rgba(249,115,22,0.12)",
+              border: "1px solid rgba(249,115,22,0.25)",
+              color: "var(--brand-400)",
+            }}
+          >
             {worker.firstName?.[0]}{worker.lastName?.[0]}
           </div>
           <div>
-            <p className="font-display font-600 text-white">{worker.firstName} {worker.lastName}</p>
-            <p className="text-xs text-gray-500">{worker.role}</p>
+            <p className="font-bold font-display" style={{ color: "var(--text-primary)" }}>{worker.firstName} {worker.lastName}</p>
+            <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>{worker.role}</p>
           </div>
         </div>
         <div className="space-y-3">
-          {worker.email && (
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Email</span>
-              <span className="text-gray-300">{worker.email}</span>
+          {[
+            { label: "Email", value: worker.email },
+            { label: "Phone", value: worker.phone },
+          ].filter(r => r.value).map(({ label, value }) => (
+            <div key={label} className="flex justify-between text-sm">
+              <span style={{ color: "var(--text-tertiary)" }}>{label}</span>
+              <span style={{ color: "var(--text-primary)" }}>{value}</span>
             </div>
-          )}
-          {worker.phone && (
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Phone</span>
-              <span className="text-gray-300">{worker.phone}</span>
-            </div>
-          )}
+          ))}
           {worker.hourlyRate != null && (
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Hourly Rate</span>
-              <span className="text-emerald-400 font-semibold">${Number(worker.hourlyRate).toFixed(2)}/hr</span>
+              <span style={{ color: "var(--text-tertiary)" }}>Hourly Rate</span>
+              <span className="font-semibold" style={{ color: "#34d399" }}>${Number(worker.hourlyRate).toFixed(2)}/hr</span>
             </div>
           )}
           {worker.overtimeRate != null && (
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Overtime Rate</span>
-              <span className="text-amber-400 font-semibold">${Number(worker.overtimeRate).toFixed(2)}/hr</span>
+              <span style={{ color: "var(--text-tertiary)" }}>Overtime Rate</span>
+              <span className="font-semibold" style={{ color: "var(--brand-400)" }}>${Number(worker.overtimeRate).toFixed(2)}/hr</span>
             </div>
           )}
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Status</span>
-            <span className={clsx("badge", worker.status === "active" ? "bg-emerald-950 text-emerald-400" : "bg-gray-800 text-gray-500")}>
+          <div className="flex justify-between text-sm items-center">
+            <span style={{ color: "var(--text-tertiary)" }}>Status</span>
+            <span className={clsx("badge", worker.status === "active" ? "status-active" : "status-inactive")}>
               {worker.status}
             </span>
           </div>

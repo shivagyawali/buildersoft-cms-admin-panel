@@ -38,82 +38,135 @@ export default function DashboardPage() {
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Total Clients" value={totalClients} icon={<Users size={16} />} sub="All time" color="blue" />
-        <StatCard label="Active Projects" value={projects.length} icon={<FolderKanban size={16} />} sub="Currently running" color="violet" />
-        <StatCard label="Pending Invoices" value={pendingInvoices} icon={<FileText size={16} />} sub="Awaiting payment" color="amber" />
-        <StatCard label="Revenue" value={formatCurrency(totalRevenue)} icon={<TrendingUp size={16} />} sub="From paid invoices" color="emerald" />
+        <StatCard label="Total Clients"     value={totalClients}             icon={<Users size={16} />}       sub="All time"          color="blue" />
+        <StatCard label="Active Projects"   value={projects.length}          icon={<FolderKanban size={16} />} sub="Currently running" color="orange" />
+        <StatCard label="Pending Invoices"  value={pendingInvoices}          icon={<FileText size={16} />}    sub="Awaiting payment"  color="amber" />
+        <StatCard label="Revenue"           value={formatCurrency(totalRevenue)} icon={<TrendingUp size={16} />} sub="From paid invoices" color="emerald" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Active Projects */}
         <div className="card">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
-            <span className="font-display font-600 text-white text-sm">Active Projects</span>
-            <Link href="/projects" className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1">View all <ArrowRight size={12} /></Link>
+          <div
+            className="flex items-center justify-between px-5 py-4"
+            style={{ borderBottom: "1px solid var(--border-subtle)" }}
+          >
+            <span className="font-display font-bold text-sm" style={{ color: "var(--text-primary)" }}>Active Projects</span>
+            <Link href="/projects" className="text-xs flex items-center gap-1 transition-colors" style={{ color: "var(--brand-500)" }}>
+              View all <ArrowRight size={12} />
+            </Link>
           </div>
-          {projLoading ? <div className="flex justify-center py-10"><Spinner /></div> :
-            projects.length === 0 ? <p className="text-center text-gray-600 text-sm py-10">No active projects</p> : (
-              <div className="divide-y divide-white/[0.04]">
-                {projects.map((p) => (
-                  <Link key={p.id} href={`/projects/${p.id}`} className="flex items-center gap-4 px-5 py-3.5 hover:bg-white/[0.02] transition-colors">
-                    <div className="w-8 h-8 rounded-xl bg-violet-600/20 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
-                      <FolderKanban size={13} className="text-violet-400" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-200 text-sm truncate">{p.name}</p>
-                      <p className="text-xs text-gray-600">{p.expectedEndDate ? `Due ${formatDate(p.expectedEndDate)}` : "No deadline"}</p>
-                    </div>
-                    <span className={clsx("badge", getStatusColor(p.priority))}>{capitalize(p.priority)}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
+          {projLoading ? (
+            <div className="flex justify-center py-10"><Spinner /></div>
+          ) : projects.length === 0 ? (
+            <p className="text-center text-sm py-10" style={{ color: "var(--text-tertiary)" }}>No active projects</p>
+          ) : (
+            <div style={{ divide: "border" }}>
+              {projects.map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/projects/${p.id}`}
+                  className="flex items-center gap-4 px-5 py-3.5 transition-colors"
+                  style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                  onMouseOver={e => (e.currentTarget as HTMLElement).style.background = "var(--bg-sunken)"}
+                  onMouseOut={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
+                >
+                  <div
+                    className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: "rgba(249,115,22,0.1)", border: "1px solid rgba(249,115,22,0.2)" }}
+                  >
+                    <FolderKanban size={13} style={{ color: "var(--brand-500)" }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate" style={{ color: "var(--text-primary)" }}>{p.name}</p>
+                    <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
+                      {p.expectedEndDate ? `Due ${formatDate(p.expectedEndDate)}` : "No deadline"}
+                    </p>
+                  </div>
+                  <span className={clsx("badge", getStatusColor(p.priority))}>{capitalize(p.priority)}</span>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Recent Invoices */}
         <div className="card">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
-            <span className="font-display font-600 text-white text-sm">Recent Invoices</span>
-            <Link href="/invoices" className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1">View all <ArrowRight size={12} /></Link>
+          <div
+            className="flex items-center justify-between px-5 py-4"
+            style={{ borderBottom: "1px solid var(--border-subtle)" }}
+          >
+            <span className="font-display font-bold text-sm" style={{ color: "var(--text-primary)" }}>Recent Invoices</span>
+            <Link href="/invoices" className="text-xs flex items-center gap-1 transition-colors" style={{ color: "var(--brand-500)" }}>
+              View all <ArrowRight size={12} />
+            </Link>
           </div>
-          {invLoading ? <div className="flex justify-center py-10"><Spinner /></div> :
-            invoices.length === 0 ? <p className="text-center text-gray-600 text-sm py-10">No invoices yet</p> : (
-              <div className="divide-y divide-white/[0.04]">
-                {invoices.map((inv) => (
-                  <Link key={inv.id} href={`/invoices/${inv.id}`} className="flex items-center gap-4 px-5 py-3.5 hover:bg-white/[0.02] transition-colors">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-200 text-sm font-mono">{inv.invoiceNumber}</p>
-                      <p className="text-xs text-gray-600">Due {formatDate(inv.dueDate)}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-display font-600 text-white">{formatCurrency(inv.totalAmount)}</p>
-                      <span className={clsx("badge", getStatusColor(inv.status))}>{capitalize(inv.status)}</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
+          {invLoading ? (
+            <div className="flex justify-center py-10"><Spinner /></div>
+          ) : invoices.length === 0 ? (
+            <p className="text-center text-sm py-10" style={{ color: "var(--text-tertiary)" }}>No invoices yet</p>
+          ) : (
+            <div>
+              {invoices.map((inv) => (
+                <Link
+                  key={inv.id}
+                  href={`/invoices/${inv.id}`}
+                  className="flex items-center gap-4 px-5 py-3.5 transition-colors"
+                  style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                  onMouseOver={e => (e.currentTarget as HTMLElement).style.background = "var(--bg-sunken)"}
+                  onMouseOut={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm font-mono" style={{ color: "var(--text-primary)" }}>{inv.invoiceNumber}</p>
+                    <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>Due {formatDate(inv.dueDate)}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold font-display" style={{ color: "var(--text-primary)" }}>{formatCurrency(inv.totalAmount)}</p>
+                    <span className={clsx("badge", getStatusColor(inv.status))}>{capitalize(inv.status)}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Workers summary */}
       {workers.length > 0 && (
         <div className="card">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
-            <span className="font-display font-600 text-white text-sm">Workers</span>
-            <Link href="/workers" className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1">Manage <ArrowRight size={12} /></Link>
+          <div
+            className="flex items-center justify-between px-5 py-4"
+            style={{ borderBottom: "1px solid var(--border-subtle)" }}
+          >
+            <span className="font-display font-bold text-sm" style={{ color: "var(--text-primary)" }}>Workers</span>
+            <Link href="/workers" className="text-xs flex items-center gap-1" style={{ color: "var(--brand-500)" }}>
+              Manage <ArrowRight size={12} />
+            </Link>
           </div>
           <div className="flex flex-wrap gap-3 px-5 py-4">
             {(workers as any[]).slice(0, 10).map((w: any) => (
-              <div key={w.id} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-xs text-gray-400">
-                <div className="w-6 h-6 rounded-lg bg-violet-600/20 flex items-center justify-center text-[9px] font-bold text-violet-400">
+              <div
+                key={w.id}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs"
+                style={{
+                  background: "var(--bg-sunken)",
+                  border: "1px solid var(--border-subtle)",
+                  color: "var(--text-secondary)",
+                }}
+              >
+                <div
+                  className="w-6 h-6 rounded-lg flex items-center justify-center text-[9px] font-bold"
+                  style={{ background: "rgba(249,115,22,0.12)", color: "var(--brand-500)" }}
+                >
                   {w.firstName[0]}{w.lastName[0]}
                 </div>
                 <span>{w.firstName} {w.lastName}</span>
-                {w.hourlyRate && <span className="text-emerald-500">${Number(w.hourlyRate).toFixed(0)}/hr</span>}
+                {w.hourlyRate && <span style={{ color: "#10b981" }}>${Number(w.hourlyRate).toFixed(0)}/hr</span>}
               </div>
             ))}
-            {workers.length > 10 && <span className="text-xs text-gray-600 self-center">+{workers.length - 10} more</span>}
+            {workers.length > 10 && (
+              <span className="text-xs self-center" style={{ color: "var(--text-tertiary)" }}>+{workers.length - 10} more</span>
+            )}
           </div>
         </div>
       )}
